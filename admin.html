@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admina | DevApps</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a1a; color: #f1f5f9; min-height: 100vh; }
+
+        .admin-topbar {
+            background: rgba(18,18,42,0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(99,102,241,0.15);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+
+        .admin-logo i, .admin-logo span {
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .admin-topbar-actions { display: flex; gap: 12px; align-items: center; }
+
+        .topbar-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .topbar-btn-outline {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid rgba(99,102,241,0.2);
+        }
+
+        .topbar-btn-outline:hover {
+            border-color: #6366f1;
+            color: #f1f5f9;
+            background: rgba(99,102,241,0.1);
+        }
+
+        .topbar-btn-primary {
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+        }
+
+        .topbar-btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99,102,241,0.4);
+        }
+
+        .admin-layout { display: flex; min-height: calc(100vh - 65px); }
+
+        .admin-sidebar {
+            width: 260px;
+            background: #12122a;
+            border-right: 1px solid rgba(99,102,241,0.1);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            padding: 8px 12px;
+            margin-top: 8px;
+        }
+
+        .sidebar-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: left;
+        }
+
+        .sidebar-btn:hover { background: rgba(99,102,241,0.1); color: #f1f5f9; }
+        .sidebar-btn.active { background: rgba(99,102,241,0.15); color: #818cf8; font-weight: 600; }
+        .sidebar-btn i { width: 20px; text-align: center; font-size: 1rem; }
+
+        .admin-main { flex: 1; padding: 32px; overflow-y: auto; }
+
+        .admin-page { display: none; animation: fadeIn 0.3s ease; }
+        .admin-page.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header { margin-bottom: 32px; }
+        .page-header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+        .page-header p { color: #94a3b8; font-size: 0.95rem; }
+
+        .admin-card {
+            background: #12122a;
+            border: 1px solid rgba(99,102,241,0.1);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .admin-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .admin-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-card-title i { color: #6366f1; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+
+        .form-group label .required { color: #ec4899; }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #1a1a3e;
+            border: 1px solid rgba(99,102,241,0.15);
+            border-radius: 10px;
+            color: #f1f5f9;
+            font-size: 0.92rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+        }
+
+        .form-input::placeholder { color: #475569; }
+        textarea.form-input { resize: vertical; min-height: 100px; }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: #1a1a3e;
+            border: 1px solid rgba(99,102,241,0.15);
+            border-radius: 10px;
+            color: #f1f5f9;
+            font-size: 0.92rem;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236366f1' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+
+        .form-select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+        }
+
+        .color-options { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        .color-option {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-option:hover { transform: scale(1.1); }
+
+        .color-option.selected {
+            border-color: white;
+            box-shadow: 0 0 15px rgba(255,255,255,0.3);
+        }
+
+        .color-option.selected::after {
+            content: '✓';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .icon-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+            gap: 8px;
+        }
+
+        .icon-option {
+            width: 52px; height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a1a3e;
+            border: 1px solid rgba(99,102,241,0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.3rem;
+            color: #94a3b8;
+        }
+
+        .icon-option:hover {
+            border-color: #6366f1;
+            color: #f1f5f9;
+            background: rgba(99,102,241,0.1);
+        }
+
+        .icon-option.selected {
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            color: white;
+            border-color: transparent;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px;
+            background: #1a1a3e;
+            border: 1px solid rgba(99,102,241,0.15);
+            border-radius: 10px;
+            min-height: 50px;
+            cursor: text;
+        }
+
+        .tags-container:focus-within {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+        }
+
+        .tag-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: rgba(99,102,241,0.2);
+            border: 1px solid rgba(99,102,241,0.3);
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: #c7d2fe;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .tag-remove:hover { color: #ec4899; }
+
+        .tag-input {
+            border: none;
+            background: transparent;
+            color: #f1f5f9;
+            font-size: 0.88rem;
+            font-family: inherit;
+            outline: none;
+            min-width: 120px;
+            flex: 1;
+        }
+
+        .tag-input::placeholder { color: #475569; }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(99,102,241,0.1);
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 10px;
+            border: none;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99,102,241,0.4);
+        }
+
+        .btn-cancel {
+            background: rgba(99,102,241,0.1);
+            color: #94a3b8;
+            border: 1px solid rgba(99,102,241,0.15);
+        }
+
+        .btn-cancel:hover { color: #f1f5f9; border-color: rgba(99,102,241,0.3); }
+
+        .btn-danger {
+            background: rgba(239,68,68,0.15);
+            color: #f87171;
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        .btn-danger:hover { background: rgba(239,68,68,0.25); }
+        .btn-sm { padding: 8px 16px; font-size: 0.82rem; }
+
+        .apps-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .app-list-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: #1a1a3e;
+            border: 1px solid rgba(99,102,241,0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .app-list-item:hover { border-color: rgba(99,102,241,0.3); }
+
+        .app-list-icon {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            flex-shrink: 0;
+        }
+
+        .app-list-info { flex: 1; }
+        .app-list-name { font-size: 1rem; font-weight: 600; margin-bottom: 2px; }
+
+        .app-list-cat {
+            font-size: 0.8rem;
+            color: #818cf8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .app-list-actions { display: flex; gap: 8px; }
+
+        .app-list-actions .btn-sm {
+            width: 38px; height: 38px;
+            padding: 0;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .preview-card {
+            background: #12122a;
+            border: 1px solid rgba(99,102,241,0.15);
+            border-radius: 20px;
+            overflow: hidden;
+            max-width: 400px;
+        }
+
+        .preview-image {
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .preview-content { padding: 20px; }
+
+        .preview-cat {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #818cf8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .preview-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .preview-desc { font-size: 0.85rem; color: #94a3b8; margin-bottom: 12px; line-height: 1.5; }
+        .preview-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+        .preview-tag {
+            padding: 3px 10px;
+            background: rgba(99,102,241,0.1);
+            border: 1px solid rgba(99,102,241,0.15);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast-success { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .toast-error { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+        .toast-info { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: #12122a;
+            border: 1px solid rgba(99,102,241,0.1);
+            border-radius: 14px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .stat-card-number {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card-label { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
+        .help-text { font-size: 0.8rem; color: #64748b; margin-top: 6px; }
+
+        .badge-options { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        .badge-option {
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(99,102,241,0.15);
+            background: #1a1a3e;
+            color: #94a3b8;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .badge-option:hover { border-color: #6366f1; color: #f1f5f9; }
+        .badge-option.selected { color: white; border-color: transparent; }
+        .badge-option[data-badge="new"].selected { background: #10b981; }
+        .badge-option[data-badge="popular"].selected { background: #f59e0b; color: #1a1a2e; }
+        .badge-option[data-badge="beta"].selected { background: #6366f1; }
+        .badge-option[data-badge="none"].selected { background: #475569; }
+
+        @media (max-width: 768px) {
+            .admin-sidebar { display: none; }
+            .form-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .admin-main { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-topbar">
+        <div class="admin-logo">
+            <i class="fas fa-shield-alt"></i>
+            <span>Panel Admina</span>
+        </div>
+        <div class="admin-topbar-actions">
+            <a href="index.html" class="topbar-btn topbar-btn-outline">
+                <i class="fas fa-external-link-alt"></i> Zobacz stronę
+            </a>
+            <button class="topbar-btn topbar-btn-primary" onclick="exportData()">
+                <i class="fas fa-download"></i> Eksportuj
+            </button>
+        </div>
+    </div>
+
+    <div class="admin-layout">
+        <nav class="admin-sidebar">
+            <div class="sidebar-title">Zarządzanie</div>
+            <button class="sidebar-btn active" onclick="showPage('dashboard')">
+                <i class="fas fa-chart-pie"></i> Dashboard
+            </button>
+            <button class="sidebar-btn" onclick="showPage('profile')">
+                <i class="fas fa-user"></i> Profil / O mnie
+            </button>
+            <button class="sidebar-btn" onclick="showPage('apps')">
+                <i class="fas fa-th-large"></i> Aplikacje
+            </button>
+            <button class="sidebar-btn" onclick="showPage('add-app')">
+                <i class="fas fa-plus-circle"></i> Dodaj aplikację
+            </button>
+            <button class="sidebar-btn" onclick="showPage('contact-settings')">
+                <i class="fas fa-address-card"></i> Dane kontaktowe
+            </button>
+            <button class="sidebar-btn" onclick="showPage('stats-settings')">
+                <i class="fas fa-chart-bar"></i> Statystyki Hero
+            </button>
+            <div class="sidebar-title" style="margin-top:24px;">Narzędzia</div>
+            <button class="sidebar-btn" onclick="showPage('help')">
+                <i class="fas fa-question-circle"></i> Pomoc
+            </button>
+            <button class="sidebar-btn btn-danger" onclick="resetData()" style="margin-top:auto;">
+                <i class="fas fa-trash"></i> Resetuj dane
+            </button>
+        </nav>
+
+        <main class="admin-main">
+
+            <!-- DASHBOARD -->
+            <div class="admin-page active" id="page-dashboard">
+                <div class="page-header">
+                    <h1>👋 Witaj w Panelu Admina</h1>
+                    <p>Zarządzaj treścią swojej strony w prosty sposób.</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-number" id="dashAppCount">0</div>
+                        <div class="stat-card-label">Aplikacji</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-number" id="dashProfileStatus">—</div>
+                        <div class="stat-card-label">Profil</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-number" id="dashContactStatus">—</div>
+                        <div class="stat-card-label">Kontakt</div>
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-list-check"></i> Szybki start</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a1a3e;border-radius:10px;">
+                            <span style="font-size:1.3rem;">1️⃣</span>
+                            <span>Uzupełnij <strong>Profil / O mnie</strong></span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a1a3e;border-radius:10px;">
+                            <span style="font-size:1.3rem;">2️⃣</span>
+                            <span>Dodaj swoje <strong>Aplikacje</strong></span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a1a3e;border-radius:10px;">
+                            <span style="font-size:1.3rem;">3️⃣</span>
+                            <span>Uzupełnij <strong>Dane kontaktowe</strong></span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a1a3e;border-radius:10px;">
+                            <span style="font-size:1.3rem;">4️⃣</span>
+                            <span>Kliknij <strong>"Zobacz stronę"</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFILE -->
+            <div class="admin-page" id="page-profile">
+                <div class="page-header">
+                    <h1><i class="fas fa-user" style="color:#6366f1"></i> Profil / O mnie</h1>
+                    <p>Edytuj informacje wyświetlane w sekcji Hero i O mnie.</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-id-card"></i> Podstawowe dane</div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nazwa / Marka <span class="required">*</span></label>
+                            <input type="text" class="form-input" id="profileName" placeholder="np. DevApps, Jan Kowalski">
+                        </div>
+                        <div class="form-group">
+                            <label>Podtytuł / Rola</label>
+                            <input type="text" class="form-input" id="profileRole" placeholder="np. Full-Stack Developer">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Tekst Hero (badge)</label>
+                            <input type="text" class="form-input" id="profileBadge" placeholder="np. 🚀 Witaj w moim świecie aplikacji">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Nagłówek Hero <span class="required">*</span></label>
+                            <input type="text" class="form-input" id="profileHeadline" placeholder="np. Tworzę |nowoczesne| aplikacje">
+                            <div class="help-text">Użyj | żeby oznaczyć kolorowy tekst, np: Tworzę |nowoczesne| aplikacje</div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Opis pod nagłówkiem</label>
+                            <textarea class="form-input" id="profileSubtitle" placeholder="Krótki opis tego czym się zajmujesz..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-user-astronaut"></i> Sekcja "O mnie"</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tytuł sekcji</label>
+                        <input type="text" class="form-input" id="aboutTitle" placeholder="np. Pasjonat technologii i tworzenia">
+                    </div>
+                    <div class="form-group">
+                        <label>Paragraf 1</label>
+                        <textarea class="form-input" id="aboutText1" placeholder="Pierwszy akapit o Tobie..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Paragraf 2</label>
+                        <textarea class="form-input" id="aboutText2" placeholder="Drugi akapit o Tobie..."></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-save" onclick="saveProfile()">
+                        <i class="fas fa-save"></i> Zapisz profil
+                    </button>
+                </div>
+            </div>
+
+            <!-- APPS LIST -->
+            <div class="admin-page" id="page-apps">
+                <div class="page-header">
+                    <h1><i class="fas fa-th-large" style="color:#6366f1"></i> Twoje Aplikacje</h1>
+                    <p>Lista wszystkich Twoich projektów.</p>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <button class="btn btn-save" onclick="showPage('add-app')">
+                        <i class="fas fa-plus"></i> Dodaj nową aplikację
+                    </button>
+                </div>
+                <div class="apps-list" id="appsList">
+                    <div style="text-align:center;padding:40px;color:#64748b;">
+                        <i class="fas fa-inbox" style="font-size:3rem;margin-bottom:16px;display:block;"></i>
+                        <p>Nie masz jeszcze żadnych aplikacji.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADD/EDIT APP -->
+            <div class="admin-page" id="page-add-app">
+                <div class="page-header">
+                    <h1><i class="fas fa-plus-circle" style="color:#6366f1"></i> <span id="addAppPageTitle">Dodaj aplikację</span></h1>
+                    <p>Wypełnij formularz żeby dodać nowy projekt.</p>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 350px;gap:32px;align-items:start;">
+                    <div>
+                        <div class="admin-card">
+                            <div class="admin-card-header">
+                                <div class="admin-card-title"><i class="fas fa-info-circle"></i> Informacje</div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nazwa aplikacji <span class="required">*</span></label>
+                                    <input type="text" class="form-input" id="appName" placeholder="np. TaskFlow Pro" oninput="updatePreview()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Kategoria <span class="required">*</span></label>
+                                    <select class="form-select" id="appCategory" onchange="updatePreview()">
+                                        <option value="web">🌐 Web App</option>
+                                        <option value="mobile">📱 Mobile App</option>
+                                        <option value="desktop">🖥️ Desktop App</option>
+                                        <option value="ai">🤖 AI / ML</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Opis <span class="required">*</span></label>
+                                    <textarea class="form-input" id="appDesc" placeholder="Co robi ta aplikacja?" oninput="updatePreview()"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card">
+                            <div class="admin-card-header">
+                                <div class="admin-card-title"><i class="fas fa-tags"></i> Technologie</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Użyte technologie</label>
+                                <div class="tags-container" id="techTags" onclick="document.getElementById('techInput').focus()">
+                                    <input type="text" class="tag-input" id="techInput" placeholder="Wpisz i naciśnij Enter...">
+                                </div>
+                                <div class="help-text">Wpisz nazwę i naciśnij Enter żeby dodać.</div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card">
+                            <div class="admin-card-header">
+                                <div class="admin-card-title"><i class="fas fa-palette"></i> Wygląd karty</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Ikona</label>
+                                <div class="icon-options" id="iconPicker">
+                                    <div class="icon-option selected" data-icon="fas fa-code" onclick="selectIcon(this)"><i class="fas fa-code"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-tasks" onclick="selectIcon(this)"><i class="fas fa-tasks"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-robot" onclick="selectIcon(this)"><i class="fas fa-robot"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-gamepad" onclick="selectIcon(this)"><i class="fas fa-gamepad"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-shopping-cart" onclick="selectIcon(this)"><i class="fas fa-shopping-cart"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-chart-line" onclick="selectIcon(this)"><i class="fas fa-chart-line"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-music" onclick="selectIcon(this)"><i class="fas fa-music"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-camera" onclick="selectIcon(this)"><i class="fas fa-camera"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-heartbeat" onclick="selectIcon(this)"><i class="fas fa-heartbeat"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-utensils" onclick="selectIcon(this)"><i class="fas fa-utensils"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-calculator" onclick="selectIcon(this)"><i class="fas fa-calculator"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-paint-brush" onclick="selectIcon(this)"><i class="fas fa-paint-brush"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-globe" onclick="selectIcon(this)"><i class="fas fa-globe"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-bolt" onclick="selectIcon(this)"><i class="fas fa-bolt"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-brain" onclick="selectIcon(this)"><i class="fas fa-brain"></i></div>
+                                    <div class="icon-option" data-icon="fas fa-mobile-alt" onclick="selectIcon(this)"><i class="fas fa-mobile-alt"></i></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Kolor tła karty</label>
+                                <div class="color-options" id="colorPicker">
+                                    <div class="color-option selected" data-color="linear-gradient(135deg, #667eea, #764ba2)" style="background:linear-gradient(135deg,#667eea,#764ba2)" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-color="linear-gradient(135deg, #f093fb, #f5576c)" style="background:linear-gradient(135deg,#f093fb,#f5576c)" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-color="linear-gradient(135deg, #4facfe, #00f2fe)" style="background:linear-gradient(135deg,#4facfe,#00f2fe)" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-color="linear-gradient(135deg, #43e97b, #38f9d7)" style="background:linear-gradient(135deg,#43e97b,#38f9d7)" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-color="linear-gradient(135deg, #fa709a, #fee140)" style="background:linear-gradient(135deg,#fa709a,#fee140)" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-color="linear-gradient(135deg, #a18cd1, #fbc2eb)" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-color="linear-gradient(135deg, #fccb90, #d57eeb)" style="background:linear-gradient(135deg,#fccb90,#d57eeb)" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-color="linear-gradient(135deg, #ff9a9e, #fecfef)" style="background:linear-gradient(135deg,#ff9a9e,#fecfef)" onclick="selectColor(this)"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Badge (etykietka)</label>
+                                <div class="badge-options" id="badgePicker">
+                                    <div class="badge-option selected" data-badge="none" onclick="selectBadge(this)">Brak</div>
+                                    <div class="badge-option" data-badge="new" onclick="selectBadge(this)">🆕 Nowa</div>
+                                    <div class="badge-option" data-badge="popular" onclick="selectBadge(this)">🔥 Popularna</div>
+                                    <div class="badge-option" data-badge="beta" onclick="selectBadge(this)">🧪 Beta</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card">
+                            <div class="admin-card-header">
+                                <div class="admin-card-title"><i class="fas fa-link"></i> Linki</div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-eye"></i> Link do Demo</label>
+                                    <input type="url" class="form-input" id="appDemo" placeholder="https://...">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fab fa-github"></i> Link do GitHub</label>
+                                    <input type="url" class="form-input" id="appGithub" placeholder="https://github.com/...">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fab fa-google-play"></i> Link do Google Play</label>
+                                    <input type="url" class="form-input" id="appPlayStore" placeholder="https://play.google.com/store/apps/details?id=...">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fab fa-app-store"></i> Link do App Store</label>
+                                    <input type="url" class="form-input" id="appAppStore" placeholder="https://apps.apple.com/app/...">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Ocena (1-5)</label>
+                                    <input type="number" class="form-input" id="appRating" placeholder="4.5" min="1" max="5" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Ilość pobrań</label>
+                                    <input type="text" class="form-input" id="appDownloads" placeholder="np. 1.2k">
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="editingAppId" value="">
+
+                        <div class="form-actions">
+                            <button class="btn btn-save" onclick="saveApp()">
+                                <i class="fas fa-save"></i> <span id="saveAppBtnText">Dodaj aplikację</span>
+                            </button>
+                            <button class="btn btn-cancel" onclick="clearAppForm();showPage('apps')">
+                                <i class="fas fa-times"></i> Anuluj
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="position:sticky;top:100px;">
+                        <div style="font-size:0.85rem;font-weight:600;color:#64748b;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;">
+                            <i class="fas fa-eye"></i> Podgląd na żywo
+                        </div>
+                        <div class="preview-card" id="livePreview">
+                            <div class="preview-image" id="previewImage" style="background:linear-gradient(135deg,#667eea,#764ba2);">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="preview-content">
+                                <div class="preview-cat" id="previewCat">Web App</div>
+                                <div class="preview-title" id="previewTitle">Nazwa aplikacji</div>
+                                <div class="preview-desc" id="previewDesc">Opis Twojej aplikacji pojawi się tutaj...</div>
+                                <div class="preview-tags" id="previewTags"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTACT -->
+            <div class="admin-page" id="page-contact-settings">
+                <div class="page-header">
+                    <h1><i class="fas fa-address-card" style="color:#6366f1"></i> Dane kontaktowe</h1>
+                    <p>Ustaw swoje dane kontaktowe i linki do social media.</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-envelope"></i> Kontakt</div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Email <span class="required">*</span></label>
+                            <input type="email" class="form-input" id="contactEmail" placeholder="twoj@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Lokalizacja</label>
+                            <input type="text" class="form-input" id="contactLocation" placeholder="np. Warszawa, Polska">
+                        </div>
+                        <div class="form-group">
+                            <label>Godziny dostępności</label>
+                            <input type="text" class="form-input" id="contactHours" placeholder="np. Pon-Pt, 9:00-18:00">
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-share-alt"></i> Social Media</div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label><i class="fab fa-github"></i> GitHub</label>
+                            <input type="url" class="form-input" id="socialGithub" placeholder="https://github.com/twojnick">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fab fa-linkedin"></i> LinkedIn</label>
+                            <input type="url" class="form-input" id="socialLinkedin" placeholder="https://linkedin.com/in/twojnick">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fab fa-twitter"></i> Twitter / X</label>
+                            <input type="url" class="form-input" id="socialTwitter" placeholder="https://twitter.com/twojnick">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fab fa-discord"></i> Discord</label>
+                            <input type="text" class="form-input" id="socialDiscord" placeholder="link do serwera">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-save" onclick="saveContact()">
+                        <i class="fas fa-save"></i> Zapisz kontakt
+                    </button>
+                </div>
+            </div>
+
+            <!-- STATS -->
+            <div class="admin-page" id="page-stats-settings">
+                <div class="page-header">
+                    <h1><i class="fas fa-chart-bar" style="color:#6366f1"></i> Statystyki Hero</h1>
+                    <p>Edytuj liczby wyświetlane w sekcji Hero.</p>
+                </div>
+                <div class="admin-card">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Liczba 1 - wartość</label>
+                            <input type="number" class="form-input" id="stat1Value" placeholder="12">
+                        </div>
+                        <div class="form-group">
+                            <label>Liczba 1 - etykieta</label>
+                            <input type="text" class="form-input" id="stat1Label" placeholder="Projektów">
+                        </div>
+                        <div class="form-group">
+                            <label>Liczba 2 - wartość</label>
+                            <input type="number" class="form-input" id="stat2Value" placeholder="5000">
+                        </div>
+                        <div class="form-group">
+                            <label>Liczba 2 - etykieta</label>
+                            <input type="text" class="form-input" id="stat2Label" placeholder="Użytkowników">
+                        </div>
+                        <div class="form-group">
+                            <label>Liczba 3 - wartość</label>
+                            <input type="number" class="form-input" id="stat3Value" placeholder="3">
+                        </div>
+                        <div class="form-group">
+                            <label>Liczba 3 - etykieta</label>
+                            <input type="text" class="form-input" id="stat3Label" placeholder="Lata doświadczenia">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-save" onclick="saveStats()">
+                        <i class="fas fa-save"></i> Zapisz statystyki
+                    </button>
+                </div>
+            </div>
+
+            <!-- HELP -->
+            <div class="admin-page" id="page-help">
+                <div class="page-header">
+                    <h1><i class="fas fa-question-circle" style="color:#6366f1"></i> Pomoc</h1>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-title" style="margin-bottom:20px"><i class="fas fa-keyboard"></i> Tryb edycji na stronie</div>
+                    <p style="color:#94a3b8;margin-bottom:12px;">Na głównej stronie naciśnij:</p>
+                    <div style="background:#1a1a3e;padding:16px 24px;border-radius:10px;display:inline-block;margin-bottom:16px;">
+                        <code style="color:#818cf8;font-size:1.1rem;font-weight:700;">Ctrl + Shift + E</code>
+                    </div>
+                    <p style="color:#94a3b8;">Klikaj na teksty i zmieniaj je bezpośrednio!</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-title" style="margin-bottom:20px"><i class="fas fa-save"></i> Gdzie zapisują się dane?</div>
+                    <p style="color:#94a3b8;margin-bottom:8px;">Dane zapisują się w <strong>localStorage</strong> przeglądarki.</p>
+                    <ul style="color:#94a3b8;margin-left:20px;margin-top:8px;list-style:disc;">
+                        <li>Dane zostają po zamknięciu przeglądarki ✅</li>
+                        <li>Dane są tylko w TWOJEJ przeglądarce ✅</li>
+                        <li>Użyj "Eksportuj" żeby zrobić backup 💾</li>
+                    </ul>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <script src="js/admin.js"></script>
+</body>
+</html>

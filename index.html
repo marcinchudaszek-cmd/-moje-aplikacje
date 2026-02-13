@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje Aplikacje | Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <!-- Particles Background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <i class="fas fa-code"></i>
+                <span>DevApps</span>
+            </a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link active">Start</a></li>
+                <li><a href="#apps" class="nav-link">Aplikacje</a></li>
+                <li><a href="#about" class="nav-link">O mnie</a></li>
+                <li><a href="#tech" class="nav-link">Technologie</a></li>
+                <li><a href="#contact" class="nav-link">Kontakt</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-badge">🚀 Witaj w moim świecie aplikacji</div>
+            <h1 class="hero-title">
+                Tworzę <span class="gradient-text">nowoczesne</span><br>
+                aplikacje
+            </h1>
+            <p class="hero-subtitle">
+                Projektuję i rozwijam aplikacje webowe, mobilne i desktopowe.
+                Sprawdź moje projekty i przekonaj się sam.
+            </p>
+            <div class="hero-buttons">
+                <a href="#apps" class="btn btn-primary">
+                    <i class="fas fa-rocket"></i> Zobacz projekty
+                </a>
+                <a href="#contact" class="btn btn-outline">
+                    <i class="fas fa-envelope"></i> Kontakt
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number" data-target="12">0</span>
+                    <span class="stat-label">Projektów</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-target="5000">0</span>
+                    <span class="stat-label">Użytkowników</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-target="3">0</span>
+                    <span class="stat-label">Lata doświadczenia</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="floating-cards">
+                <div class="floating-card card-1">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Mobile</span>
+                </div>
+                <div class="floating-card card-2">
+                    <i class="fas fa-globe"></i>
+                    <span>Web</span>
+                </div>
+                <div class="floating-card card-3">
+                    <i class="fas fa-desktop"></i>
+                    <span>Desktop</span>
+                </div>
+                <div class="floating-card card-4">
+                    <i class="fas fa-database"></i>
+                    <span>Backend</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Apps Section -->
+    <section class="apps-section" id="apps">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Portfolio</span>
+                <h2 class="section-title">Moje Aplikacje</h2>
+                <p class="section-desc">Każdy projekt to unikalne rozwiązanie. Filtruj według kategorii.</p>
+            </div>
+
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">
+                    <i class="fas fa-th"></i> Wszystkie
+                </button>
+                <button class="filter-btn" data-filter="web">
+                    <i class="fas fa-globe"></i> Web
+                </button>
+                <button class="filter-btn" data-filter="mobile">
+                    <i class="fas fa-mobile-alt"></i> Mobile
+                </button>
+                <button class="filter-btn" data-filter="desktop">
+                    <i class="fas fa-desktop"></i> Desktop
+                </button>
+                <button class="filter-btn" data-filter="ai">
+                    <i class="fas fa-brain"></i> AI / ML
+                </button>
+            </div>
+
+            <div class="apps-grid" id="appsGrid">
+
+                <!-- App Card 1 -->
+                <div class="app-card" data-category="web">
+                    <div class="app-image">
+                        <div class="app-placeholder" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="app-overlay">
+                            <a href="#" class="overlay-btn"><i class="fas fa-eye"></i> Demo</a>
+                            <a href="#" class="overlay-btn"><i class="fab fa-github"></i> Kod</a>
+                        </div>
+                        <span class="app-badge badge-new">Nowa</span>
+                    </div>
+                    <div class="app-content">
+                        <div class="app-category">Web App</div>
+                        <h3 class="app-title">TaskFlow Pro</h3>
+                        <p class="app-desc">Zaawansowany menedżer zadań z funkcją drag & drop, tablicami Kanban i integracją z kalendarzem.</p>
+                        <div class="app-tech">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">MongoDB</span>
+                        </div>
+                        <div class="app-footer">
+                            <div class="app-stats-row">
+                                <span><i class="fas fa-star"></i> 4.8</span>
+                                <span><i class="fas fa-download"></i> 1.2k</span>
+                            </div>
+                            <a href="#" class="app-link">Szczegóły <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- App Card 2 -->
+                <div class="app-card" data-category="mobile">
+                    <div class="app-image">
+                        <div class="app-placeholder" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="app-overlay">
+                            <a href="#" class="overlay-btn"><i class="fas fa-eye"></i> Demo</a>
+                            <a href="#" class="overlay-btn"><i class="fab fa-github"></i> Kod</a>
+                        </div>
+                        <span class="app-badge badge-popular">Popularna</span>
+                    </div>
+                    <div class="app-content">
+                        <div class="app-category">Mobile App</div>
+                        <h3 class="app-title">FitTracker</h3>
+                        <p class="app-desc">Aplikacja fitness śledząca treningi, kalorie i postępy z personalizowanymi planami.</p>
+                        <div class="app-tech">
+                            <span class="tech-tag">Flutter</span>
+                            <span class="tech-tag">Firebase</span>
+                            <span class="tech-tag">Dart</span>
+                        </div>
+                        <div class="app-footer">
+                            <div class="app-stats-row">
+                                <span><i class="fas fa-star"></i> 4.9</span>
+                                <span><i class="fas fa-download"></i> 3.5k</span>
+                            </div>
+                            <a href="#" class="app-link">Szczegóły <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- App Card 3 -->
+                <div class="app-card" data-category="ai">
+                    <div class="app-image">
+                        <div class="app-placeholder" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="app-overlay">
+                            <a href="#" class="overlay-btn"><i class="fas fa-eye"></i> Demo</a>
+                            <a href="#" class="overlay-btn"><i class="fab fa-github"></i> Kod</a>
+                        </div>
+                        <span class="app-badge badge-beta">Beta</span>
+                    </div>
+                    <div class="app-content">
+                        <div class="app-category">AI / ML</div>
+                        <h3 class="app-title">ChatBot AI</h3>
+                        <p class="app-desc">Inteligentny chatbot wykorzystujący NLP do obsługi klienta i automatyzacji odpowiedzi.</p>
+                        <div class="app-tech">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">TensorFlow</span>
+                            <span class="tech-tag">FastAPI</span>
+                        </div>
+                        <div class="app-footer">
+                            <div class="app-stats-row">
+                                <span><i class="fas fa-star"></i> 4.6</span>
+                                <span><i class="fas fa-download"></i> 800</span>
+                            </div>
+                            <a href="#" class="app-link">Szczegóły <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- App Card 4 -->
+                <div class="app-card" data-category="desktop">
+                    <div class="app-image">
+                        <div class="app-placeholder" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <div class="app-overlay">
+                            <a href="#" class="overlay-btn"><i class="fas fa-eye"></i> Demo</a>
+                            <a href="#" class="overlay-btn"><i class="fab fa-github"></i> Kod</a>
+                        </div>
+                    </div>
+                    <div class="app-content">
+                        <div class="app-category">Desktop App</div>
+                        <h3 class="app-title">PixelEditor</h3>
+                        <p class="app-desc">Edytor graficzny z warstwami, filtrami i eksportem do wielu formatów plików.</p>
+                        <div class="app-tech">
+                            <span class="tech-tag">Electron</span>
+                            <span class="tech-tag">Canvas API</span>
+                            <span class="tech-tag">TypeScript</span>
+                        </div>
+                        <div class="app-footer">
+                            <div class="app-stats-row">
+                                <span><i class="fas fa-star"></i> 4.5</span>
+                                <span><i class="fas fa-download"></i> 650</span>
+                            </div>
+                            <a href="#" class="app-link">Szczegóły <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- App Card 5 -->
+                <div class="app-card" data-category="web">
+                    <div class="app-image">
+                        <div class="app-placeholder" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="app-overlay">
+                            <a href="#" class="overlay-btn"><i class="fas fa-eye"></i> Demo</a>
+                            <a href="#" class="overlay-btn"><i class="fab fa-github"></i> Kod</a>
+                        </div>
+                    </div>
+                    <div class="app-content">
+                        <div class="app-category">Web App</div>
+                        <h3 class="app-title">Analytics Dashboard</h3>
+                        <p class="app-desc">Dashboard analityczny z interaktywnymi wykresami i raportami w czasie rzeczywistym.</p>
+                        <div class="app-tech">
+                            <span class="tech-tag">Vue.js</span>
+                            <span class="tech-tag">D3.js</span>
+                            <span class="tech-tag">PostgreSQL</span>
+                        </div>
+                        <div class="app-footer">
+                            <div class="app-stats-row">
+                                <span><i class="fas fa-star"></i> 4.7</span>
+                                <span><i class="fas fa-download"></i> 2.1k</span>
+                            </div>
+                            <a href="#" class="app-link">Szczegóły <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- App Card 6 -->
+                <div class="app-card" data-category="mobile">
+                    <div class="app-image">
+                        <div class="app-placeholder" style="background: linear-gradient(135deg, #fa709a, #fee140);">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="app-overlay">
+                            <a href="#" class="overlay-btn"><i class="fas fa-eye"></i> Demo</a>
+                            <a href="#" class="overlay-btn"><i class="fab fa-github"></i> Kod</a>
+                        </div>
+                        <span class="app-badge badge-new">Nowa</span>
+                    </div>
+                    <div class="app-content">
+                        <div class="app-category">Mobile App</div>
+                        <h3 class="app-title">FoodSnap</h3>
+                        <p class="app-desc">Rozpoznawanie jedzenia ze zdjęcia z automatycznym liczeniem kalorii i makroskładników.</p>
+                        <div class="app-tech">
+                            <span class="tech-tag">React Native</span>
+                            <span class="tech-tag">TensorFlow Lite</span>
+                            <span class="tech-tag">AWS</span>
+                        </div>
+                        <div class="app-footer">
+                            <div class="app-stats-row">
+                                <span><i class="fas fa-star"></i> 4.4</span>
+                                <span><i class="fas fa-download"></i> 900</span>
+                            </div>
+                            <a href="#" class="app-link">Szczegóły <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image">
+                    <div class="about-img-wrapper">
+                        <div class="about-placeholder-img">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                        <div class="about-decoration"></div>
+                    </div>
+                </div>
+                <div class="about-content">
+                    <span class="section-tag">O mnie</span>
+                    <h2 class="section-title">Pasjonat technologii<br>i tworzenia</h2>
+                    <p class="about-text">
+                        Jestem programistą z pasją do tworzenia intuicyjnych i wydajnych aplikacji.
+                        Specjalizuję się w technologiach webowych i mobilnych, ciągle poszukując
+                        nowych rozwiązań i narzędzi.
+                    </p>
+                    <p class="about-text">
+                        Każdy projekt traktuję jako wyzwanie - od konceptu, przez design, aż po
+                        wdrożenie. Wierzę, że dobry kod to nie tylko funkcjonalność, ale też
+                        elegancja i czytelność.
+                    </p>
+                    <div class="about-highlights">
+                        <div class="highlight">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Czysty, maintainable kod</span>
+                        </div>
+                        <div class="highlight">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Responsywny design</span>
+                        </div>
+                        <div class="highlight">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Optymalizacja wydajności</span>
+                        </div>
+                        <div class="highlight">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Testowanie i CI/CD</span>
+                        </div>
+                    </div>
+                    <a href="#contact" class="btn btn-primary">
+                        <i class="fas fa-handshake"></i> Współpracujmy
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technologies Section -->
+    <section class="tech-section" id="tech">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Stack</span>
+                <h2 class="section-title">Technologie</h2>
+                <p class="section-desc">Narzędzia i technologie, z których korzystam na co dzień.</p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item"><i class="fab fa-react"></i><span>React</span></div>
+                <div class="tech-item"><i class="fab fa-vuejs"></i><span>Vue.js</span></div>
+                <div class="tech-item"><i class="fab fa-node-js"></i><span>Node.js</span></div>
+                <div class="tech-item"><i class="fab fa-python"></i><span>Python</span></div>
+                <div class="tech-item"><i class="fab fa-flutter"></i><span>Flutter</span></div>
+                <div class="tech-item"><i class="fab fa-docker"></i><span>Docker</span></div>
+                <div class="tech-item"><i class="fab fa-aws"></i><span>AWS</span></div>
+                <div class="tech-item"><i class="fab fa-figma"></i><span>Figma</span></div>
+                <div class="tech-item"><i class="fas fa-database"></i><span>PostgreSQL</span></div>
+                <div class="tech-item"><i class="fab fa-git-alt"></i><span>Git</span></div>
+                <div class="tech-item"><i class="fab fa-js"></i><span>TypeScript</span></div>
+                <div class="tech-item"><i class="fas fa-fire"></i><span>Firebase</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Kontakt</span>
+                <h2 class="section-title">Porozmawiajmy</h2>
+                <p class="section-desc">Masz pomysł na projekt? Napisz do mnie!</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-card">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div><h3>Email</h3><p>kontakt@devapps.pl</p></div>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div><h3>Lokalizacja</h3><p>Warszawa, Polska</p></div>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon"><i class="fas fa-clock"></i></div>
+                        <div><h3>Dostępność</h3><p>Pon-Pt, 9:00-18:00</p></div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Imię</label>
+                            <input type="text" id="name" placeholder="Twoje imię" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="twoj@email.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Temat</label>
+                        <input type="text" id="subject" placeholder="O czym chcesz porozmawiać?">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Wiadomość</label>
+                        <textarea id="message" rows="5" placeholder="Twoja wiadomość..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-paper-plane"></i> Wyślij wiadomość
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand"><i class="fas fa-code"></i><span>DevApps</span></div>
+                <p class="footer-text">© 2025 DevApps. Wszystkie prawa zastrzeżone.</p>
+                <div class="footer-links">
+                    <a href="#home">Start</a>
+                    <a href="#apps">Aplikacje</a>
+                    <a href="#about">O mnie</a>
+                    <a href="#contact">Kontakt</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop"><i class="fas fa-chevron-up"></i></button>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
