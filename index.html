@@ -6,26 +6,27 @@
     <title>Beagle Apps Studio | Portfolio</title>
     <style>
 :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #818cf8;
-    --secondary: #ec4899;
+    --primary: #2456a4;
+    --primary-dark: #1a3f7a;
+    --primary-light: #4a8ed4;
+    --secondary: #f5a623;
     --accent: #06b6d4;
-    --bg-dark: #0a0a1a;
-    --bg-card: #12122a;
-    --bg-card-hover: #1a1a3e;
-    --bg-surface: #16163a;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --border: rgba(99, 102, 241, 0.15);
-    --border-hover: rgba(99, 102, 241, 0.4);
-    --gradient-1: linear-gradient(135deg, #6366f1, #ec4899);
-    --gradient-2: linear-gradient(135deg, #06b6d4, #6366f1);
-    --shadow-sm: 0 2px 10px rgba(0,0,0,0.3);
-    --shadow-md: 0 8px 30px rgba(0,0,0,0.4);
-    --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
-    --shadow-glow: 0 0 40px rgba(99,102,241,0.15);
+    --bg-dark: #f0f4f8;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --bg-surface: #e8eef5;
+    --text-primary: #1e3a5f;
+    --text-secondary: #5a7a9a;
+    --text-muted: #8fa4b8;
+    --border: rgba(36, 86, 164, 0.12);
+    --border-hover: rgba(245, 166, 35, 0.4);
+    --gradient-1: linear-gradient(135deg, #4a8ed4, #f5a623);
+    --gradient-2: linear-gradient(135deg, #f5a623, #ff8a5c);
+    --gradient-accent: linear-gradient(135deg, #06b6d4, #10b981);
+    --shadow-sm: 0 2px 8px rgba(30,58,110,0.08);
+    --shadow-md: 0 8px 24px rgba(30,58,110,0.1);
+    --shadow-lg: 0 20px 50px rgba(30,58,110,0.12);
+    --shadow-glow: 0 0 30px rgba(74,142,212,0.15);
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 20px;
@@ -77,7 +78,7 @@ img { max-width: 100%; display: block; }
     width: 3px; height: 3px;
     background: var(--primary);
     border-radius: 50%;
-    opacity: 0.3;
+    opacity: 0.15;
     animation: float-particle linear infinite;
 }
 
@@ -99,7 +100,7 @@ img { max-width: 100%; display: block; }
 }
 
 .navbar.scrolled {
-    background: rgba(10,10,26,0.9);
+    background: rgba(255,255,255,0.92);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     padding: 10px 0;
@@ -152,7 +153,7 @@ img { max-width: 100%; display: block; }
 
 .nav-link:hover, .nav-link.active {
     color: var(--text-primary);
-    background: rgba(99,102,241,0.1);
+    background: rgba(45,90,160,0.1);
 }
 
 .nav-link.active::after {
@@ -205,12 +206,12 @@ img { max-width: 100%; display: block; }
 .btn-primary {
     background: var(--gradient-1);
     color: white;
-    box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+    box-shadow: 0 4px 20px rgba(36,86,164,0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(99,102,241,0.5);
+    box-shadow: 0 8px 30px rgba(45,90,160,0.5);
 }
 
 .btn-outline {
@@ -220,7 +221,7 @@ img { max-width: 100%; display: block; }
 }
 
 .btn-outline:hover {
-    background: rgba(99,102,241,0.1);
+    background: rgba(45,90,160,0.1);
     border-color: var(--primary);
     transform: translateY(-2px);
 }
@@ -245,7 +246,7 @@ img { max-width: 100%; display: block; }
 .hero-badge {
     display: inline-block;
     padding: 8px 20px;
-    background: rgba(99,102,241,0.1);
+    background: rgba(45,90,160,0.1);
     border: 1px solid var(--border);
     border-radius: 50px;
     font-size: 0.85rem;
@@ -347,9 +348,9 @@ img { max-width: 100%; display: block; }
 .floating-card span { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
 
 .card-1 { top: 0; left: 20%; animation: float 6s ease-in-out infinite; }
-.card-1 i { color: #6366f1; }
+.card-1 i { color: #4a90d9; }
 .card-2 { top: 30%; right: 0; animation: float 6s ease-in-out infinite 1.5s; }
-.card-2 i { color: #ec4899; }
+.card-2 i { color: #f5a623; }
 .card-3 { bottom: 10%; left: 10%; animation: float 6s ease-in-out infinite 3s; }
 .card-3 i { color: #06b6d4; }
 .card-4 { bottom: 30%; right: 15%; animation: float 6s ease-in-out infinite 4.5s; }
@@ -366,7 +367,7 @@ img { max-width: 100%; display: block; }
 .section-tag {
     display: inline-block;
     padding: 6px 16px;
-    background: rgba(99,102,241,0.1);
+    background: rgba(45,90,160,0.1);
     border: 1px solid var(--border);
     border-radius: 50px;
     font-size: 0.8rem;
@@ -425,14 +426,14 @@ img { max-width: 100%; display: block; }
 .filter-btn:hover {
     border-color: var(--primary);
     color: var(--text-primary);
-    background: rgba(99,102,241,0.1);
+    background: rgba(45,90,160,0.1);
 }
 
 .filter-btn.active {
     background: var(--gradient-1);
     color: white;
     border-color: transparent;
-    box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+    box-shadow: 0 4px 20px rgba(36,86,164,0.3);
 }
 
 .apps-grid {
@@ -448,6 +449,7 @@ img { max-width: 100%; display: block; }
     overflow: hidden;
     transition: var(--transition);
     animation: fadeInUp 0.5s ease both;
+    box-shadow: var(--shadow-sm);
 }
 
 .app-card:hover {
@@ -479,7 +481,7 @@ img { max-width: 100%; display: block; }
 .app-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(10,10,26,0.85);
+    background: rgba(30,58,95,0.8);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -495,8 +497,8 @@ img { max-width: 100%; display: block; }
     align-items: center;
     gap: 6px;
     padding: 10px 20px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
     border-radius: var(--radius-sm);
     color: white;
     font-size: 0.85rem;
@@ -523,7 +525,7 @@ img { max-width: 100%; display: block; }
 
 .badge-new { background: #10b981; color: white; }
 .badge-popular { background: #f59e0b; color: #1a1a2e; }
-.badge-beta { background: #6366f1; color: white; }
+.badge-beta { background: #2456a4; color: white; }
 
 .app-content { padding: 24px; }
 
@@ -549,7 +551,7 @@ img { max-width: 100%; display: block; }
 
 .tech-tag {
     padding: 4px 12px;
-    background: rgba(99,102,241,0.1);
+    background: rgba(45,90,160,0.1);
     border: 1px solid var(--border);
     border-radius: 50px;
     font-size: 0.78rem;
@@ -590,7 +592,7 @@ img { max-width: 100%; display: block; }
 .app-link:hover { color: var(--primary); gap: 10px; }
 
 /* About */
-.about-section { padding: 100px 0; position: relative; z-index: 1; }
+.about-section { padding: 100px 0; position: relative; z-index: 1; background: var(--bg-surface); }
 
 .about-grid {
     display: grid;
@@ -667,6 +669,7 @@ img { max-width: 100%; display: block; }
     border-radius: var(--radius-md);
     transition: var(--transition);
     cursor: default;
+    box-shadow: var(--shadow-sm);
 }
 
 .tech-item:hover {
@@ -687,7 +690,7 @@ img { max-width: 100%; display: block; }
 .tech-item span { font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); }
 
 /* Contact */
-.contact-section { padding: 100px 0; position: relative; z-index: 1; }
+.contact-section { padding: 100px 0; position: relative; z-index: 1; background: var(--bg-surface); }
 
 .contact-grid {
     display: grid;
@@ -706,13 +709,14 @@ img { max-width: 100%; display: block; }
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     transition: var(--transition);
+    box-shadow: var(--shadow-sm);
 }
 
 .contact-card:hover { border-color: var(--primary); background: var(--bg-card-hover); }
 
 .contact-icon {
     width: 48px; height: 48px;
-    background: rgba(99,102,241,0.15);
+    background: rgba(45,90,160,0.15);
     border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
@@ -752,6 +756,7 @@ img { max-width: 100%; display: block; }
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 36px;
+    box-shadow: var(--shadow-sm);
 }
 
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -780,7 +785,7 @@ img { max-width: 100%; display: block; }
 
 .form-group input:focus, .form-group textarea:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    box-shadow: 0 0 0 3px rgba(45,90,160,0.15);
 }
 
 .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-muted); }
@@ -792,6 +797,7 @@ img { max-width: 100%; display: block; }
     padding: 40px 0;
     position: relative;
     z-index: 1;
+    background: linear-gradient(180deg, transparent, rgba(36,86,164,0.05));
 }
 
 .footer-content {
@@ -848,7 +854,7 @@ img { max-width: 100%; display: block; }
     visibility: hidden;
     transform: translateY(20px);
     transition: var(--transition);
-    box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+    box-shadow: 0 4px 20px rgba(36,86,164,0.3);
 }
 
 .scroll-top.visible {
@@ -859,7 +865,7 @@ img { max-width: 100%; display: block; }
 
 .scroll-top:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(99,102,241,0.5);
+    box-shadow: 0 8px 30px rgba(45,90,160,0.5);
 }
 
 /* Animations */
@@ -897,7 +903,7 @@ img { max-width: 100%; display: block; }
         position: fixed;
         top: 0; right: -100%;
         width: 280px; height: 100vh;
-        background: rgba(10,10,26,0.98);
+        background: rgba(255,255,255,0.98);
         backdrop-filter: blur(20px);
         flex-direction: column;
         align-items: flex-start;
@@ -929,6 +935,107 @@ img { max-width: 100%; display: block; }
     .tech-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .tech-item { padding: 20px 12px; }
 }
+
+/* ===== ENTERTAINMENT SECTION ===== */
+.fun-section { padding: 100px 0; }
+.fun-tabs { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+.fun-tab { padding: 12px 24px; border-radius: 50px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: inherit; }
+.fun-tab:hover { border-color: var(--secondary); color: var(--text-primary); }
+.fun-tab.active { background: var(--gradient-2); color: white; border-color: transparent; }
+.fun-content { display: none; }
+.fun-content.active { display: block; }
+
+/* Gallery */
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+.gallery-item { border-radius: var(--radius-md); overflow: hidden; cursor: pointer; position: relative; aspect-ratio: 4/3; background: var(--bg-card); border: 1px solid var(--border); transition: var(--transition); }
+.gallery-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--secondary); }
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+.gallery-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; color: var(--text-muted); font-size: 0.85rem; }
+.gallery-placeholder i { font-size: 2rem; color: var(--secondary); }
+.gallery-lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 9999; cursor: pointer; }
+.gallery-lightbox.show { display: flex; }
+.gallery-lightbox img { max-width: 90%; max-height: 90%; border-radius: var(--radius-md); }
+
+/* Music Player */
+.music-player { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; max-width: 600px; margin: 0 auto; box-shadow: var(--shadow-md); }
+.player-header { text-align: center; margin-bottom: 24px; }
+.player-album { width: 120px; height: 120px; border-radius: 50%; background: var(--gradient-1); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; animation: none; box-shadow: 0 0 30px rgba(30,58,110,0.3); }
+.player-album.playing { animation: spin 4s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.player-album i { font-size: 2.5rem; color: white; }
+.player-title { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); }
+.player-artist { font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px; }
+.player-progress { width: 100%; height: 6px; background: var(--bg-surface); border-radius: 3px; margin: 20px 0; cursor: pointer; position: relative; }
+.player-progress-fill { height: 100%; background: var(--gradient-2); border-radius: 3px; width: 0%; transition: width 0.1s linear; }
+.player-time { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-top: -12px; margin-bottom: 16px; }
+.player-controls { display: flex; align-items: center; justify-content: center; gap: 20px; }
+.player-btn { width: 48px; height: 48px; border-radius: 50%; border: none; background: var(--bg-surface); color: var(--text-primary); font-size: 1.1rem; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
+.player-btn:hover { background: var(--primary-light); }
+.player-btn.play-btn { width: 60px; height: 60px; background: var(--gradient-2); font-size: 1.3rem; }
+.player-btn.play-btn:hover { transform: scale(1.1); }
+.player-volume { display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 16px; }
+.player-volume input[type="range"] { -webkit-appearance: none; width: 120px; height: 4px; background: var(--bg-surface); border-radius: 2px; outline: none; }
+.player-volume input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--secondary); cursor: pointer; }
+.playlist { margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px; }
+.playlist-title { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.playlist-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); }
+.playlist-item:hover, .playlist-item.active { background: var(--bg-card-hover); }
+.playlist-item.active .playlist-name { color: var(--secondary); }
+.playlist-num { font-size: 0.85rem; color: var(--text-muted); width: 20px; }
+.playlist-name { font-size: 0.9rem; color: var(--text-primary); flex: 1; }
+.playlist-dur { font-size: 0.8rem; color: var(--text-muted); }
+.upload-zone { border: 2px dashed var(--border); border-radius: var(--radius-md); padding: 30px; text-align: center; color: var(--text-muted); cursor: pointer; transition: var(--transition); margin-top: 16px; }
+.upload-zone:hover { border-color: var(--secondary); color: var(--text-secondary); }
+.upload-zone i { font-size: 2rem; margin-bottom: 8px; display: block; }
+
+/* Animations */
+.animation-showcase { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+.anim-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; text-align: center; cursor: pointer; transition: var(--transition); min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; box-shadow: var(--shadow-sm); }
+.anim-card:hover { border-color: var(--secondary); transform: translateY(-4px); }
+.anim-card .anim-icon { font-size: 2.5rem; }
+.anim-card .anim-label { font-size: 0.85rem; color: var(--text-secondary); }
+.anim-bounce { animation: bounce 1s infinite; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+.anim-pulse { animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } }
+.anim-shake { animation: shake 0.5s infinite; }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.anim-float { animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+/* Mini Games */
+.games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.game-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; text-align: center; transition: var(--transition); box-shadow: var(--shadow-sm); }
+.game-card:hover { border-color: var(--secondary); }
+.game-card h3 { font-size: 1.1rem; margin: 12px 0 8px; }
+.game-card p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px; }
+.game-icon { font-size: 3rem; margin-bottom: 8px; }
+.game-btn { padding: 10px 24px; border: none; border-radius: 50px; background: var(--gradient-2); color: white; font-weight: 600; cursor: pointer; font-family: inherit; transition: var(--transition); }
+.game-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(245,166,35,0.3); }
+.game-area { margin-top: 16px; display: none; }
+.game-area.active { display: block; }
+
+/* Reaction Game */
+.reaction-box { width: 100%; height: 200px; border-radius: var(--radius-md); background: var(--bg-surface); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: background 0.2s; user-select: none; }
+.reaction-box.waiting { background: #dc2626; color: white; }
+.reaction-box.ready { background: #16a34a; color: white; }
+.reaction-box.result { background: var(--bg-card); }
+
+/* Memory Game */
+.memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 320px; margin: 0 auto; }
+.memory-card { aspect-ratio: 1; background: var(--gradient-1); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; transition: var(--transition); border: 2px solid transparent; }
+.memory-card.flipped, .memory-card.matched { background: var(--bg-card); border-color: var(--secondary); }
+.memory-card.matched { border-color: #10b981; opacity: 0.7; }
+.memory-score { text-align: center; margin-top: 12px; font-size: 0.9rem; color: var(--text-secondary); }
+
+@media (max-width: 768px) {
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .animation-showcase { grid-template-columns: repeat(2, 1fr); }
+    .games-grid { grid-template-columns: 1fr; }
+    .memory-grid { grid-template-columns: repeat(4, 1fr); max-width: 260px; }
+    .fun-tabs { gap: 6px; }
+    .fun-tab { padding: 10px 16px; font-size: 0.82rem; }
+}
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -948,6 +1055,7 @@ img { max-width: 100%; display: block; }
                 <li><a href="#apps" class="nav-link">Aplikacje</a></li>
                 <li><a href="#about" class="nav-link">O mnie</a></li>
                 <li><a href="#tech" class="nav-link">Technologie</a></li>
+                <li><a href="#fun" class="nav-link">Rozrywka</a></li>
                 <li><a href="#contact" class="nav-link">Kontakt</a></li>
             </ul>
             <button class="nav-toggle" id="navToggle">
@@ -1101,7 +1209,7 @@ img { max-width: 100%; display: block; }
                 <!-- App Card 3 - Kolekcja Muzyki -->
                 <div class="app-card" data-category="mobile">
                     <div class="app-image">
-                        <div class="app-placeholder" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                        <div class="app-placeholder" style="background: linear-gradient(135deg, #2d5aa0, #1e3a6e);">
                             <i class="fas fa-compact-disc"></i>
                         </div>
                         <div class="app-overlay">
@@ -1295,6 +1403,149 @@ img { max-width: 100%; display: block; }
         </div>
     </section>
 
+    <!-- Entertainment Section -->
+    <section class="fun-section" id="fun">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Rozrywka</span>
+                <h2 class="section-title">Strefa Kreatywna</h2>
+                <p class="section-desc">Galeria, muzyka, animacje i mini gry — bo życie to nie tylko kod!</p>
+            </div>
+
+            <div class="fun-tabs">
+                <button class="fun-tab active" onclick="showFunTab('gallery')"><i class="fas fa-images"></i> Galeria</button>
+                <button class="fun-tab" onclick="showFunTab('music')"><i class="fas fa-headphones"></i> Muzyka</button>
+                <button class="fun-tab" onclick="showFunTab('animations')"><i class="fas fa-magic"></i> Animacje</button>
+                <button class="fun-tab" onclick="showFunTab('games')"><i class="fas fa-gamepad"></i> Mini Gry</button>
+            </div>
+
+            <!-- GALLERY TAB -->
+            <div class="fun-content active" id="fun-gallery">
+                <div class="gallery-grid" id="galleryGrid">
+                    <div class="gallery-item"><div class="gallery-placeholder"><i class="fas fa-camera"></i><span>Grafika 1</span><span style="font-size:0.75rem;">Wgraj zdjęcia do folderu /img/</span></div></div>
+                    <div class="gallery-item"><div class="gallery-placeholder"><i class="fas fa-palette"></i><span>Grafika 2</span></div></div>
+                    <div class="gallery-item"><div class="gallery-placeholder"><i class="fas fa-image"></i><span>Grafika 3</span></div></div>
+                    <div class="gallery-item"><div class="gallery-placeholder"><i class="fas fa-mountain"></i><span>Grafika 4</span></div></div>
+                    <div class="gallery-item"><div class="gallery-placeholder"><i class="fas fa-star"></i><span>Grafika 5</span></div></div>
+                    <div class="gallery-item"><div class="gallery-placeholder"><i class="fas fa-heart"></i><span>Grafika 6</span></div></div>
+                </div>
+            </div>
+
+            <!-- MUSIC TAB -->
+            <div class="fun-content" id="fun-music">
+                <div class="music-player" id="musicPlayer">
+                    <div class="player-header">
+                        <div class="player-album" id="playerAlbum"><i class="fas fa-music"></i></div>
+                        <div class="player-title" id="playerTitle">Wybierz utwór</div>
+                        <div class="player-artist" id="playerArtist">Beagle Apps Studio</div>
+                    </div>
+                    <div class="player-progress" id="playerProgress" onclick="seekMusic(event)">
+                        <div class="player-progress-fill" id="playerFill"></div>
+                    </div>
+                    <div class="player-time">
+                        <span id="playerCurrent">0:00</span>
+                        <span id="playerDuration">0:00</span>
+                    </div>
+                    <div class="player-controls">
+                        <button class="player-btn" onclick="prevTrack()"><i class="fas fa-backward"></i></button>
+                        <button class="player-btn play-btn" id="playBtn" onclick="togglePlay()"><i class="fas fa-play"></i></button>
+                        <button class="player-btn" onclick="nextTrack()"><i class="fas fa-forward"></i></button>
+                    </div>
+                    <div class="player-volume">
+                        <i class="fas fa-volume-down" style="color:var(--text-muted)"></i>
+                        <input type="range" min="0" max="100" value="80" id="volumeSlider" oninput="setVolume(this.value)">
+                        <i class="fas fa-volume-up" style="color:var(--text-muted)"></i>
+                    </div>
+                    <div class="playlist">
+                        <div class="playlist-title"><i class="fas fa-list"></i> Playlist — Moja Muzyka</div>
+                        <div id="playlistContainer">
+                            <div class="playlist-item" onclick="playTrack(0)">
+                                <span class="playlist-num">1</span>
+                                <span class="playlist-name">Wgraj pliki MP3 do folderu /music/</span>
+                                <span class="playlist-dur">—</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="upload-zone" onclick="document.getElementById('musicUpload').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <div>Przeciągnij pliki MP3 tutaj lub kliknij</div>
+                        <div style="font-size:0.75rem;margin-top:4px;">Muzyka zostanie dodana do playlisty</div>
+                        <input type="file" id="musicUpload" accept=".mp3,.wav,.ogg" multiple style="display:none" onchange="handleMusicUpload(this.files)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANIMATIONS TAB -->
+            <div class="fun-content" id="fun-animations">
+                <div class="animation-showcase">
+                    <div class="anim-card" onclick="this.querySelector('.anim-icon').classList.toggle('anim-bounce')">
+                        <div class="anim-icon">🐶</div>
+                        <div class="anim-label">Bounce</div>
+                    </div>
+                    <div class="anim-card" onclick="this.querySelector('.anim-icon').classList.toggle('anim-pulse')">
+                        <div class="anim-icon">💛</div>
+                        <div class="anim-label">Pulse</div>
+                    </div>
+                    <div class="anim-card" onclick="this.querySelector('.anim-icon').classList.toggle('anim-shake')">
+                        <div class="anim-icon">🎸</div>
+                        <div class="anim-label">Shake</div>
+                    </div>
+                    <div class="anim-card" onclick="this.querySelector('.anim-icon').classList.toggle('anim-float')">
+                        <div class="anim-icon">🚀</div>
+                        <div class="anim-label">Float</div>
+                    </div>
+                    <div class="anim-card" onclick="this.querySelector('.anim-icon').classList.toggle('anim-bounce')">
+                        <div class="anim-icon">🎵</div>
+                        <div class="anim-label">Bounce</div>
+                    </div>
+                    <div class="anim-card" onclick="this.querySelector('.anim-icon').classList.toggle('anim-pulse')">
+                        <div class="anim-icon">🎯</div>
+                        <div class="anim-label">Pulse</div>
+                    </div>
+                </div>
+                <p style="text-align:center;color:var(--text-muted);margin-top:20px;font-size:0.85rem;">Kliknij na kafelek, żeby włączyć/wyłączyć animację!</p>
+            </div>
+
+            <!-- GAMES TAB -->
+            <div class="fun-content" id="fun-games">
+                <div class="games-grid">
+                    <!-- Reaction Game -->
+                    <div class="game-card">
+                        <div class="game-icon">⚡</div>
+                        <h3>Test Refleksu</h3>
+                        <p>Jak szybko reagujesz? Kliknij gdy zmieni się kolor!</p>
+                        <button class="game-btn" onclick="startReaction()">Graj!</button>
+                        <div class="game-area" id="reactionArea">
+                            <div class="reaction-box" id="reactionBox" onclick="clickReaction()">Kliknij "Graj!" żeby zacząć</div>
+                        </div>
+                    </div>
+                    <!-- Memory Game -->
+                    <div class="game-card">
+                        <div class="game-icon">🧠</div>
+                        <h3>Memory</h3>
+                        <p>Znajdź wszystkie pary! Trenuj pamięć.</p>
+                        <button class="game-btn" onclick="startMemory()">Graj!</button>
+                        <div class="game-area" id="memoryArea">
+                            <div class="memory-grid" id="memoryGrid"></div>
+                            <div class="memory-score" id="memoryScore"></div>
+                        </div>
+                    </div>
+                    <!-- Click Counter -->
+                    <div class="game-card">
+                        <div class="game-icon">👆</div>
+                        <h3>Speed Click</h3>
+                        <p>Ile razy klikniesz w 10 sekund?</p>
+                        <button class="game-btn" id="clickGameBtn" onclick="startClickGame()">Graj!</button>
+                        <div class="game-area" id="clickArea">
+                            <div class="reaction-box result" id="clickBox" onclick="countClick()" style="font-size:2.5rem;font-weight:800;">0</div>
+                            <div class="memory-score" id="clickScore"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section class="contact-section" id="contact">
         <div class="container">
@@ -1375,6 +1626,7 @@ function getSiteData() {
         var saved = localStorage.getItem('siteData');
         if (saved) return JSON.parse(saved);
     } catch(e) {}
+    if (typeof embeddedSiteData !== 'undefined' && embeddedSiteData) return embeddedSiteData;
     return null;
 }
 
@@ -1505,7 +1757,7 @@ function createParticles() {
         p.style.animationDuration = (Math.random() * 20 + 10) + 's';
         p.style.animationDelay = (Math.random() * 20) + 's';
         p.style.opacity = Math.random() * 0.4 + 0.1;
-        var colors = ['#6366f1','#ec4899','#06b6d4','#8b5cf6','#10b981'];
+        var colors = ['#4a90d9','#f5a623','#06b6d4','#ff6b6b','#10b981'];
         p.style.background = colors[Math.floor(Math.random() * colors.length)];
         container.appendChild(p);
     }
@@ -1655,14 +1907,14 @@ document.addEventListener('keydown', function(e) {
 function toggleEditMode() {
     if (editMode) {
         editBar = document.createElement('div');
-        editBar.style.cssText = 'position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#6366f1,#ec4899);color:white;padding:12px 24px;text-align:center;z-index:99999;font-family:Inter,sans-serif;font-size:0.9rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:16px;';
-        editBar.innerHTML = '✏️ TRYB EDYCJI - Klikaj na teksty! <button onclick="saveInlineEdits()" style="padding:8px 20px;background:white;color:#6366f1;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit;">💾 Zapisz</button> <button onclick="toggleEditModeOff()" style="padding:8px 20px;background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;">✕ Zamknij</button>';
+        editBar.style.cssText = 'position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#2456a4,#f5a623);color:white;padding:12px 24px;text-align:center;z-index:99999;font-family:Inter,sans-serif;font-size:0.9rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:16px;';
+        editBar.innerHTML = '✏️ TRYB EDYCJI - Klikaj na teksty! <button onclick="saveInlineEdits()" style="padding:8px 20px;background:white;color:#2456a4;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit;">💾 Zapisz</button> <button onclick="toggleEditModeOff()" style="padding:8px 20px;background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;">✕ Zamknij</button>';
         document.body.prepend(editBar);
         document.body.style.paddingTop = '52px';
         var sel = '.hero-badge,.hero-title,.hero-subtitle,.section-title,.section-desc,.section-tag,.app-title,.app-desc,.app-category,.about-text,.highlight span,.contact-card h3,.contact-card p,.stat-label';
         document.querySelectorAll(sel).forEach(function(el) {
             el.contentEditable = true;
-            el.style.outline = '2px dashed rgba(99,102,241,0.4)';
+            el.style.outline = '2px dashed rgba(36,86,164,0.3)';
             el.style.outlineOffset = '4px';
             el.style.cursor = 'text';
         });
@@ -1704,6 +1956,221 @@ function saveInlineEdits() {
 
 applySiteData();
 revealOnScroll();
+
+// ===== ENTERTAINMENT SECTION =====
+
+// Fun Tabs
+function showFunTab(tabId) {
+    document.querySelectorAll('.fun-content').forEach(function(c) { c.classList.remove('active'); });
+    document.querySelectorAll('.fun-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.getElementById('fun-' + tabId).classList.add('active');
+    event.target.closest('.fun-tab').classList.add('active');
+}
+
+// Music Player
+var audio = new Audio();
+var playlist = [];
+var currentTrack = 0;
+var isPlaying = false;
+
+audio.addEventListener('timeupdate', function() {
+    if (audio.duration) {
+        var pct = (audio.currentTime / audio.duration) * 100;
+        document.getElementById('playerFill').style.width = pct + '%';
+        document.getElementById('playerCurrent').textContent = formatTime(audio.currentTime);
+        document.getElementById('playerDuration').textContent = formatTime(audio.duration);
+    }
+});
+audio.addEventListener('ended', function() { nextTrack(); });
+
+function formatTime(s) {
+    var m = Math.floor(s / 60);
+    var sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+function togglePlay() {
+    if (playlist.length === 0) return;
+    if (isPlaying) { audio.pause(); isPlaying = false; }
+    else { audio.play(); isPlaying = true; }
+    document.getElementById('playBtn').innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+    document.getElementById('playerAlbum').classList.toggle('playing', isPlaying);
+}
+
+function playTrack(idx) {
+    if (playlist.length === 0) return;
+    currentTrack = idx;
+    audio.src = playlist[idx].url;
+    audio.play();
+    isPlaying = true;
+    document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i>';
+    document.getElementById('playerAlbum').classList.add('playing');
+    document.getElementById('playerTitle').textContent = playlist[idx].name;
+    document.querySelectorAll('.playlist-item').forEach(function(p, i) { p.classList.toggle('active', i === idx); });
+}
+
+function nextTrack() { if (playlist.length) playTrack((currentTrack + 1) % playlist.length); }
+function prevTrack() { if (playlist.length) playTrack((currentTrack - 1 + playlist.length) % playlist.length); }
+
+function seekMusic(e) {
+    if (audio.duration) {
+        var rect = e.target.getBoundingClientRect();
+        var pct = (e.clientX - rect.left) / rect.width;
+        audio.currentTime = pct * audio.duration;
+    }
+}
+
+function setVolume(v) { audio.volume = v / 100; }
+
+function handleMusicUpload(files) {
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        if (file.type.indexOf('audio') !== -1) {
+            var url = URL.createObjectURL(file);
+            var name = file.name.replace(/\.[^/.]+$/, '');
+            playlist.push({ name: name, url: url });
+        }
+    }
+    renderPlaylist();
+    if (playlist.length === 1) playTrack(0);
+}
+
+function renderPlaylist() {
+    var html = '';
+    playlist.forEach(function(track, i) {
+        html += '<div class="playlist-item' + (i === currentTrack ? ' active' : '') + '" onclick="playTrack(' + i + ')"><span class="playlist-num">' + (i + 1) + '</span><span class="playlist-name">' + track.name + '</span><span class="playlist-dur"><i class="fas fa-play" style="font-size:0.7rem"></i></span></div>';
+    });
+    if (playlist.length === 0) {
+        html = '<div class="playlist-item"><span class="playlist-num">—</span><span class="playlist-name" style="color:var(--text-muted)">Wgraj pliki MP3 poniżej</span><span class="playlist-dur">—</span></div>';
+    }
+    document.getElementById('playlistContainer').innerHTML = html;
+}
+
+// Reaction Game
+var reactionTimeout = null;
+var reactionStart = 0;
+var reactionState = 'idle';
+
+function startReaction() {
+    var area = document.getElementById('reactionArea');
+    var box = document.getElementById('reactionBox');
+    area.classList.add('active');
+    box.className = 'reaction-box waiting';
+    box.textContent = 'Czekaj na zielony...';
+    reactionState = 'waiting';
+    clearTimeout(reactionTimeout);
+    reactionTimeout = setTimeout(function() {
+        box.className = 'reaction-box ready';
+        box.textContent = 'KLIKNIJ TERAZ!';
+        reactionState = 'ready';
+        reactionStart = Date.now();
+    }, 1000 + Math.random() * 3000);
+}
+
+function clickReaction() {
+    var box = document.getElementById('reactionBox');
+    if (reactionState === 'waiting') {
+        clearTimeout(reactionTimeout);
+        box.className = 'reaction-box result';
+        box.textContent = 'Za wcześnie! Kliknij "Graj!" ponownie.';
+        reactionState = 'idle';
+    } else if (reactionState === 'ready') {
+        var time = Date.now() - reactionStart;
+        box.className = 'reaction-box result';
+        box.innerHTML = '<div style="font-size:2rem;font-weight:800;color:var(--secondary)">' + time + ' ms</div><div style="font-size:0.9rem;margin-top:8px">' + (time < 200 ? 'Błyskawica! ⚡' : time < 350 ? 'Świetnie! 🎯' : 'Nieźle! 👍') + '</div>';
+        reactionState = 'idle';
+    }
+}
+
+// Memory Game
+var memoryCards = [];
+var memoryFlipped = [];
+var memoryMatched = 0;
+var memoryMoves = 0;
+var memoryLock = false;
+
+function startMemory() {
+    document.getElementById('memoryArea').classList.add('active');
+    var emojis = ['🐶','🎵','🎯','🚀','💛','🎸','🌟','🎮'];
+    var cards = emojis.concat(emojis);
+    cards.sort(function() { return Math.random() - 0.5; });
+    memoryCards = cards;
+    memoryFlipped = [];
+    memoryMatched = 0;
+    memoryMoves = 0;
+    memoryLock = false;
+    var grid = document.getElementById('memoryGrid');
+    var html = '';
+    cards.forEach(function(c, i) {
+        html += '<div class="memory-card" data-index="' + i + '" onclick="flipMemory(' + i + ')">?</div>';
+    });
+    grid.innerHTML = html;
+    document.getElementById('memoryScore').textContent = 'Ruchy: 0 | Pary: 0/8';
+}
+
+function flipMemory(idx) {
+    if (memoryLock) return;
+    var cards = document.querySelectorAll('.memory-card');
+    var card = cards[idx];
+    if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+    card.classList.add('flipped');
+    card.textContent = memoryCards[idx];
+    memoryFlipped.push(idx);
+    if (memoryFlipped.length === 2) {
+        memoryMoves++;
+        memoryLock = true;
+        var a = memoryFlipped[0], b = memoryFlipped[1];
+        if (memoryCards[a] === memoryCards[b]) {
+            cards[a].classList.add('matched');
+            cards[b].classList.add('matched');
+            memoryMatched++;
+            memoryFlipped = [];
+            memoryLock = false;
+            if (memoryMatched === 8) {
+                document.getElementById('memoryScore').innerHTML = '🎉 Brawo! Ukończone w ' + memoryMoves + ' ruchach!';
+            }
+        } else {
+            setTimeout(function() {
+                cards[a].classList.remove('flipped');
+                cards[b].classList.remove('flipped');
+                cards[a].textContent = '?';
+                cards[b].textContent = '?';
+                memoryFlipped = [];
+                memoryLock = false;
+            }, 800);
+        }
+        document.getElementById('memoryScore').textContent = 'Ruchy: ' + memoryMoves + ' | Pary: ' + memoryMatched + '/8';
+    }
+}
+
+// Speed Click Game
+var clickCount = 0;
+var clickTimer = null;
+var clickActive = false;
+
+function startClickGame() {
+    document.getElementById('clickArea').classList.add('active');
+    clickCount = 0;
+    clickActive = true;
+    var box = document.getElementById('clickBox');
+    box.textContent = '0';
+    box.style.cursor = 'pointer';
+    document.getElementById('clickScore').textContent = 'Masz 10 sekund — klikaj!';
+    document.getElementById('clickGameBtn').disabled = true;
+    clearTimeout(clickTimer);
+    clickTimer = setTimeout(function() {
+        clickActive = false;
+        box.style.cursor = 'default';
+        document.getElementById('clickScore').innerHTML = '🏆 Wynik: <strong>' + clickCount + ' kliknięć</strong> ' + (clickCount > 80 ? '— Maszyna! 🤖' : clickCount > 60 ? '— Świetnie! ⚡' : clickCount > 40 ? '— Nieźle! 👍' : '— Spróbuj jeszcze!');
+        document.getElementById('clickGameBtn').disabled = false;
+    }, 10000);
+}
+
+function countClick() {
+    if (!clickActive) return;
+    clickCount++;
+    document.getElementById('clickBox').textContent = clickCount;
+}
     </script>
 </body>
 </html>
