@@ -1168,7 +1168,9 @@ function getData() {
                 profile: Object.assign({}, defaults.profile, parsed.profile || {}),
                 apps: parsed.apps || defaults.apps,
                 contact: Object.assign({}, defaults.contact, parsed.contact || {}),
-                stats: Object.assign({}, defaults.stats, parsed.stats || {})
+                stats: Object.assign({}, defaults.stats, parsed.stats || {}),
+                gallery: parsed.gallery || [],
+                musicPlaylist: parsed.musicPlaylist || []
             };
         }
     } catch(e) { console.error('getData error:', e); }
