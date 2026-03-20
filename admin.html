@@ -588,6 +588,12 @@
             <button class="sidebar-btn" onclick="showPage('stats-settings')">
                 <i class="fas fa-chart-bar"></i> Statystyki Hero
             </button>
+            <button class="sidebar-btn" onclick="showPage('gallery-manage')">
+                <i class="fas fa-images"></i> Galeria
+            </button>
+            <button class="sidebar-btn" onclick="showPage('music-manage')">
+                <i class="fas fa-headphones"></i> Muzyka
+            </button>
             <div class="sidebar-title" style="margin-top:24px;">Narzędzia</div>
             <button class="sidebar-btn" onclick="showPage('github-settings')">
                 <i class="fab fa-github"></i> GitHub / Publikacja
@@ -980,6 +986,76 @@
                 </div>
             </div>
 
+            <!-- GALLERY MANAGE -->
+            <div class="admin-page" id="page-gallery-manage">
+                <div class="page-header">
+                    <h1><i class="fas fa-images" style="color:#6366f1"></i> Zarządzanie Galerią</h1>
+                    <p>Dodawaj i usuwaj grafiki wyświetlane w sekcji Rozrywka → Galeria.</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-plus-circle"></i> Dodaj grafikę</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Wybierz obrazek</label>
+                        <input type="file" class="form-input" id="galleryFileInput" accept="image/*" style="padding:10px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Tytuł / opis (opcjonalnie)</label>
+                        <input type="text" class="form-input" id="galleryImageTitle" placeholder="np. Mój projekt, Logo, Zdjęcie...">
+                    </div>
+                    <div class="form-actions" style="margin-top:12px;">
+                        <button class="btn btn-save" onclick="uploadGalleryImage()">
+                            <i class="fas fa-cloud-upload-alt"></i> Wgraj na stronę
+                        </button>
+                    </div>
+                    <div id="galleryUploadStatus" style="margin-top:12px;"></div>
+                </div>
+                <div class="admin-card" style="margin-top:20px;">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-th"></i> Twoje grafiki</div>
+                    </div>
+                    <div id="galleryManageList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;">
+                        <p style="color:#64748b;grid-column:1/-1;">Ładowanie...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MUSIC MANAGE -->
+            <div class="admin-page" id="page-music-manage">
+                <div class="page-header">
+                    <h1><i class="fas fa-headphones" style="color:#6366f1"></i> Zarządzanie Muzyką</h1>
+                    <p>Dodawaj pliki MP3 do playlisty na stronie.</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-plus-circle"></i> Dodaj utwór</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Wybierz plik MP3</label>
+                        <input type="file" class="form-input" id="musicFileInput" accept=".mp3" style="padding:10px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Tytuł utworu <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="musicTrackTitle" placeholder="np. Nocna Jazda, Sunset Vibes...">
+                    </div>
+                    <div class="form-actions" style="margin-top:12px;">
+                        <button class="btn btn-save" onclick="uploadMusicTrack()">
+                            <i class="fas fa-cloud-upload-alt"></i> Wgraj na stronę
+                        </button>
+                    </div>
+                    <div id="musicUploadStatus" style="margin-top:12px;"></div>
+                </div>
+                <div class="admin-card" style="margin-top:20px;">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-list"></i> Twoje utwory</div>
+                    </div>
+                    <div id="musicManageList">
+                        <p style="color:#64748b;">Ładowanie...</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- GITHUB SETTINGS -->
             <div class="admin-page" id="page-github-settings">
                 <div class="page-header">
@@ -1116,6 +1192,8 @@ function showPage(pageId) {
     if (pageId === 'stats-settings') loadStats();
     if (pageId === 'dashboard') loadDashboard();
     if (pageId === 'add-app' && !document.getElementById('editingAppId').value) clearAppForm();
+    if (pageId === 'gallery-manage') loadGalleryList();
+    if (pageId === 'music-manage') loadMusicList();
 }
 
 function showToast(message, type) {
@@ -1422,6 +1500,157 @@ function resetData() {
 }
 
 // ===== GITHUB PUBLISHING =====
+
+// Helper: upload file to GitHub repo
+function uploadFileToGitHub(filePath, base64Content, commitMsg, callback) {
+    var s = getGitHubSettings();
+    if (!s.token) { showToast('Skonfiguruj GitHub!', 'error'); return; }
+    var apiUrl = 'https://api.github.com/repos/' + s.user + '/' + s.repo + '/contents/' + filePath;
+    var headers = { 'Authorization': 'token ' + s.token, 'Content-Type': 'application/json' };
+
+    // Check if file exists (to get SHA for update)
+    fetch(apiUrl, { headers: headers })
+    .then(function(r) { return r.json(); })
+    .then(function(existing) {
+        var body = { message: commitMsg, content: base64Content };
+        if (existing.sha) body.sha = existing.sha;
+        return fetch(apiUrl, { method: 'PUT', headers: headers, body: JSON.stringify(body) });
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+        if (result.content) callback(null, result);
+        else callback(result.message || 'Błąd');
+    })
+    .catch(function(e) { callback(e.message); });
+}
+
+// ===== GALLERY MANAGEMENT =====
+function uploadGalleryImage() {
+    var fileInput = document.getElementById('galleryFileInput');
+    var title = document.getElementById('galleryImageTitle').value.trim() || 'Grafika';
+    var statusEl = document.getElementById('galleryUploadStatus');
+
+    if (!fileInput.files || !fileInput.files[0]) { showToast('Wybierz obrazek!', 'error'); return; }
+
+    var file = fileInput.files[0];
+    var fileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    var filePath = 'img/' + fileName;
+
+    statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#f5a623;"><i class="fas fa-spinner fa-spin"></i> Wgrywam ' + fileName + '...</div>';
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var base64 = e.target.result.split(',')[1];
+        uploadFileToGitHub(filePath, base64, 'Dodano grafikę: ' + fileName, function(err) {
+            if (err) {
+                statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#ef4444;"><i class="fas fa-times-circle"></i> Błąd: ' + err + '</div>';
+            } else {
+                // Save to gallery list
+                var data = getData();
+                if (!data.gallery) data.gallery = [];
+                data.gallery.push({ file: fileName, title: title, path: filePath });
+                saveData(data);
+                statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#10b981;"><i class="fas fa-check-circle"></i> Wgrano! Kliknij "Publikuj zmiany" żeby grafika pojawiła się na stronie.</div>';
+                fileInput.value = '';
+                document.getElementById('galleryImageTitle').value = '';
+                loadGalleryList();
+            }
+        });
+    };
+    reader.readAsDataURL(file);
+}
+
+function loadGalleryList() {
+    var data = getData();
+    var container = document.getElementById('galleryManageList');
+    if (!data.gallery || data.gallery.length === 0) {
+        container.innerHTML = '<p style="color:#64748b;grid-column:1/-1;">Brak grafik. Dodaj pierwszą powyżej!</p>';
+        return;
+    }
+    var s = getGitHubSettings();
+    var baseUrl = 'https://raw.githubusercontent.com/' + s.user + '/' + s.repo + '/main/';
+    var html = '';
+    data.gallery.forEach(function(img, i) {
+        html += '<div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid rgba(99,102,241,0.15);aspect-ratio:4/3;">' +
+            '<img src="' + baseUrl + img.path + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">' +
+            '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:6px 8px;font-size:0.75rem;color:white;">' + img.title + '</div>' +
+            '<button onclick="removeGalleryImage(' + i + ')" style="position:absolute;top:4px;right:4px;background:#ef4444;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:0.7rem;">✕</button>' +
+            '</div>';
+    });
+    container.innerHTML = html;
+}
+
+function removeGalleryImage(index) {
+    if (!confirm('Usunąć tę grafikę?')) return;
+    var data = getData();
+    data.gallery.splice(index, 1);
+    saveData(data);
+    loadGalleryList();
+    showToast('Grafika usunięta. Kliknij "Publikuj zmiany".', 'info');
+}
+
+// ===== MUSIC MANAGEMENT =====
+function uploadMusicTrack() {
+    var fileInput = document.getElementById('musicFileInput');
+    var title = document.getElementById('musicTrackTitle').value.trim();
+    var statusEl = document.getElementById('musicUploadStatus');
+
+    if (!fileInput.files || !fileInput.files[0]) { showToast('Wybierz plik MP3!', 'error'); return; }
+    if (!title) { showToast('Wpisz tytuł utworu!', 'error'); return; }
+
+    var file = fileInput.files[0];
+    var fileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    var filePath = 'music/' + fileName;
+
+    statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#f5a623;"><i class="fas fa-spinner fa-spin"></i> Wgrywam ' + fileName + '... (może potrwać chwilę)</div>';
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var base64 = e.target.result.split(',')[1];
+        uploadFileToGitHub(filePath, base64, 'Dodano utwór: ' + title, function(err) {
+            if (err) {
+                statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#ef4444;"><i class="fas fa-times-circle"></i> Błąd: ' + err + '</div>';
+            } else {
+                var data = getData();
+                if (!data.musicPlaylist) data.musicPlaylist = [];
+                data.musicPlaylist.push({ name: title, file: fileName, path: filePath });
+                saveData(data);
+                statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#10b981;"><i class="fas fa-check-circle"></i> Wgrano! Kliknij "Publikuj zmiany" żeby utwór pojawił się na stronie.</div>';
+                fileInput.value = '';
+                document.getElementById('musicTrackTitle').value = '';
+                loadMusicList();
+            }
+        });
+    };
+    reader.readAsDataURL(file);
+}
+
+function loadMusicList() {
+    var data = getData();
+    var container = document.getElementById('musicManageList');
+    if (!data.musicPlaylist || data.musicPlaylist.length === 0) {
+        container.innerHTML = '<p style="color:#64748b;">Brak utworów. Dodaj pierwszy powyżej!</p>';
+        return;
+    }
+    var html = '';
+    data.musicPlaylist.forEach(function(track, i) {
+        html += '<div class="app-list-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a1a3e;border-radius:10px;margin-bottom:8px;">' +
+            '<span style="font-size:1.3rem;">🎵</span>' +
+            '<div style="flex:1;"><div style="font-weight:600;">' + track.name + '</div><div style="font-size:0.8rem;color:#64748b;">' + track.file + '</div></div>' +
+            '<button onclick="removeMusicTrack(' + i + ')" style="background:#ef4444;color:white;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:0.8rem;">Usuń</button>' +
+            '</div>';
+    });
+    container.innerHTML = html;
+}
+
+function removeMusicTrack(index) {
+    if (!confirm('Usunąć ten utwór z playlisty?')) return;
+    var data = getData();
+    data.musicPlaylist.splice(index, 1);
+    saveData(data);
+    loadMusicList();
+    showToast('Utwór usunięty. Kliknij "Publikuj zmiany".', 'info');
+}
 
 function getGitHubSettings() {
     try {
