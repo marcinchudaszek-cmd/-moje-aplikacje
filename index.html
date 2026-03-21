@@ -1566,23 +1566,26 @@ img { max-width: 100%; display: block; }
                     </div>
                 </div>
                 <form class="contact-form" id="contactForm">
+                    <input type="hidden" name="access_key" value="af0dbff3-8fbf-49e9-a77a-9021463ed4b0">
+                    <input type="hidden" name="subject" id="w3f_subject" value="Nowa wiadomość z beagleapps.pl">
+                    <input type="hidden" name="from_name" value="Beagle Apps Studio - Formularz kontaktowy">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="name">Imię</label>
-                            <input type="text" id="name" placeholder="Twoje imię" required>
+                            <input type="text" name="name" id="name" placeholder="Twoje imię" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" placeholder="twoj@email.com" required>
+                            <input type="email" name="email" id="email" placeholder="twoj@email.com" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="subject">Temat</label>
-                        <input type="text" id="subject" placeholder="O czym chcesz porozmawiać?">
+                        <input type="text" id="subject" placeholder="O czym chcesz porozmawiać?" oninput="document.getElementById('w3f_subject').value=this.value||'Nowa wiadomość z beagleapps.pl'">
                     </div>
                     <div class="form-group">
                         <label for="message">Wiadomość</label>
-                        <textarea id="message" rows="5" placeholder="Twoja wiadomość..." required></textarea>
+                        <textarea name="message" id="message" rows="5" placeholder="Twoja wiadomość..." required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary btn-full">
                         <i class="fas fa-paper-plane"></i> Wyślij wiadomość
@@ -1890,11 +1893,29 @@ contactForm.addEventListener('submit', function(e) {
     var orig = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Wysyłanie...';
     btn.disabled = true;
-    setTimeout(function() {
-        btn.innerHTML = '<i class="fas fa-check"></i> Wysłano!';
-        btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-        setTimeout(function() { btn.innerHTML = orig; btn.style.background = ''; btn.disabled = false; contactForm.reset(); }, 2500);
-    }, 1500);
+
+    var formData = new FormData(contactForm);
+    fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.success) {
+            btn.innerHTML = '<i class="fas fa-check"></i> Wysłano!';
+            btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            contactForm.reset();
+        } else {
+            btn.innerHTML = '<i class="fas fa-times"></i> Błąd wysyłania';
+            btn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        }
+        setTimeout(function() { btn.innerHTML = orig; btn.style.background = ''; btn.disabled = false; }, 3000);
+    })
+    .catch(function() {
+        btn.innerHTML = '<i class="fas fa-times"></i> Błąd połączenia';
+        btn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        setTimeout(function() { btn.innerHTML = orig; btn.style.background = ''; btn.disabled = false; }, 3000);
+    });
 });
 
 document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
