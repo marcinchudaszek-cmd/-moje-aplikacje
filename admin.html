@@ -595,6 +595,9 @@
             <button class="sidebar-btn" onclick="showPage('music-manage')">
                 <i class="fas fa-headphones"></i> Muzyka
             </button>
+            <button class="sidebar-btn" onclick="showPage('video-manage')">
+                <i class="fas fa-film"></i> Filmy
+            </button>
             <div class="sidebar-title" style="margin-top:24px;">Narzędzia</div>
             <button class="sidebar-btn" onclick="showPage('github-settings')">
                 <i class="fab fa-github"></i> GitHub / Publikacja
@@ -1057,6 +1060,42 @@
                 </div>
             </div>
 
+            <!-- VIDEO MANAGEMENT -->
+            <div class="admin-page" id="page-video-manage">
+                <div class="page-header">
+                    <h1><i class="fas fa-film" style="color:#6366f1"></i> Zarządzanie Filmami</h1>
+                    <p>Dodawaj pliki MP4/WebM do sekcji Filmy na stronie.</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-plus-circle"></i> Dodaj film</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Wybierz plik wideo</label>
+                        <input type="file" class="form-input" id="videoFileInput" accept=".mp4,.webm" style="padding:10px;">
+                        <small style="color:#64748b;">MP4 lub WebM, maks. ~25 MB (limit GitHub)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Tytuł filmu <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="videoTitle" placeholder="np. Demo Kolekcji Muzyki, Prezentacja PlantCare...">
+                    </div>
+                    <div class="form-actions" style="margin-top:12px;">
+                        <button class="btn btn-save" onclick="uploadVideoFile()">
+                            <i class="fas fa-cloud-upload-alt"></i> Wgraj na stronę
+                        </button>
+                    </div>
+                    <div id="videoUploadStatus" style="margin-top:12px;"></div>
+                </div>
+                <div class="admin-card" style="margin-top:20px;">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-list"></i> Twoje filmy</div>
+                    </div>
+                    <div id="videoManageList">
+                        <p style="color:#64748b;">Ładowanie...</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- GITHUB SETTINGS -->
             <div class="admin-page" id="page-github-settings">
                 <div class="page-header">
@@ -1171,7 +1210,8 @@ function getData() {
                 contact: Object.assign({}, defaults.contact, parsed.contact || {}),
                 stats: Object.assign({}, defaults.stats, parsed.stats || {}),
                 gallery: parsed.gallery || [],
-                musicPlaylist: parsed.musicPlaylist || []
+                musicPlaylist: parsed.musicPlaylist || [],
+                videos: parsed.videos || []
             };
         }
     } catch(e) { console.error('getData error:', e); }
@@ -1197,6 +1237,7 @@ function showPage(pageId) {
     if (pageId === 'add-app' && !document.getElementById('editingAppId').value) clearAppForm();
     if (pageId === 'gallery-manage') loadGalleryList();
     if (pageId === 'music-manage') loadMusicList();
+    if (pageId === 'video-manage') loadVideoList();
 }
 
 function showToast(message, type) {
@@ -1653,6 +1694,74 @@ function removeMusicTrack(index) {
     saveData(data);
     loadMusicList();
     showToast('Utwór usunięty. Kliknij "Publikuj zmiany".', 'info');
+}
+
+// ===== VIDEO MANAGEMENT =====
+function uploadVideoFile() {
+    var fileInput = document.getElementById('videoFileInput');
+    var title = document.getElementById('videoTitle').value.trim();
+    var statusEl = document.getElementById('videoUploadStatus');
+
+    if (!fileInput.files || !fileInput.files[0]) { showToast('Wybierz plik wideo!', 'error'); return; }
+    if (!title) { showToast('Wpisz tytuł filmu!', 'error'); return; }
+
+    var file = fileInput.files[0];
+    if (file.size > 25 * 1024 * 1024) {
+        showToast('Plik za duży! Maksymalnie 25 MB.', 'error');
+        return;
+    }
+
+    var fileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    var filePath = 'video/' + fileName;
+
+    statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#f5a623;"><i class="fas fa-spinner fa-spin"></i> Wgrywam ' + fileName + '... (filmy mogą trwać dłużej)</div>';
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var base64 = e.target.result.split(',')[1];
+        uploadFileToGitHub(filePath, base64, 'Dodano film: ' + title, function(err) {
+            if (err) {
+                statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#ef4444;"><i class="fas fa-times-circle"></i> Błąd: ' + err + '</div>';
+            } else {
+                var data = getData();
+                if (!data.videos) data.videos = [];
+                data.videos.push({ title: title, file: fileName, path: filePath });
+                saveData(data);
+                statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#10b981;"><i class="fas fa-check-circle"></i> Wgrano! Kliknij "Publikuj zmiany" żeby film pojawił się na stronie.</div>';
+                fileInput.value = '';
+                document.getElementById('videoTitle').value = '';
+                loadVideoList();
+            }
+        });
+    };
+    reader.readAsDataURL(file);
+}
+
+function loadVideoList() {
+    var data = getData();
+    var container = document.getElementById('videoManageList');
+    if (!data.videos || data.videos.length === 0) {
+        container.innerHTML = '<p style="color:#64748b;">Brak filmów. Dodaj pierwszy powyżej!</p>';
+        return;
+    }
+    var html = '';
+    data.videos.forEach(function(vid, i) {
+        html += '<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a1a3e;border-radius:10px;margin-bottom:8px;">' +
+            '<span style="font-size:1.3rem;">🎬</span>' +
+            '<div style="flex:1;"><div style="font-weight:600;">' + vid.title + '</div><div style="font-size:0.8rem;color:#64748b;">' + vid.file + '</div></div>' +
+            '<button onclick="removeVideo(' + i + ')" style="background:#ef4444;color:white;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:0.8rem;">Usuń</button>' +
+            '</div>';
+    });
+    container.innerHTML = html;
+}
+
+function removeVideo(index) {
+    if (!confirm('Usunąć ten film z listy?')) return;
+    var data = getData();
+    data.videos.splice(index, 1);
+    saveData(data);
+    loadVideoList();
+    showToast('Film usunięty. Kliknij "Publikuj zmiany".', 'info');
 }
 
 function getGitHubSettings() {
