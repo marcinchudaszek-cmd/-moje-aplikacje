@@ -546,6 +546,28 @@
             .stats-grid { grid-template-columns: 1fr; }
             .admin-main { padding: 20px; }
         }
+
+        /* Animation preview classes */
+        .anim-bounce { animation: adm-bounce 1s infinite; display: inline-block; }
+        @keyframes adm-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .anim-pulse { animation: adm-pulse 1.5s infinite; display: inline-block; }
+        @keyframes adm-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } }
+        .anim-shake { animation: adm-shake 0.5s infinite; display: inline-block; }
+        @keyframes adm-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .anim-float { animation: adm-float 3s ease-in-out infinite; display: inline-block; }
+        @keyframes adm-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .anim-spin { animation: adm-spin 2s linear infinite; display: inline-block; }
+        @keyframes adm-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .anim-flip { animation: adm-flip 1.5s ease-in-out infinite; display: inline-block; }
+        @keyframes adm-flip { 0%, 100% { transform: perspective(400px) rotateY(0); } 50% { transform: perspective(400px) rotateY(180deg); } }
+        .anim-jello { animation: adm-jello 1s infinite; display: inline-block; }
+        @keyframes adm-jello { 0%, 100% { transform: scale3d(1,1,1); } 30% { transform: scale3d(1.25,0.75,1); } 40% { transform: scale3d(0.75,1.25,1); } 50% { transform: scale3d(1.15,0.85,1); } 65% { transform: scale3d(0.95,1.05,1); } 75% { transform: scale3d(1.05,0.95,1); } }
+        .anim-swing { animation: adm-swing 1s ease-in-out infinite; transform-origin: top center; display: inline-block; }
+        @keyframes adm-swing { 20% { transform: rotate(15deg); } 40% { transform: rotate(-10deg); } 60% { transform: rotate(5deg); } 80% { transform: rotate(-5deg); } 100% { transform: rotate(0deg); } }
+        .anim-rubber { animation: adm-rubber 1s infinite; display: inline-block; }
+        @keyframes adm-rubber { 0% { transform: scale3d(1,1,1); } 30% { transform: scale3d(1.25,0.75,1); } 40% { transform: scale3d(0.75,1.25,1); } 50% { transform: scale3d(1.15,0.85,1); } 65% { transform: scale3d(0.95,1.05,1); } 75% { transform: scale3d(1.05,0.95,1); } 100% { transform: scale3d(1,1,1); } }
+        .anim-tada { animation: adm-tada 1s infinite; display: inline-block; }
+        @keyframes adm-tada { 0%, 100% { transform: scale(1) rotate(0); } 10%, 20% { transform: scale(0.9) rotate(-3deg); } 30%,50%,70%,90% { transform: scale(1.1) rotate(3deg); } 40%,60%,80% { transform: scale(1.1) rotate(-3deg); } }
     </style>
 </head>
 <body>
@@ -597,6 +619,9 @@
             </button>
             <button class="sidebar-btn" onclick="showPage('video-manage')">
                 <i class="fas fa-film"></i> Filmy
+            </button>
+            <button class="sidebar-btn" onclick="showPage('anim-manage')">
+                <i class="fas fa-magic"></i> Animacje
             </button>
             <div class="sidebar-title" style="margin-top:24px;">Narzędzia</div>
             <button class="sidebar-btn" onclick="showPage('github-settings')">
@@ -1096,6 +1121,63 @@
                 </div>
             </div>
 
+            <!-- ANIMATION MANAGEMENT -->
+            <div class="admin-page" id="page-anim-manage">
+                <div class="page-header">
+                    <h1><i class="fas fa-magic" style="color:#6366f1"></i> Zarządzanie Animacjami</h1>
+                    <p>Dodawaj własne kafelki animacji do zakładki Animacje na stronie.</p>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-plus-circle"></i> Dodaj animację</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Emoji <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="animEmoji" placeholder="np. 🐶 🎸 🚀 🌀" maxlength="4" style="font-size:1.5rem;text-align:center;max-width:100px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Nazwa animacji <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="animLabel" placeholder="np. Bounce, Spin, Tada...">
+                    </div>
+                    <div class="form-group">
+                        <label>Typ animacji <span class="required">*</span></label>
+                        <select class="form-input" id="animType">
+                            <option value="bounce">Bounce — skakanie</option>
+                            <option value="pulse">Pulse — pulsowanie</option>
+                            <option value="shake">Shake — trzęsienie</option>
+                            <option value="float">Float — unoszenie</option>
+                            <option value="spin">Spin — obrót</option>
+                            <option value="flip">Flip — przewrócenie</option>
+                            <option value="jello">Jello — galareta</option>
+                            <option value="swing">Swing — huśtawka</option>
+                            <option value="rubber">Rubber — gumka</option>
+                            <option value="tada">Tada — fanfara</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Podgląd</label>
+                        <div style="text-align:center;padding:20px;background:#1a1a3e;border-radius:10px;">
+                            <div id="animPreviewIcon" style="font-size:2.5rem;display:inline-block;">✨</div>
+                            <div style="margin-top:8px;"><button class="btn btn-save" style="padding:6px 16px;font-size:0.8rem;" onclick="previewAnim()"><i class="fas fa-play"></i> Podgląd</button></div>
+                        </div>
+                    </div>
+                    <div class="form-actions" style="margin-top:12px;">
+                        <button class="btn btn-save" onclick="addAnimation()">
+                            <i class="fas fa-plus"></i> Dodaj animację
+                        </button>
+                    </div>
+                </div>
+                <div class="admin-card" style="margin-top:20px;">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-list"></i> Twoje animacje</div>
+                    </div>
+                    <p style="color:#64748b;font-size:0.85rem;margin-bottom:12px;">Jeśli lista jest pusta, strona wyświetla domyślne animacje.</p>
+                    <div id="animManageList">
+                        <p style="color:#64748b;">Ładowanie...</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- GITHUB SETTINGS -->
             <div class="admin-page" id="page-github-settings">
                 <div class="page-header">
@@ -1211,7 +1293,8 @@ function getData() {
                 stats: Object.assign({}, defaults.stats, parsed.stats || {}),
                 gallery: parsed.gallery || [],
                 musicPlaylist: parsed.musicPlaylist || [],
-                videos: parsed.videos || []
+                videos: parsed.videos || [],
+                animations: parsed.animations || []
             };
         }
     } catch(e) { console.error('getData error:', e); }
@@ -1238,6 +1321,7 @@ function showPage(pageId) {
     if (pageId === 'gallery-manage') loadGalleryList();
     if (pageId === 'music-manage') loadMusicList();
     if (pageId === 'video-manage') loadVideoList();
+    if (pageId === 'anim-manage') loadAnimList();
 }
 
 function showToast(message, type) {
@@ -1762,6 +1846,74 @@ function removeVideo(index) {
     saveData(data);
     loadVideoList();
     showToast('Film usunięty. Kliknij "Publikuj zmiany".', 'info');
+}
+
+// ===== ANIMATION MANAGEMENT =====
+function previewAnim() {
+    var emoji = document.getElementById('animEmoji').value.trim() || '✨';
+    var type = document.getElementById('animType').value;
+    var icon = document.getElementById('animPreviewIcon');
+    icon.textContent = emoji;
+    icon.className = '';
+    void icon.offsetWidth;
+    icon.className = 'anim-' + type;
+    icon.style.display = 'inline-block';
+    icon.style.fontSize = '2.5rem';
+}
+
+document.getElementById('animEmoji').addEventListener('input', function() {
+    document.getElementById('animPreviewIcon').textContent = this.value.trim() || '✨';
+});
+
+function addAnimation() {
+    var emoji = document.getElementById('animEmoji').value.trim();
+    var label = document.getElementById('animLabel').value.trim();
+    var type = document.getElementById('animType').value;
+
+    if (!emoji) { showToast('Wpisz emoji!', 'error'); return; }
+    if (!label) { showToast('Wpisz nazwę animacji!', 'error'); return; }
+
+    var data = getData();
+    if (!data.animations) data.animations = [];
+    data.animations.push({ emoji: emoji, label: label, type: type });
+    saveData(data);
+
+    document.getElementById('animEmoji').value = '';
+    document.getElementById('animLabel').value = '';
+    document.getElementById('animType').selectedIndex = 0;
+    document.getElementById('animPreviewIcon').textContent = '✨';
+    document.getElementById('animPreviewIcon').className = '';
+
+    loadAnimList();
+    showToast('Animacja dodana! Kliknij "Publikuj zmiany".', 'success');
+}
+
+function loadAnimList() {
+    var data = getData();
+    var container = document.getElementById('animManageList');
+    if (!data.animations || data.animations.length === 0) {
+        container.innerHTML = '<p style="color:#64748b;">Brak własnych animacji. Strona używa domyślnych (10 sztuk).</p>';
+        return;
+    }
+    var typeNames = { bounce:'Bounce', pulse:'Pulse', shake:'Shake', float:'Float', spin:'Spin', flip:'Flip', jello:'Jello', swing:'Swing', rubber:'Rubber', tada:'Tada' };
+    var html = '';
+    data.animations.forEach(function(anim, i) {
+        html += '<div class="app-list-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a1a3e;border-radius:10px;margin-bottom:8px;">' +
+            '<span style="font-size:1.5rem;">' + anim.emoji + '</span>' +
+            '<div style="flex:1;"><div style="font-weight:600;">' + anim.label + '</div><div style="font-size:0.8rem;color:#64748b;">Typ: ' + (typeNames[anim.type] || anim.type) + '</div></div>' +
+            '<button onclick="removeAnimation(' + i + ')" style="background:#ef4444;color:white;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:0.8rem;">Usuń</button>' +
+            '</div>';
+    });
+    container.innerHTML = html;
+}
+
+function removeAnimation(index) {
+    if (!confirm('Usunąć tę animację?')) return;
+    var data = getData();
+    data.animations.splice(index, 1);
+    saveData(data);
+    loadAnimList();
+    showToast('Animacja usunięta. Kliknij "Publikuj zmiany".', 'info');
 }
 
 function getGitHubSettings() {
