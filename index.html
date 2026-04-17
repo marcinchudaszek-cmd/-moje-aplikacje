@@ -1028,6 +1028,20 @@ img { max-width: 100%; display: block; }
 .anim-tada { animation: tada 1s infinite; }
 @keyframes tada { 0%, 100% { transform: scale(1) rotate(0); } 10%, 20% { transform: scale(0.9) rotate(-3deg); } 30%,50%,70%,90% { transform: scale(1.1) rotate(3deg); } 40%,60%,80% { transform: scale(1.1) rotate(-3deg); } }
 
+/* Language Switcher */
+.lang-switcher { display: flex; gap: 4px; margin-left: 12px; align-items: center; }
+.lang-btn { width: 32px; height: 22px; border: 2px solid transparent; border-radius: 4px; cursor: pointer; opacity: 0.5; transition: var(--transition); background-size: cover; background-position: center; padding: 0; }
+.lang-btn:hover { opacity: 0.8; }
+.lang-btn.active { opacity: 1; border-color: var(--secondary); }
+.lang-btn-pl { background: linear-gradient(180deg, #fff 50%, #dc143c 50%); }
+.lang-btn-en { background: linear-gradient(180deg, #00247d 30%, #fff 30%, #fff 40%, #cf142b 40%, #cf142b 60%, #fff 60%, #fff 70%, #00247d 70%); }
+.lang-btn-de { background: linear-gradient(180deg, #000 33%, #dd0000 33%, #dd0000 66%, #ffcc00 66%); }
+
+@media (max-width: 768px) {
+    .lang-switcher { margin-left: 0; margin-right: 8px; }
+    .lang-btn { width: 28px; height: 19px; }
+}
+
 /* Mini Games */
 .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 .game-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; text-align: center; transition: var(--transition); box-shadow: var(--shadow-sm); }
@@ -1117,13 +1131,18 @@ img { max-width: 100%; display: block; }
                 <img src="data:image/png;base64,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" alt="Beagle Apps Studio" style="height:38px;">
             </a>
             <ul class="nav-menu" id="navMenu">
-                <li><a href="#home" class="nav-link active">Start</a></li>
-                <li><a href="#apps" class="nav-link">Aplikacje</a></li>
-                <li><a href="#about" class="nav-link">O mnie</a></li>
-                <li><a href="#tech" class="nav-link">Technologie</a></li>
-                <li><a href="#fun" class="nav-link">Rozrywka</a></li>
-                <li><a href="#contact" class="nav-link">Kontakt</a></li>
+                <li><a href="#home" class="nav-link active" data-i18n="nav_start">Start</a></li>
+                <li><a href="#apps" class="nav-link" data-i18n="nav_apps">Aplikacje</a></li>
+                <li><a href="#about" class="nav-link" data-i18n="nav_about">O mnie</a></li>
+                <li><a href="#tech" class="nav-link" data-i18n="nav_tech">Technologie</a></li>
+                <li><a href="#fun" class="nav-link" data-i18n="nav_fun">Rozrywka</a></li>
+                <li><a href="#contact" class="nav-link" data-i18n="nav_contact">Kontakt</a></li>
             </ul>
+            <div class="lang-switcher">
+                <button class="lang-btn lang-btn-pl active" onclick="setLanguage('pl')" title="Polski"></button>
+                <button class="lang-btn lang-btn-en" onclick="setLanguage('en')" title="English"></button>
+                <button class="lang-btn lang-btn-de" onclick="setLanguage('de')" title="Deutsch"></button>
+            </div>
             <button class="nav-toggle" id="navToggle">
                 <span></span>
                 <span></span>
@@ -1146,10 +1165,10 @@ img { max-width: 100%; display: block; }
             </p>
             <div class="hero-buttons">
                 <a href="#apps" class="btn btn-primary">
-                    <i class="fas fa-rocket"></i> Zobacz projekty
+                    <i class="fas fa-rocket"></i> <span data-i18n="hero_btn_projects">Zobacz projekty</span>
                 </a>
                 <a href="#contact" class="btn btn-outline">
-                    <i class="fas fa-envelope"></i> Kontakt
+                    <i class="fas fa-envelope"></i> <span data-i18n="hero_btn_contact">Kontakt</span>
                 </a>
             </div>
             <div class="hero-stats">
@@ -2623,10 +2642,303 @@ function guessMath(btn, val) {
     }
 }
 
+// ===== LANGUAGE SYSTEM =====
+var currentLang = localStorage.getItem('siteLang') || 'pl';
+
+var translations = {
+    pl: {
+        nav_start: 'Start', nav_apps: 'Aplikacje', nav_about: 'O mnie', nav_tech: 'Technologie', nav_fun: 'Rozrywka', nav_contact: 'Kontakt',
+        hero_title: 'Tworzę <span class="gradient-text">praktyczne</span><br>aplikacje',
+        hero_subtitle: 'Projektuję aplikacje mobilne i webowe, które ułatwiają codzienne życie. Od sportu, przez muzykę, po naukę języków.',
+        hero_btn_projects: 'Zobacz projekty', hero_btn_contact: 'Kontakt',
+        apps_tag: 'Portfolio', apps_title: 'Moje Aplikacje', apps_desc: 'Każdy projekt to unikalne rozwiązanie. Filtruj według kategorii.',
+        filter_all: 'Wszystkie', filter_web: 'Web', filter_mobile: 'Mobile',
+        cat_web: 'Web App', cat_mobile: 'Mobile App', cat_desktop: 'Desktop App',
+        about_title: 'Niezależny deweloper<br>aplikacji',
+        about_text1: 'Tworzę aplikacje mobilne i webowe, które rozwiązują realne problemy. Pracuję głównie z Flutter i technologiami PWA, integrując AI tam, gdzie ma to sens.',
+        about_text2: 'Moje projekty wyrastają z osobistych pasji — darty, muzyka, rośliny, nauka języków. Każda aplikacja to projekt od zera do publikacji w Google Play lub jako PWA.',
+        about_hl1: 'Aplikacje w Google Play', about_hl2: 'PWA z trybem offline', about_hl3: 'Integracja z AI (Gemini, Groq)', about_hl4: 'Firebase & GitHub Pages',
+        about_btn: 'Współpracujmy',
+        tech_tag: 'Stack', tech_title: 'Technologie', tech_desc: 'Narzędzia i technologie, z których korzystam na co dzień.',
+        fun_tag: 'Rozrywka', fun_title: 'Strefa Kreatywna', fun_desc: 'Galeria, muzyka, animacje, filmy i mini gry — bo życie to nie tylko kod!',
+        fun_gallery: 'Galeria', fun_music: 'Muzyka', fun_animations: 'Animacje', fun_videos: 'Filmy', fun_games: 'Mini Gry',
+        game_reaction: 'Test Refleksu', game_reaction_desc: 'Jak szybko reagujesz? Kliknij gdy zmieni się kolor!',
+        game_memory: 'Memory', game_memory_desc: 'Znajdź wszystkie pary! Trenuj pamięć.',
+        game_click: 'Speed Click', game_click_desc: 'Ile razy klikniesz w 10 sekund?',
+        game_snake: 'Snake', game_snake_desc: 'Klasyczny wąż! Zbieraj jedzenie i rośnij.',
+        game_color: 'Zgadnij Kolor', game_color_desc: 'Który kod hex odpowiada kolorowi?',
+        game_typing: 'Szybkie Pisanie', game_typing_desc: 'Ile słów na minutę potrafisz napisać?',
+        game_math: 'Math Sprint', game_math_desc: 'Ile działań rozwiążesz w 30 sekund?',
+        game_play: 'Graj!',
+        contact_tag: 'Kontakt', contact_title: 'Porozmawiajmy', contact_desc: 'Masz pomysł na projekt? Napisz do mnie!',
+        contact_email: 'Email', contact_location: 'Lokalizacja', contact_hours: 'Dostępność',
+        form_name: 'Imię', form_email: 'Email', form_subject: 'Temat', form_message: 'Wiadomość', form_send: 'Wyślij wiadomość',
+        footer_copy: '© 2025 Beagle Apps Studio. Wszystkie prawa zastrzeżone.',
+        playlist_title: 'Moje Kompozycje', playlist_desc: 'Autorska muzyka stworzona przez Beagle Apps Studio. Kliknij utwór, żeby posłuchać.',
+        anim_hint: 'Kliknij na kafelek, żeby włączyć/wyłączyć animację!',
+        video_placeholder: 'Wgraj filmy do folderu /video/', video_formats: 'Obsługiwane formaty: MP4, WebM',
+        // App descriptions
+        app_dart: 'Aplikacja do liczenia punktów w darcie. Obsługuje tryby 301, 501, Cricket z zapisem nazw graczy, podglądem wyników na żywo i auto-scrollem do aktywnego gracza.',
+        app_plant: 'PWA do zarządzania roślinami z AI skanowaniem przez Gemini, dziennikiem zdjęć, synchronizacją Firebase i encyklopedią 88+ gatunków roślin.',
+        app_music: 'Aplikacja do katalogowania kolekcji muzycznej — płyt CD, winyli i kaset. Z wyborem okładek i przejrzystym interfejsem kolekcjonera.',
+        app_voyager: 'Planer podróży z AI — sugestie miejsc, planowanie dziennych tras, integracja z Wikipedia i OpenTripMap. Napędzany przez Groq API.',
+        app_deutsch: 'Aplikacja do nauki niemieckiego z 760+ słówkami, czatem AI (Gemini), rozpoznawaniem mowy, grywalizacją i trybem offline. Glassmorphism UI.',
+        app_notatnik: 'Prosty i elegancki notatnik na Androida. Tworzenie, edycja i organizacja notatek z przejrzystym Material Design.',
+        app_ebook: 'Czytnik e-booków na Androida obsługujący formaty TXT, EPUB i PDF. Z funkcją odczytu na głos (TTS), płynnym przewijaniem i zarządzaniem biblioteką książek.'
+    },
+    en: {
+        nav_start: 'Home', nav_apps: 'Apps', nav_about: 'About', nav_tech: 'Technologies', nav_fun: 'Entertainment', nav_contact: 'Contact',
+        hero_title: 'I build <span class="gradient-text">practical</span><br>applications',
+        hero_subtitle: 'I design mobile and web apps that make everyday life easier. From sports, through music, to language learning.',
+        hero_btn_projects: 'View projects', hero_btn_contact: 'Contact',
+        apps_tag: 'Portfolio', apps_title: 'My Apps', apps_desc: 'Each project is a unique solution. Filter by category.',
+        filter_all: 'All', filter_web: 'Web', filter_mobile: 'Mobile',
+        cat_web: 'Web App', cat_mobile: 'Mobile App', cat_desktop: 'Desktop App',
+        about_title: 'Independent app<br>developer',
+        about_text1: 'I build mobile and web apps that solve real problems. I mainly work with Flutter and PWA technologies, integrating AI where it makes sense.',
+        about_text2: 'My projects grow from personal passions — darts, music, plants, language learning. Each app is a project from zero to publication on Google Play or as a PWA.',
+        about_hl1: 'Apps on Google Play', about_hl2: 'PWA with offline mode', about_hl3: 'AI integration (Gemini, Groq)', about_hl4: 'Firebase & GitHub Pages',
+        about_btn: 'Let\'s collaborate',
+        tech_tag: 'Stack', tech_title: 'Technologies', tech_desc: 'Tools and technologies I use every day.',
+        fun_tag: 'Entertainment', fun_title: 'Creative Zone', fun_desc: 'Gallery, music, animations, videos and mini games — because life is not just code!',
+        fun_gallery: 'Gallery', fun_music: 'Music', fun_animations: 'Animations', fun_videos: 'Videos', fun_games: 'Mini Games',
+        game_reaction: 'Reaction Test', game_reaction_desc: 'How fast do you react? Click when the color changes!',
+        game_memory: 'Memory', game_memory_desc: 'Find all pairs! Train your memory.',
+        game_click: 'Speed Click', game_click_desc: 'How many times can you click in 10 seconds?',
+        game_snake: 'Snake', game_snake_desc: 'Classic snake! Collect food and grow.',
+        game_color: 'Guess the Color', game_color_desc: 'Which hex code matches the color?',
+        game_typing: 'Speed Typing', game_typing_desc: 'How many words per minute can you type?',
+        game_math: 'Math Sprint', game_math_desc: 'How many problems can you solve in 30 seconds?',
+        game_play: 'Play!',
+        contact_tag: 'Contact', contact_title: 'Let\'s Talk', contact_desc: 'Have a project idea? Write to me!',
+        contact_email: 'Email', contact_location: 'Location', contact_hours: 'Availability',
+        form_name: 'Name', form_email: 'Email', form_subject: 'Subject', form_message: 'Message', form_send: 'Send message',
+        footer_copy: '© 2025 Beagle Apps Studio. All rights reserved.',
+        playlist_title: 'My Compositions', playlist_desc: 'Original music by Beagle Apps Studio. Click a track to listen.',
+        anim_hint: 'Click a tile to toggle animation!',
+        video_placeholder: 'Upload videos to /video/ folder', video_formats: 'Supported formats: MP4, WebM',
+        app_dart: 'Dart scoring app. Supports 301, 501, Cricket modes with player names, live score preview and auto-scroll to active player.',
+        app_plant: 'Plant management PWA with AI scanning via Gemini, photo journals, Firebase sync and encyclopedia of 88+ plant species.',
+        app_music: 'Music collection catalog app — CDs, vinyl and cassettes. With cover art selection and clean collector interface.',
+        app_voyager: 'AI travel planner — place suggestions, daily route planning, Wikipedia and OpenTripMap integration. Powered by Groq API.',
+        app_deutsch: 'German learning app with 760+ words, AI chat (Gemini), speech recognition, gamification and offline mode. Glassmorphism UI.',
+        app_notatnik: 'Simple and elegant notepad for Android. Create, edit and organize notes with clean Material Design.',
+        app_ebook: 'E-book reader for Android supporting TXT, EPUB and PDF formats. With text-to-speech (TTS), smooth scrolling and library management.'
+    },
+    de: {
+        nav_start: 'Start', nav_apps: 'Apps', nav_about: 'Über mich', nav_tech: 'Technologien', nav_fun: 'Unterhaltung', nav_contact: 'Kontakt',
+        hero_title: 'Ich entwickle <span class="gradient-text">praktische</span><br>Anwendungen',
+        hero_subtitle: 'Ich entwerfe mobile und Web-Apps, die den Alltag erleichtern. Von Sport über Musik bis zum Sprachenlernen.',
+        hero_btn_projects: 'Projekte ansehen', hero_btn_contact: 'Kontakt',
+        apps_tag: 'Portfolio', apps_title: 'Meine Apps', apps_desc: 'Jedes Projekt ist eine einzigartige Lösung. Nach Kategorie filtern.',
+        filter_all: 'Alle', filter_web: 'Web', filter_mobile: 'Mobile',
+        cat_web: 'Web App', cat_mobile: 'Mobile App', cat_desktop: 'Desktop App',
+        about_title: 'Unabhängiger App-<br>Entwickler',
+        about_text1: 'Ich entwickle mobile und Web-Apps, die echte Probleme lösen. Ich arbeite hauptsächlich mit Flutter und PWA-Technologien und integriere KI, wo es sinnvoll ist.',
+        about_text2: 'Meine Projekte entstehen aus persönlichen Leidenschaften — Darts, Musik, Pflanzen, Sprachenlernen. Jede App ist ein Projekt von Null bis zur Veröffentlichung im Google Play oder als PWA.',
+        about_hl1: 'Apps im Google Play', about_hl2: 'PWA mit Offline-Modus', about_hl3: 'KI-Integration (Gemini, Groq)', about_hl4: 'Firebase & GitHub Pages',
+        about_btn: 'Lass uns zusammenarbeiten',
+        tech_tag: 'Stack', tech_title: 'Technologien', tech_desc: 'Werkzeuge und Technologien, die ich täglich verwende.',
+        fun_tag: 'Unterhaltung', fun_title: 'Kreativzone', fun_desc: 'Galerie, Musik, Animationen, Videos und Minispiele — denn Leben ist nicht nur Code!',
+        fun_gallery: 'Galerie', fun_music: 'Musik', fun_animations: 'Animationen', fun_videos: 'Videos', fun_games: 'Minispiele',
+        game_reaction: 'Reaktionstest', game_reaction_desc: 'Wie schnell reagierst du? Klicke wenn sich die Farbe ändert!',
+        game_memory: 'Memory', game_memory_desc: 'Finde alle Paare! Trainiere dein Gedächtnis.',
+        game_click: 'Speed Click', game_click_desc: 'Wie oft kannst du in 10 Sekunden klicken?',
+        game_snake: 'Snake', game_snake_desc: 'Klassische Schlange! Sammle Essen und wachse.',
+        game_color: 'Farbe erraten', game_color_desc: 'Welcher Hex-Code passt zur Farbe?',
+        game_typing: 'Schnell tippen', game_typing_desc: 'Wie viele Wörter pro Minute kannst du tippen?',
+        game_math: 'Mathe Sprint', game_math_desc: 'Wie viele Aufgaben löst du in 30 Sekunden?',
+        game_play: 'Spielen!',
+        contact_tag: 'Kontakt', contact_title: 'Lass uns reden', contact_desc: 'Hast du eine Projektidee? Schreib mir!',
+        contact_email: 'E-Mail', contact_location: 'Standort', contact_hours: 'Verfügbarkeit',
+        form_name: 'Name', form_email: 'E-Mail', form_subject: 'Betreff', form_message: 'Nachricht', form_send: 'Nachricht senden',
+        footer_copy: '© 2025 Beagle Apps Studio. Alle Rechte vorbehalten.',
+        playlist_title: 'Meine Kompositionen', playlist_desc: 'Eigenkomponierte Musik von Beagle Apps Studio. Klicke auf einen Track zum Anhören.',
+        anim_hint: 'Klicke auf eine Kachel, um die Animation ein-/auszuschalten!',
+        video_placeholder: 'Videos in den Ordner /video/ hochladen', video_formats: 'Unterstützte Formate: MP4, WebM',
+        app_dart: 'Dart-Zähler-App. Unterstützt 301, 501, Cricket mit Spielernamen, Live-Vorschau und Auto-Scroll zum aktiven Spieler.',
+        app_plant: 'Pflanzenpflege-PWA mit KI-Scan über Gemini, Foto-Tagebüchern, Firebase-Sync und Enzyklopädie mit 88+ Pflanzenarten.',
+        app_music: 'Musiksammlungs-Katalog — CDs, Vinyl und Kassetten. Mit Cover-Auswahl und übersichtlichem Sammler-Interface.',
+        app_voyager: 'KI-Reiseplaner — Ortsvorschläge, Tagesroutenplanung, Wikipedia- und OpenTripMap-Integration. Angetrieben von Groq API.',
+        app_deutsch: 'Deutsch-Lern-App mit 760+ Wörtern, KI-Chat (Gemini), Spracherkennung, Gamification und Offline-Modus. Glassmorphism UI.',
+        app_notatnik: 'Einfacher und eleganter Notizblock für Android. Erstellen, bearbeiten und organisieren Sie Notizen mit klarem Material Design.',
+        app_ebook: 'E-Book-Reader für Android mit TXT-, EPUB- und PDF-Unterstützung. Mit Text-to-Speech (TTS), flüssigem Scrollen und Bibliotheksverwaltung.'
+    }
+};
+
+var appDescKeys = {
+    'Dart Score Pro': 'app_dart', 'PlantCare': 'app_plant', 'Kolekcja Muzyki': 'app_music',
+    'Voyager': 'app_voyager', 'Deutsch Lernen': 'app_deutsch', 'Notatnik Pro': 'app_notatnik', 'Czytnik eBook': 'app_ebook'
+};
+
+function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('siteLang', lang);
+    var t = translations[lang];
+    if (!t) return;
+
+    // Update flag buttons
+    document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active'); });
+    var activeBtn = document.querySelector('.lang-btn-' + lang);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    // Update data-i18n elements
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.dataset.i18n;
+        if (t[key]) {
+            if (key === 'hero_title') el.innerHTML = t[key];
+            else el.textContent = t[key];
+        }
+    });
+
+    // Update hero title (has innerHTML)
+    var heroTitle = document.querySelector('.hero-title');
+    if (heroTitle && t.hero_title) heroTitle.innerHTML = t.hero_title;
+
+    // Update hero subtitle
+    var heroSub = document.querySelector('.hero-subtitle');
+    if (heroSub && t.hero_subtitle) heroSub.textContent = t.hero_subtitle;
+
+    // Update section headers
+    var sections = [
+        { sel: '#apps .section-tag', key: 'apps_tag' },
+        { sel: '#apps .section-title', key: 'apps_title' },
+        { sel: '#apps .section-desc', key: 'apps_desc' },
+        { sel: '#about .section-title', key: 'about_title', html: true },
+        { sel: '#tech .section-tag', key: 'tech_tag' },
+        { sel: '#tech .section-title', key: 'tech_title' },
+        { sel: '#tech .section-desc', key: 'tech_desc' },
+        { sel: '#fun .section-tag', key: 'fun_tag' },
+        { sel: '#fun .section-title', key: 'fun_title' },
+        { sel: '#fun .section-desc', key: 'fun_desc' },
+        { sel: '#contact .section-tag', key: 'contact_tag' },
+        { sel: '#contact .section-title', key: 'contact_title' },
+        { sel: '#contact .section-desc', key: 'contact_desc' }
+    ];
+    sections.forEach(function(s) {
+        var el = document.querySelector(s.sel);
+        if (el && t[s.key]) { if (s.html) el.innerHTML = t[s.key]; else el.textContent = t[s.key]; }
+    });
+
+    // Update about texts
+    var aboutTexts = document.querySelectorAll('.about-text');
+    if (aboutTexts[0] && t.about_text1) aboutTexts[0].textContent = t.about_text1;
+    if (aboutTexts[1] && t.about_text2) aboutTexts[1].textContent = t.about_text2;
+
+    // Update about highlights
+    var highlights = document.querySelectorAll('.highlight span');
+    var hlKeys = ['about_hl1','about_hl2','about_hl3','about_hl4'];
+    hlKeys.forEach(function(k,i) { if (highlights[i] && t[k]) highlights[i].textContent = t[k]; });
+
+    // Update about button
+    var aboutBtn = document.querySelector('.about-content .btn');
+    if (aboutBtn) { var span = aboutBtn.querySelector('span') || aboutBtn; if (t.about_btn) { aboutBtn.childNodes.forEach(function(n) { if (n.nodeType === 3 && n.textContent.trim()) n.textContent = ' ' + t.about_btn; }); } }
+
+    // Update filter buttons
+    var filterBtns = document.querySelectorAll('.filter-btn');
+    var filterKeys = { all: 'filter_all', web: 'filter_web', mobile: 'filter_mobile' };
+    filterBtns.forEach(function(btn) {
+        var filter = btn.dataset.filter;
+        if (filterKeys[filter] && t[filterKeys[filter]]) {
+            var icon = btn.querySelector('i');
+            btn.textContent = '';
+            if (icon) btn.appendChild(icon);
+            btn.appendChild(document.createTextNode(' ' + t[filterKeys[filter]]));
+        }
+    });
+
+    // Update fun tabs
+    var funTabKeys = ['fun_gallery','fun_music','fun_animations','fun_videos','fun_games'];
+    var funTabs = document.querySelectorAll('.fun-tab');
+    funTabs.forEach(function(tab, i) {
+        if (funTabKeys[i] && t[funTabKeys[i]]) {
+            var icon = tab.querySelector('i');
+            tab.textContent = '';
+            if (icon) tab.appendChild(icon);
+            tab.appendChild(document.createTextNode(' ' + t[funTabKeys[i]]));
+        }
+    });
+
+    // Update game cards
+    var gameCards = document.querySelectorAll('.game-card');
+    var gameKeys = [
+        { t: 'game_reaction', d: 'game_reaction_desc' },
+        { t: 'game_memory', d: 'game_memory_desc' },
+        { t: 'game_click', d: 'game_click_desc' },
+        { t: 'game_snake', d: 'game_snake_desc' },
+        { t: 'game_color', d: 'game_color_desc' },
+        { t: 'game_typing', d: 'game_typing_desc' },
+        { t: 'game_math', d: 'game_math_desc' }
+    ];
+    gameCards.forEach(function(card, i) {
+        if (gameKeys[i]) {
+            var h3 = card.querySelector('h3');
+            var p = card.querySelector('p');
+            var btn = card.querySelector('.game-btn');
+            if (h3 && t[gameKeys[i].t]) h3.textContent = t[gameKeys[i].t];
+            if (p && t[gameKeys[i].d]) p.textContent = t[gameKeys[i].d];
+            if (btn && t.game_play) btn.textContent = t.game_play;
+        }
+    });
+
+    // Update app descriptions
+    document.querySelectorAll('.app-card').forEach(function(card) {
+        var titleEl = card.querySelector('.app-title');
+        var descEl = card.querySelector('.app-desc');
+        var catEl = card.querySelector('.app-category');
+        if (titleEl && descEl) {
+            var name = titleEl.textContent.trim();
+            var key = appDescKeys[name];
+            if (key && t[key]) descEl.textContent = t[key];
+        }
+        if (catEl) {
+            var catText = catEl.textContent.trim();
+            if (catText.indexOf('Web') !== -1 && t.cat_web) catEl.textContent = t.cat_web;
+            else if (catText.indexOf('Mobile') !== -1 && t.cat_mobile) catEl.textContent = t.cat_mobile;
+        }
+    });
+
+    // Update contact cards
+    var contactCards = document.querySelectorAll('.contact-card h3');
+    var contactKeys = ['contact_email','contact_location','contact_hours'];
+    contactCards.forEach(function(h3, i) { if (contactKeys[i] && t[contactKeys[i]]) h3.textContent = t[contactKeys[i]]; });
+
+    // Update form
+    var formFields = { 'form_name': 'Imię', 'form_email': 'Email', 'form_subject': 'Temat', 'form_message': 'Wiadomość' };
+    document.querySelectorAll('.contact-form input[type="text"], .contact-form input[type="email"], .contact-form textarea').forEach(function(input, i) {
+        var keys = ['form_name','form_email','form_subject','form_message'];
+        if (keys[i] && t[keys[i]]) input.placeholder = t[keys[i]];
+    });
+    var sendBtn = document.querySelector('.contact-form .btn');
+    if (sendBtn && t.form_send) {
+        var icon = sendBtn.querySelector('i');
+        sendBtn.textContent = '';
+        if (icon) sendBtn.appendChild(icon);
+        sendBtn.appendChild(document.createTextNode(' ' + t.form_send));
+    }
+
+    // Update footer
+    var footerText = document.querySelector('.footer-text');
+    if (footerText && t.footer_copy) footerText.textContent = t.footer_copy;
+
+    // Update footer links
+    var footerLinks = document.querySelectorAll('.footer-links a');
+    var footerKeys = ['nav_start','nav_apps','nav_about','nav_contact'];
+    footerLinks.forEach(function(a, i) { if (footerKeys[i] && t[footerKeys[i]]) a.textContent = t[footerKeys[i]]; });
+
+    // Update playlist title/desc
+    var playlistTitle = document.querySelector('.playlist-title');
+    if (playlistTitle && t.playlist_title) playlistTitle.innerHTML = '<i class="fas fa-headphones"></i> ' + t.playlist_title;
+
+    // Update html lang attribute
+    document.documentElement.lang = lang;
+}
+
 /*SITE_DATA_START*/
 var embeddedSiteData = {"profile":{"name":"Beagle Apps Studio","role":"Niezależny deweloper aplikacji","badge":"🐶 Beagle Apps Studio","headline":"Tworzę |praktyczne| aplikacje","subtitle":"Projektuję aplikacje mobilne i webowe, które ułatwiają codzienne życie. Od sportu, przez muzykę, po naukę języków.","aboutTitle":"Niezależny deweloper<br>aplikacji","aboutText1":"Tworzę aplikacje mobilne i webowe, które rozwiązują realne problemy. Pracuję głównie z Flutter i technologiami PWA, integrując AI tam, gdzie ma to sens.","aboutText2":"Moje projekty wyrastają z osobistych pasji — darty, muzyka, rośliny, nauka języków. Każda aplikacja to projekt od zera do publikacji w Google Play lub jako PWA."},"apps":[{"name":"Dart Score Pro","category":"mobile","desc":"Aplikacja do liczenia punktów w darcie. Obsługuje tryby 301, 501, Cricket z zapisem nazw graczy, podglądem wyników na żywo i auto-scrollem do aktywnego gracza.","icon":"fas fa-bullseye","color":"linear-gradient(135deg, #f5576c, #ff6b6b)","badge":"popular","tech":["Flutter","Dart","Google Play"],"demo":"","github":"","playstore":"https://play.google.com/store/apps/details?id=com.ezra.dartscore","appstore":"","rating":"4.8","downloads":""},{"name":"PlantCare","category":"web","desc":"PWA do zarządzania roślinami z AI skanowaniem przez Gemini, dziennikiem zdjęć, synchronizacją Firebase i encyklopedią 88+ gatunków roślin.","icon":"fas fa-leaf","color":"linear-gradient(135deg, #43e97b, #38f9d7)","badge":"new","tech":["PWA","Firebase","Gemini AI","TWA"],"demo":"","github":"","playstore":"","appstore":"","rating":"","downloads":""},{"name":"Kolekcja Muzyki","category":"mobile","desc":"Aplikacja do katalogowania kolekcji muzycznej — płyt CD, winyli i kaset. Z wyborem okładek i przejrzystym interfejsem kolekcjonera.","icon":"fas fa-compact-disc","color":"linear-gradient(135deg, #667eea, #764ba2)","badge":"new","tech":["Flutter","Dart","Google Play"],"demo":"","github":"","playstore":"https://play.google.com/store/apps/details?id=com.beagleappsstudio.kolekcjamuzyki","appstore":"","rating":"","downloads":""},{"name":"Voyager","category":"web","desc":"Planer podróży z AI — sugestie miejsc, planowanie dziennych tras, integracja z Wikipedia i OpenTripMap. Napędzany przez Groq API.","icon":"fas fa-plane","color":"linear-gradient(135deg, #4facfe, #00f2fe)","badge":"beta","tech":["PWA","Groq API","OpenTripMap"],"demo":"","github":"","playstore":"https://play.google.com/store/apps/details?id=com.beagleappsstudio.voyager","appstore":"","rating":"","downloads":""},{"name":"Deutsch Lernen","category":"web","desc":"Aplikacja do nauki niemieckiego z 760+ słówkami, czatem AI (Gemini), rozpoznawaniem mowy, grywalizacją i trybem offline. Glassmorphism UI.","icon":"fas fa-language","color":"linear-gradient(135deg, #f093fb, #f5576c)","badge":"none","tech":["React","PWA","Gemini AI","Speech API"],"demo":"","github":"","playstore":"","appstore":"","rating":"","downloads":""},{"name":"Notatnik Pro","category":"mobile","desc":"Prosty i elegancki notatnik na Androida. Tworzenie, edycja i organizacja notatek z przejrzystym Material Design.","icon":"fas fa-sticky-note","color":"linear-gradient(135deg, #a18cd1, #fbc2eb)","badge":"none","tech":["Flutter","Dart","Material Design"],"demo":"","github":"","playstore":"https://play.google.com/store/apps/details?id=beagle.apps.studio.notatnik","appstore":"","rating":"","downloads":""},{"name":"Czytnik eBook","category":"mobile","desc":"Czytnik e-booków na Androida obsługujący formaty TXT, EPUB i PDF. Z funkcją odczytu na głos (TTS), płynnym przewijaniem i zarządzaniem biblioteką książek.","icon":"fas fa-book-open","color":"linear-gradient(135deg, #2456a4, #06b6d4)","badge":"new","tech":["Flutter","Dart","TTS","EPUB"],"demo":"","github":"","playstore":"https://play.google.com/store/apps/details?id=com.beagleappsstudio.ebook_reader","appstore":"","rating":"","downloads":""}],"contact":{"email":"","location":"","hours":"","github":"","linkedin":"","twitter":"","discord":""},"stats":{"stat1Value":7,"stat1Label":"Aplikacji","stat2Value":3,"stat2Label":"Platformy","stat3Value":5,"stat3Label":"W Google Play"},"gallery":[{"file":"40-year-old_Polish_man_in_grey_tracksuit_and_slippers_sitting_at_a_cluttered_kitchen_table_with_elec.png","title":"Grafika","path":"img/40-year-old_Polish_man_in_grey_tracksuit_and_slippers_sitting_at_a_cluttered_kitchen_table_with_elec.png"}],"musicPlaylist":[],"videos":[],"animations":[]};
 /*SITE_DATA_END*/
 applySiteData();
+if (currentLang !== 'pl') setLanguage(currentLang);
 
 // Force external links to work - override everything
 document.addEventListener('click', function(e) {
