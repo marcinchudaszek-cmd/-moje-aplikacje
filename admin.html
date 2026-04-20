@@ -2038,6 +2038,12 @@ function publishToGitHub() {
     btn.disabled = true;
 
     var siteData = getData();
+    console.log('=== PUBLISH DEBUG ===');
+    console.log('musicPlaylist:', siteData.musicPlaylist ? siteData.musicPlaylist.length : 'BRAK');
+    console.log('videos:', siteData.videos ? siteData.videos.length : 'BRAK');
+    console.log('gallery:', siteData.gallery ? siteData.gallery.length : 'BRAK');
+    console.log('apps:', siteData.apps ? siteData.apps.length : 'BRAK');
+
     var apiBase = 'https://api.github.com/repos/' + s.user + '/' + s.repo + '/contents/';
     var headers = {
         'Authorization': 'token ' + s.token,
@@ -2045,24 +2051,34 @@ function publishToGitHub() {
     };
 
     fetch(apiBase + 'index.html', { headers: headers })
-    .then(function(r) { return r.json(); })
+    .then(function(r) {
+        console.log('GitHub GET status:', r.status);
+        return r.json();
+    })
     .then(function(fileData) {
         var sha = fileData.sha || '';
         var currentContent = '';
         if (fileData.content) {
             currentContent = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
+            console.log('Plik pobrany, rozmiar:', currentContent.length);
+        } else {
+            console.log('UWAGA: fileData.content jest pusty!', JSON.stringify(fileData).substring(0, 300));
         }
 
         var marker = '/*SITE_DATA_START*/';
         var markerEnd = '/*SITE_DATA_END*/';
         var dataStr = 'var embeddedSiteData = ' + JSON.stringify(siteData) + ';';
+        console.log('dataStr zawiera musicPlaylist:', dataStr.indexOf('musicPlaylist') !== -1);
+        console.log('dataStr fragment:', dataStr.substring(dataStr.indexOf('musicPlaylist'), dataStr.indexOf('musicPlaylist') + 100));
         var newContent = '';
 
         if (currentContent.indexOf(marker) !== -1) {
+            console.log('Znaleziono markery SITE_DATA');
             var before = currentContent.substring(0, currentContent.indexOf(marker));
             var after = currentContent.substring(currentContent.indexOf(markerEnd) + markerEnd.length);
             newContent = before + marker + '\n' + dataStr + '\n' + markerEnd + after;
         } else {
+            console.log('UWAGA: Brak markerów SITE_DATA w pliku!');
             var insertPoint = currentContent.indexOf('applySiteData();');
             if (insertPoint !== -1) {
                 newContent = currentContent.substring(0, insertPoint) +
@@ -2076,6 +2092,9 @@ function publishToGitHub() {
             }
         }
 
+        console.log('Nowy plik rozmiar:', newContent.length);
+        console.log('Nowy plik zawiera musicPlaylist:', newContent.indexOf('musicPlaylist') !== -1);
+
         var body = {
             message: 'Aktualizacja z panelu admina — ' + new Date().toLocaleString('pl-PL'),
             content: btoa(unescape(encodeURIComponent(newContent))),
@@ -2088,19 +2107,24 @@ function publishToGitHub() {
             body: JSON.stringify(body)
         });
     })
-    .then(function(r) { return r.json(); })
+    .then(function(r) {
+        console.log('GitHub PUT status:', r.status);
+        return r.json();
+    })
     .then(function(result) {
         btn.innerHTML = origHTML;
         btn.disabled = false;
         if (result.content) {
             showToast('Opublikowano! Zmiany widoczne za ~1 min na beagleapps.pl', 'success');
         } else {
+            console.log('Publish error:', JSON.stringify(result));
             showToast('Błąd: ' + (result.message || 'Nieznany'), 'error');
         }
     })
     .catch(function(e) {
         btn.innerHTML = origHTML;
         btn.disabled = false;
+        console.log('Publish catch error:', e);
         showToast('Błąd: ' + e.message, 'error');
     });
 }
