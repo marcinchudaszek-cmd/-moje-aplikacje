@@ -2038,93 +2038,133 @@ function publishToGitHub() {
     btn.disabled = true;
 
     var siteData = getData();
-    console.log('=== PUBLISH DEBUG ===');
-    console.log('musicPlaylist:', siteData.musicPlaylist ? siteData.musicPlaylist.length : 'BRAK');
-    console.log('videos:', siteData.videos ? siteData.videos.length : 'BRAK');
-    console.log('gallery:', siteData.gallery ? siteData.gallery.length : 'BRAK');
-    console.log('apps:', siteData.apps ? siteData.apps.length : 'BRAK');
-
     var apiBase = 'https://api.github.com/repos/' + s.user + '/' + s.repo + '/contents/';
     var headers = {
         'Authorization': 'token ' + s.token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
     };
 
+    // Step 1: Get file metadata (sha + download_url)
     fetch(apiBase + 'index.html', { headers: headers })
-    .then(function(r) {
-        console.log('GitHub GET status:', r.status);
-        return r.json();
-    })
+    .then(function(r) { return r.json(); })
     .then(function(fileData) {
         var sha = fileData.sha || '';
-        var currentContent = '';
-        if (fileData.content) {
-            currentContent = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
-            console.log('Plik pobrany, rozmiar:', currentContent.length);
-        } else {
-            console.log('UWAGA: fileData.content jest pusty!', JSON.stringify(fileData).substring(0, 300));
+        var downloadUrl = fileData.download_url || '';
+
+        if (!downloadUrl) {
+            throw new Error('Nie mogę pobrać pliku z GitHuba');
         }
 
-        var marker = '/*SITE_DATA_START*/';
-        var markerEnd = '/*SITE_DATA_END*/';
-        var dataStr = 'var embeddedSiteData = ' + JSON.stringify(siteData) + ';';
-        console.log('dataStr zawiera musicPlaylist:', dataStr.indexOf('musicPlaylist') !== -1);
-        console.log('dataStr fragment:', dataStr.substring(dataStr.indexOf('musicPlaylist'), dataStr.indexOf('musicPlaylist') + 100));
-        var newContent = '';
+        // Step 2: Download RAW file content (not base64 — handles any size)
+        return fetch(downloadUrl)
+        .then(function(r) { return r.text(); })
+        .then(function(currentContent) {
+            console.log('Plik pobrany (raw), rozmiar:', currentContent.length);
 
-        if (currentContent.indexOf(marker) !== -1) {
-            console.log('Znaleziono markery SITE_DATA');
-            var before = currentContent.substring(0, currentContent.indexOf(marker));
-            var after = currentContent.substring(currentContent.indexOf(markerEnd) + markerEnd.length);
-            newContent = before + marker + '\n' + dataStr + '\n' + markerEnd + after;
-        } else {
-            console.log('UWAGA: Brak markerów SITE_DATA w pliku!');
-            var insertPoint = currentContent.indexOf('applySiteData();');
-            if (insertPoint !== -1) {
-                newContent = currentContent.substring(0, insertPoint) +
-                    marker + '\n' + dataStr + '\n' + markerEnd + '\n' +
-                    currentContent.substring(insertPoint);
+            var marker = '/*SITE_DATA_START*/';
+            var markerEnd = '/*SITE_DATA_END*/';
+            var dataStr = 'var embeddedSiteData = ' + JSON.stringify(siteData) + ';';
+            var newContent = '';
+
+            if (currentContent.indexOf(marker) !== -1) {
+                var before = currentContent.substring(0, currentContent.indexOf(marker));
+                var after = currentContent.substring(currentContent.indexOf(markerEnd) + markerEnd.length);
+                newContent = before + marker + '\n' + dataStr + '\n' + markerEnd + after;
             } else {
-                var scriptEnd = currentContent.lastIndexOf('</' + 'script>');
-                newContent = currentContent.substring(0, scriptEnd) +
-                    marker + '\n' + dataStr + '\n' + markerEnd + '\n' +
-                    currentContent.substring(scriptEnd);
+                var insertPoint = currentContent.indexOf('applySiteData();');
+                if (insertPoint !== -1) {
+                    newContent = currentContent.substring(0, insertPoint) +
+                        marker + '\n' + dataStr + '\n' + markerEnd + '\n' +
+                        currentContent.substring(insertPoint);
+                } else {
+                    throw new Error('Nie znaleziono markerów SITE_DATA w pliku. Wgraj ponownie index.html.');
+                }
             }
-        }
 
-        console.log('Nowy plik rozmiar:', newContent.length);
-        console.log('Nowy plik zawiera musicPlaylist:', newContent.indexOf('musicPlaylist') !== -1);
+            console.log('Nowy plik rozmiar:', newContent.length, '| musicPlaylist:', siteData.musicPlaylist ? siteData.musicPlaylist.length : 0);
 
-        var body = {
-            message: 'Aktualizacja z panelu admina — ' + new Date().toLocaleString('pl-PL'),
-            content: btoa(unescape(encodeURIComponent(newContent))),
-            sha: sha
-        };
+            // Step 3: Upload via Blobs API (handles large files)
+            var blobUrl = 'https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/blobs';
+            return fetch(blobUrl, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ content: newContent, encoding: 'utf-8' })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(blob) {
+                if (!blob.sha) throw new Error('Błąd tworzenia blob: ' + (blob.message || ''));
 
-        return fetch(apiBase + 'index.html', {
-            method: 'PUT',
-            headers: headers,
-            body: JSON.stringify(body)
+                // Step 4: Get current commit SHA
+                var refUrl = 'https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/ref/heads/main';
+                return fetch(refUrl, { headers: headers })
+                .then(function(r) {
+                    if (r.status === 404) {
+                        // Try master branch
+                        return fetch(refUrl.replace('heads/main', 'heads/master'), { headers: headers });
+                    }
+                    return r;
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(ref) {
+                    var commitSha = ref.object.sha;
+                    var branch = ref.ref.replace('refs/heads/', '');
+
+                    // Step 5: Get current tree
+                    return fetch('https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/commits/' + commitSha, { headers: headers })
+                    .then(function(r) { return r.json(); })
+                    .then(function(commit) {
+                        // Step 6: Create new tree with updated file
+                        return fetch('https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/trees', {
+                            method: 'POST',
+                            headers: headers,
+                            body: JSON.stringify({
+                                base_tree: commit.tree.sha,
+                                tree: [{ path: 'index.html', mode: '100644', type: 'blob', sha: blob.sha }]
+                            })
+                        })
+                        .then(function(r) { return r.json(); })
+                        .then(function(tree) {
+                            // Step 7: Create commit
+                            return fetch('https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/commits', {
+                                method: 'POST',
+                                headers: headers,
+                                body: JSON.stringify({
+                                    message: 'Aktualizacja z panelu admina — ' + new Date().toLocaleString('pl-PL'),
+                                    tree: tree.sha,
+                                    parents: [commitSha]
+                                })
+                            })
+                            .then(function(r) { return r.json(); })
+                            .then(function(newCommit) {
+                                // Step 8: Update branch reference
+                                return fetch('https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/refs/heads/' + branch, {
+                                    method: 'PATCH',
+                                    headers: headers,
+                                    body: JSON.stringify({ sha: newCommit.sha })
+                                });
+                            });
+                        });
+                    });
+                });
+            });
         });
     })
-    .then(function(r) {
-        console.log('GitHub PUT status:', r.status);
-        return r.json();
-    })
+    .then(function(r) { return r.json(); })
     .then(function(result) {
         btn.innerHTML = origHTML;
         btn.disabled = false;
-        if (result.content) {
+        if (result.object) {
             showToast('Opublikowano! Zmiany widoczne za ~1 min na beagleapps.pl', 'success');
         } else {
-            console.log('Publish error:', JSON.stringify(result));
+            console.log('Publish result:', JSON.stringify(result));
             showToast('Błąd: ' + (result.message || 'Nieznany'), 'error');
         }
     })
     .catch(function(e) {
         btn.innerHTML = origHTML;
         btn.disabled = false;
-        console.log('Publish catch error:', e);
+        console.log('Publish error:', e);
         showToast('Błąd: ' + e.message, 'error');
     });
 }
