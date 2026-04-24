@@ -620,8 +620,8 @@
             <button class="sidebar-btn" onclick="showPage('video-manage')">
                 <i class="fas fa-film"></i> Filmy
             </button>
-            <button class="sidebar-btn" onclick="showPage('anim-manage')">
-                <i class="fas fa-magic"></i> Animacje
+            <button class="sidebar-btn" onclick="showPage('miniapps-manage')">
+                <i class="fas fa-th-large"></i> Mini Apki
             </button>
             <div class="sidebar-title" style="margin-top:24px;">Narzędzia</div>
             <button class="sidebar-btn" onclick="showPage('github-settings')">
@@ -1136,59 +1136,46 @@
                 </div>
             </div>
 
-            <!-- ANIMATION MANAGEMENT -->
-            <div class="admin-page" id="page-anim-manage">
+            <!-- MINI APPS MANAGEMENT -->
+            <div class="admin-page" id="page-miniapps-manage">
                 <div class="page-header">
-                    <h1><i class="fas fa-magic" style="color:#6366f1"></i> Zarządzanie Animacjami</h1>
-                    <p>Dodawaj własne kafelki animacji do zakładki Animacje na stronie.</p>
+                    <h1><i class="fas fa-th-large" style="color:#6366f1"></i> Mini Apki</h1>
+                    <p>Zarządzaj mini aplikacjami w zakładce "Mini Apki" na stronie portfolio.</p>
                 </div>
+
                 <div class="admin-card">
                     <div class="admin-card-header">
-                        <div class="admin-card-title"><i class="fas fa-plus-circle"></i> Dodaj animację</div>
+                        <div class="admin-card-title"><i class="fas fa-info-circle"></i> Dostępne mini apki</div>
                     </div>
-                    <div class="form-group">
-                        <label>Emoji <span class="required">*</span></label>
-                        <input type="text" class="form-input" id="animEmoji" placeholder="np. 🐶 🎸 🚀 🌀" maxlength="4" style="font-size:1.5rem;text-align:center;max-width:100px;">
-                    </div>
-                    <div class="form-group">
-                        <label>Nazwa animacji <span class="required">*</span></label>
-                        <input type="text" class="form-input" id="animLabel" placeholder="np. Bounce, Spin, Tada...">
-                    </div>
-                    <div class="form-group">
-                        <label>Typ animacji <span class="required">*</span></label>
-                        <select class="form-input" id="animType">
-                            <option value="bounce">Bounce — skakanie</option>
-                            <option value="pulse">Pulse — pulsowanie</option>
-                            <option value="shake">Shake — trzęsienie</option>
-                            <option value="float">Float — unoszenie</option>
-                            <option value="spin">Spin — obrót</option>
-                            <option value="flip">Flip — przewrócenie</option>
-                            <option value="jello">Jello — galareta</option>
-                            <option value="swing">Swing — huśtawka</option>
-                            <option value="rubber">Rubber — gumka</option>
-                            <option value="tada">Tada — fanfara</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Podgląd</label>
-                        <div style="text-align:center;padding:20px;background:#1a1a3e;border-radius:10px;">
-                            <div id="animPreviewIcon" style="font-size:2.5rem;display:inline-block;">✨</div>
-                            <div style="margin-top:8px;"><button class="btn btn-save" style="padding:6px 16px;font-size:0.8rem;" onclick="previewAnim()"><i class="fas fa-play"></i> Podgląd</button></div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-top:8px;">
+                        <div style="background:#1a1a3e;border-radius:12px;padding:20px;text-align:center;border:2px solid #4a8ed4;">
+                            <div style="font-size:2.5rem;margin-bottom:8px;">😂</div>
+                            <div style="font-weight:700;margin-bottom:4px;">Meme Creator</div>
+                            <div style="font-size:0.8rem;color:#64748b;margin-bottom:12px;">Twórz memy z przeciąganymi tekstami, 12 szablonami i pobieraniem PNG</div>
+                            <span style="background:#10b981;color:white;padding:3px 12px;border-radius:20px;font-size:0.75rem;font-weight:600;">✓ Aktywna</span>
+                        </div>
+                        <div style="background:#1a1a3e;border-radius:12px;padding:20px;text-align:center;border:2px dashed #334155;opacity:0.6;">
+                            <div style="font-size:2.5rem;margin-bottom:8px;">➕</div>
+                            <div style="font-weight:700;margin-bottom:4px;">Kolejna apka</div>
+                            <div style="font-size:0.8rem;color:#64748b;margin-bottom:12px;">Wkrótce — Kalkulator, Generator haseł, Konwerter jednostek...</div>
+                            <span style="background:#334155;color:#94a3b8;padding:3px 12px;border-radius:20px;font-size:0.75rem;">Wkrótce</span>
                         </div>
                     </div>
-                    <div class="form-actions" style="margin-top:12px;">
-                        <button class="btn btn-save" onclick="addAnimation()">
-                            <i class="fas fa-plus"></i> Dodaj animację
-                        </button>
-                    </div>
                 </div>
+
                 <div class="admin-card" style="margin-top:20px;">
                     <div class="admin-card-header">
-                        <div class="admin-card-title"><i class="fas fa-list"></i> Twoje animacje</div>
+                        <div class="admin-card-title"><i class="fas fa-paint-brush"></i> Dostosuj Meme Creator</div>
                     </div>
-                    <p style="color:#64748b;font-size:0.85rem;margin-bottom:12px;">Jeśli lista jest pusta, strona wyświetla domyślne animacje.</p>
-                    <div id="animManageList">
-                        <p style="color:#64748b;">Ładowanie...</p>
+                    <p style="color:#64748b;font-size:0.85rem;margin-bottom:16px;">Chcesz zmienić nazwę zakładki lub dodać kolejną mini apkę? Powiedz Claudowi a doda ją do kodu.</p>
+                    <div class="form-group">
+                        <label>Nazwa zakładki na stronie</label>
+                        <input type="text" class="form-input" id="miniAppsTabName" placeholder="np. Mini Apki, Narzędzia, Apps..." value="Mini Apki">
+                    </div>
+                    <div class="form-actions" style="margin-top:12px;">
+                        <button class="btn btn-save" onclick="saveMiniAppsSettings()">
+                            <i class="fas fa-save"></i> Zapisz
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1341,7 +1328,7 @@ function showPage(pageId) {
     if (pageId === 'gallery-manage') loadGalleryList();
     if (pageId === 'music-manage') loadMusicList();
     if (pageId === 'video-manage') loadVideoList();
-    if (pageId === 'anim-manage') loadAnimList();
+    if (pageId === 'miniapps-manage') loadMiniAppsList();
 }
 
 function showToast(message, type) {
@@ -1886,72 +1873,19 @@ function removeVideo(index) {
     showToast('Film usunięty. Kliknij "Publikuj zmiany".', 'info');
 }
 
-// ===== ANIMATION MANAGEMENT =====
-function previewAnim() {
-    var emoji = document.getElementById('animEmoji').value.trim() || '✨';
-    var type = document.getElementById('animType').value;
-    var icon = document.getElementById('animPreviewIcon');
-    icon.textContent = emoji;
-    icon.className = '';
-    void icon.offsetWidth;
-    icon.className = 'anim-' + type;
-    icon.style.display = 'inline-block';
-    icon.style.fontSize = '2.5rem';
+// ===== MINI APPS MANAGEMENT =====
+function loadMiniAppsList() {
+    // Static info page — nothing to load dynamically
 }
 
-document.getElementById('animEmoji').addEventListener('input', function() {
-    document.getElementById('animPreviewIcon').textContent = this.value.trim() || '✨';
-});
-
-function addAnimation() {
-    var emoji = document.getElementById('animEmoji').value.trim();
-    var label = document.getElementById('animLabel').value.trim();
-    var type = document.getElementById('animType').value;
-
-    if (!emoji) { showToast('Wpisz emoji!', 'error'); return; }
-    if (!label) { showToast('Wpisz nazwę animacji!', 'error'); return; }
-
+function saveMiniAppsSettings() {
+    var name = document.getElementById('miniAppsTabName').value.trim();
+    if (!name) { showToast('Wpisz nazwę zakładki!', 'error'); return; }
     var data = getData();
-    if (!data.animations) data.animations = [];
-    data.animations.push({ emoji: emoji, label: label, type: type });
+    if (!data.settings) data.settings = {};
+    data.settings.miniAppsTabName = name;
     saveData(data);
-
-    document.getElementById('animEmoji').value = '';
-    document.getElementById('animLabel').value = '';
-    document.getElementById('animType').selectedIndex = 0;
-    document.getElementById('animPreviewIcon').textContent = '✨';
-    document.getElementById('animPreviewIcon').className = '';
-
-    loadAnimList();
-    showToast('Animacja dodana! Kliknij "Publikuj zmiany".', 'success');
-}
-
-function loadAnimList() {
-    var data = getData();
-    var container = document.getElementById('animManageList');
-    if (!data.animations || data.animations.length === 0) {
-        container.innerHTML = '<p style="color:#64748b;">Brak własnych animacji. Strona używa domyślnych (10 sztuk).</p>';
-        return;
-    }
-    var typeNames = { bounce:'Bounce', pulse:'Pulse', shake:'Shake', float:'Float', spin:'Spin', flip:'Flip', jello:'Jello', swing:'Swing', rubber:'Rubber', tada:'Tada' };
-    var html = '';
-    data.animations.forEach(function(anim, i) {
-        html += '<div class="app-list-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a1a3e;border-radius:10px;margin-bottom:8px;">' +
-            '<span style="font-size:1.5rem;">' + anim.emoji + '</span>' +
-            '<div style="flex:1;"><div style="font-weight:600;">' + anim.label + '</div><div style="font-size:0.8rem;color:#64748b;">Typ: ' + (typeNames[anim.type] || anim.type) + '</div></div>' +
-            '<button onclick="removeAnimation(' + i + ')" style="background:#ef4444;color:white;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:0.8rem;">Usuń</button>' +
-            '</div>';
-    });
-    container.innerHTML = html;
-}
-
-function removeAnimation(index) {
-    if (!confirm('Usunąć tę animację?')) return;
-    var data = getData();
-    data.animations.splice(index, 1);
-    saveData(data);
-    loadAnimList();
-    showToast('Animacja usunięta. Kliknij "Publikuj zmiany".', 'info');
+    showToast('Zapisano! Kliknij "Publikuj zmiany" żeby zobaczyć na stronie.', 'success');
 }
 
 // ===== APP ICON UPLOAD =====
