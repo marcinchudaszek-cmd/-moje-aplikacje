@@ -1188,6 +1188,48 @@ img { max-width: 100%; display: block; }
     .bmi-inputs { grid-template-columns: 1fr; }
 }
 
+/* Tic-Tac-Toe */
+.ttt-sel-btn { display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:16px;border-radius:16px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:white;cursor:pointer;font-family:inherit;text-align:left;transition:all 0.2s;position:relative; }
+.ttt-sel-btn:hover { border-color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.08);transform:scale(1.02); }
+.ttt-sel-btn strong { font-size:1rem;font-weight:900; }
+.ttt-go { margin-top:8px;font-size:0.75rem;font-weight:700;color:#f5a623; }
+.ttt-score-badge { display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 16px;border-radius:12px; }
+.ttt-score-badge .ttt-label { font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px; }
+.ttt-score-badge .ttt-num { font-size:1.8rem;font-weight:900; }
+.ttt-x .ttt-label { color:#f87171; } .ttt-x .ttt-num { color:#f87171; }
+.ttt-o .ttt-label { color:#60a5fa; } .ttt-o .ttt-num { color:#60a5fa; }
+.ttt-mode-bar { display:flex;border-radius:12px;background:rgba(255,255,255,0.05);padding:4px;gap:4px; }
+.ttt-mode-btn { flex:1;padding:8px;border-radius:8px;border:none;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;color:#94a3b8;background:none; }
+.ttt-mode-btn.active { background:white;color:#0f172a;box-shadow:0 1px 4px rgba(0,0,0,0.3); }
+.ttt-diff-bar { display:flex;border-radius:12px;background:rgba(255,255,255,0.05);padding:4px;gap:4px;margin-top:6px; }
+.ttt-diff-btn { flex:1;padding:6px;border-radius:8px;border:none;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;color:#94a3b8;background:none; }
+.ttt-diff-btn.active-easy { background:#10b981;color:white; }
+.ttt-diff-btn.active-medium { background:#f59e0b;color:white; }
+.ttt-diff-btn.active-hard { background:#ef4444;color:white; }
+.ttt-cell { aspect-ratio:1;border-radius:12px;background:rgba(255,255,255,0.05);border:none;font-size:2rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;color:white; }
+.ttt-cell:hover:not(:disabled) { background:rgba(255,255,255,0.1);transform:scale(1.05); }
+.ttt-cell:disabled { cursor:default; }
+.ttt-cell.win-x { background:rgba(248,113,113,0.2);box-shadow:0 0 0 2px #f87171;transform:scale(1.05); }
+.ttt-cell.win-o { background:rgba(96,165,250,0.2);box-shadow:0 0 0 2px #60a5fa;transform:scale(1.05); }
+.ttt-cell.sym-x { color:#f87171; } .ttt-cell.sym-o { color:#60a5fa; }
+.ttt-board-3 { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
+.ttt-board-5 { display:grid;grid-template-columns:repeat(5,1fr);gap:5px; }
+.ttt-board-5 .ttt-cell { font-size:1.3rem;border-radius:8px; }
+.ttt-ult-board { display:grid;grid-template-columns:repeat(3,1fr);gap:10px; }
+.ttt-ult-mini { border-radius:12px;padding:6px;border:2px solid rgba(255,255,255,0.08);transition:all 0.2s; }
+.ttt-ult-mini.active-board { border-color:#f5a623;background:rgba(245,166,35,0.08); }
+.ttt-ult-mini.won-x { background:rgba(248,113,113,0.15);border-color:#f87171; }
+.ttt-ult-mini.won-o { background:rgba(96,165,250,0.15);border-color:#60a5fa; }
+.ttt-ult-mini.drawn { background:rgba(148,163,184,0.1);border-color:#475569; }
+.ttt-ult-mini-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:3px; }
+.ttt-ult-mini-cell { aspect-ratio:1;border-radius:6px;background:rgba(255,255,255,0.04);border:none;font-size:0.7rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s; }
+.ttt-ult-mini-cell:hover:not(:disabled) { background:rgba(255,255,255,0.12); }
+.ttt-ult-mini-cell:disabled { cursor:default; }
+.ttt-ult-mini-cell.sym-x { color:#f87171; } .ttt-ult-mini-cell.sym-o { color:#60a5fa; }
+.ttt-ult-won-sym { display:flex;align-items:center;justify-content:center;height:60px;font-size:2.5rem;font-weight:900; }
+.ttt-qsw-btn { padding:6px 12px;border-radius:8px;background:rgba(255,255,255,0.05);border:none;color:#94a3b8;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s; }
+.ttt-qsw-btn:hover { background:rgba(255,255,255,0.1);color:white; }
+
 /* Mini Games */
 .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 .game-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; text-align: center; transition: var(--transition); box-shadow: var(--shadow-sm); }
@@ -2037,6 +2079,55 @@ img { max-width: 100%; display: block; }
                             <div class="math-problem" id="mathProblem"></div>
                             <div class="math-options" id="mathOptions"></div>
                             <div class="memory-score" id="mathScore">Wynik: 0 | Czas: 30s</div>
+                        </div>
+                    </div>
+                    <!-- Tic-Tac-Toe -->
+                    <div class="game-card">
+                        <div class="game-icon">⭕</div>
+                        <h3>Kółko & Krzyżyk</h3>
+                        <p>4 tryby: Klasyk, Ultimate, 5×5 i Misère. Graj z AI lub przyjacielem!</p>
+                        <button class="game-btn" onclick="openTTT()">Graj!</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TTT MODAL -->
+            <div id="tttModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,15,30,0.97);z-index:5000;overflow-y:auto;">
+                <div style="min-height:100%;display:flex;flex-direction:column;align-items:center;padding:20px 16px 40px;">
+                    <div style="width:100%;max-width:420px;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+                            <button onclick="closeTTT()" style="padding:8px 14px;border-radius:10px;background:rgba(255,255,255,0.08);border:none;color:#94a3b8;font-size:1rem;cursor:pointer;font-family:inherit;">←</button>
+                            <div>
+                                <h2 id="tttTitle" style="font-size:1.3rem;font-weight:900;color:#f1f5f9;margin:0;">Kółko &amp; Krzyżyk</h2>
+                                <p id="tttSubtitle" style="font-size:0.75rem;font-weight:600;color:#f5a623;margin:0;">Wybierz tryb</p>
+                            </div>
+                        </div>
+                        <div id="tttSelector" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"></div>
+                        <div id="tttGame" style="display:none;">
+                            <div id="tttModeBar" style="margin-bottom:12px;"></div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                                <div id="tttScoreX" class="ttt-score-badge ttt-x"></div>
+                                <div style="text-align:center;"><span style="font-size:0.7rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:1px;display:block;">Remisy</span><span id="tttScoreDraw" style="font-size:1.5rem;font-weight:900;color:#64748b;">0</span></div>
+                                <div id="tttScoreO" class="ttt-score-badge ttt-o"></div>
+                            </div>
+                            <div id="tttStatus" style="text-align:center;font-size:0.9rem;font-weight:700;min-height:22px;margin-bottom:10px;"></div>
+                            <div id="tttBoard"></div>
+                            <div style="display:flex;gap:8px;margin-top:14px;">
+                                <button onclick="tttNewGame()" style="flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,0.08);border:none;color:white;font-weight:600;font-size:0.9rem;cursor:pointer;font-family:inherit;">🔄 Nowa gra</button>
+                                <button onclick="tttResetAll()" style="padding:10px 14px;border-radius:12px;background:rgba(255,255,255,0.04);border:none;color:#94a3b8;font-weight:600;font-size:0.9rem;cursor:pointer;font-family:inherit;" title="Reset wyników">🗑️</button>
+                            </div>
+                            <div id="tttQuickSwitch" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:14px;"></div>
+                        </div>
+                        <div id="tttOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:6000;align-items:center;justify-content:center;padding:16px;">
+                            <div style="background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:36px;text-align:center;max-width:300px;width:100%;">
+                                <div id="tttOverlayEmoji" style="font-size:3.5rem;margin-bottom:8px;"></div>
+                                <div id="tttOverlayTitle" style="font-size:1.4rem;font-weight:900;margin-bottom:6px;color:#f1f5f9;"></div>
+                                <div id="tttOverlaySub" style="font-size:0.85rem;color:#94a3b8;margin-bottom:20px;"></div>
+                                <div style="display:flex;gap:10px;">
+                                    <button id="tttOverlayPlay" onclick="tttNewGame()" style="flex:1;padding:12px;border-radius:14px;border:none;font-weight:700;font-size:0.9rem;cursor:pointer;color:white;font-family:inherit;">Zagraj znowu</button>
+                                    <button onclick="tttResetAll()" style="padding:12px 16px;border-radius:14px;background:rgba(255,255,255,0.08);border:none;color:#cbd5e1;font-weight:600;font-size:0.9rem;cursor:pointer;font-family:inherit;">Reset</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3604,8 +3695,328 @@ function renderSavedColors() {
 initColorPicker();
 updateColor('#2456a4');
 
+// ===== TIC-TAC-TOE =====
+var TTT = {
+    type: 'classic', mode: 'pvp', diff: 'hard',
+    board: [], scores: {X:0, O:0, draws:0},
+    turn: 'X', over: false, thinking: false, winLine: [],
+    // Ultimate specific
+    ultBoards: [], ultWon: [], ultActive: -1,
+    GAMES_INFO: [
+        {id:'classic', icon:'⚔️', title:'Klasyk', sub:'3×3 · 3 z rzędu', desc:'Ułóż 3 symbole w rzędzie, kolumnie lub po przekątnej.'},
+        {id:'ultimate', icon:'🌀', title:'Ultimate', sub:'9 mini plansz', desc:'Gra wewnątrz gry! Wygraj mini-planszę by zdobyć pole.', badge:'HOT'},
+        {id:'five', icon:'🎯', title:'5×5', sub:'5×5 · 4 z rzędu', desc:'Większa plansza 5×5. Musisz ułożyć 4 symbole z rzędu.'},
+        {id:'misere', icon:'💀', title:'Misère', sub:'Odwrócone zasady', desc:'Uwaga! 3 z rzędu = PRZEGRYWASZ. Unikaj trójek!', badge:'TWIST'}
+    ]
+};
+
+// Winning lines
+var LINES3 = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function checkWin3(b){ for(var l of LINES3){var[a,c,d]=l;if(b[a]&&b[a]===b[c]&&b[a]===b[d])return{w:b[a],l};} return null; }
+function isDraw3(b){ return b.every(function(c){return c;}) && !checkWin3(b); }
+
+function getLines5(){var L=[];for(var r=0;r<5;r++)for(var c=0;c<=1;c++)L.push([r*5+c,r*5+c+1,r*5+c+2,r*5+c+3]);for(var c=0;c<5;c++)for(var r=0;r<=1;r++)L.push([r*5+c,(r+1)*5+c,(r+2)*5+c,(r+3)*5+c]);for(var r=0;r<=1;r++)for(var c=0;c<=1;c++)L.push([r*5+c,(r+1)*5+c+1,(r+2)*5+c+2,(r+3)*5+c+3]);for(var r=0;r<=1;r++)for(var c=3;c<5;c++)L.push([r*5+c,(r+1)*5+c-1,(r+2)*5+c-2,(r+3)*5+c-3]);return L;}
+var LINES5 = getLines5();
+function checkWin5(b){for(var l of LINES5){var[a,c,d,e]=l;if(b[a]&&b[a]===b[c]&&b[a]===b[d]&&b[a]===b[e])return{w:b[a],l};} return null;}
+function isDraw5(b){return b.every(function(c){return c;})&&!checkWin5(b);}
+
+// AI minimax 3x3
+function minimax3(b,depth,isMax,alpha,beta,misere){
+    var r=checkWin3(b);
+    if(r){var sc=misere?-(10-depth):(10-depth);return r.w==='O'?sc:-sc;}
+    if(b.every(function(c){return c;})) return 0;
+    var moves=b.reduce(function(a,c,i){if(!c)a.push(i);return a;},[]);
+    if(isMax){var best=-Infinity;for(var m of moves){b[m]='O';best=Math.max(best,minimax3(b,depth+1,false,alpha,beta,misere));b[m]=null;alpha=Math.max(alpha,best);if(beta<=alpha)break;}return best;}
+    else{var best=Infinity;for(var m of moves){b[m]='X';best=Math.min(best,minimax3(b,depth+1,true,alpha,beta,misere));b[m]=null;beta=Math.min(beta,best);if(beta<=alpha)break;}return best;}
+}
+function getBest3(b,diff,misere){
+    var avail=b.reduce(function(a,c,i){if(!c)a.push(i);return a;},[]);
+    if(diff==='easy'&&Math.random()<0.7)return avail[Math.floor(Math.random()*avail.length)];
+    if(diff==='medium'&&Math.random()<0.4)return avail[Math.floor(Math.random()*avail.length)];
+    var best=-Infinity,bestM=avail[0],copy=[...b];
+    for(var m of avail){copy[m]='O';var s=minimax3(copy,0,false,-Infinity,Infinity,misere);copy[m]=null;if(s>best){best=s;bestM=m;}}
+    return bestM;
+}
+
+// AI heuristic 5x5
+function scoreLine5(line,b,player){var cells=line.map(function(i){return b[i];});var mine=cells.filter(function(c){return c===player;}).length;var opp=cells.filter(function(c){return c&&c!==player;}).length;if(opp>0)return 0;return[0,1,10,100,10000][mine];}
+function evalBoard5(b,player){var opp=player==='O'?'X':'O',score=0;for(var l of LINES5){score+=scoreLine5(l,b,player);score-=scoreLine5(l,b,opp)*1.1;}return score;}
+function minimax5(b,depth,isMax,alpha,beta,maxD){
+    var r=checkWin5(b);if(r)return r.w==='O'?100000-depth:-(100000-depth);
+    if(b.every(function(c){return c;})||depth>=maxD)return evalBoard5(b,'O');
+    var moves=b.reduce(function(a,c,i){if(!c)a.push(i);return a;},[]);
+    if(isMax){var best=-Infinity;for(var m of moves){b[m]='O';best=Math.max(best,minimax5(b,depth+1,false,alpha,beta,maxD));b[m]=null;alpha=Math.max(alpha,best);if(beta<=alpha)break;}return best;}
+    else{var best=Infinity;for(var m of moves){b[m]='X';best=Math.min(best,minimax5(b,depth+1,true,alpha,beta,maxD));b[m]=null;beta=Math.min(beta,best);if(beta<=alpha)break;}return best;}
+}
+function getCandidates5(b){
+    var avail=b.reduce(function(a,c,i){if(!c)a.push(i);return a;},[]);
+    if(avail.length<=15)return avail;
+    var scored=avail.map(function(idx){var r=Math.floor(idx/5),c=idx%5,adj=0;for(var dr=-1;dr<=1;dr++)for(var dc=-1;dc<=1;dc++){var nr=r+dr,nc=c+dc;if(nr>=0&&nr<5&&nc>=0&&nc<5&&b[nr*5+nc])adj++;}return{idx,score:adj*10-Math.abs(r-2)-Math.abs(c-2)};});
+    scored.sort(function(a,b){return b.score-a.score;});return scored.slice(0,12).map(function(s){return s.idx;});
+}
+function getBest5(b,diff){
+    var avail=b.reduce(function(a,c,i){if(!c)a.push(i);return a;},[]);
+    if(diff==='easy'&&Math.random()<0.75)return avail[Math.floor(Math.random()*avail.length)];
+    if(diff==='medium'&&Math.random()<0.45)return avail[Math.floor(Math.random()*avail.length)];
+    var maxD=diff==='hard'?3:2,cands=getCandidates5(b),best=-Infinity,bestM=cands[0],copy=[...b];
+    for(var m of cands){copy[m]='O';var s=minimax5(copy,0,false,-Infinity,Infinity,maxD);copy[m]=null;if(s>best){best=s;bestM=m;}}
+    return bestM;
+}
+
+// Modal open/close
+function openTTT(){document.getElementById('tttModal').style.display='block';document.body.style.overflow='hidden';tttBuildSelector();}
+function closeTTT(){document.getElementById('tttModal').style.display='none';document.body.style.overflow='';hideOverlay();}
+
+// Build selector
+function tttBuildSelector(){
+    var s=document.getElementById('tttSelector');
+    s.style.display='grid';
+    document.getElementById('tttGame').style.display='none';
+    document.getElementById('tttTitle').textContent='Kółko & Krzyżyk';
+    document.getElementById('tttSubtitle').textContent='Wybierz tryb';
+    var html='';
+    TTT.GAMES_INFO.forEach(function(g){
+        html+='<button class="ttt-sel-btn" onclick="startTTTGame(\''+g.id+'\')">'+(g.badge?'<span style="position:absolute;top:8px;right:8px;font-size:0.6rem;font-weight:900;background:linear-gradient(135deg,#8b5cf6,#6366f1);color:white;padding:2px 6px;border-radius:20px;">'+g.badge+'</span>':'')+
+        '<span style="font-size:1.8rem;">'+g.icon+'</span><strong>'+g.title+'</strong>'+
+        '<span style="font-size:0.7rem;color:#94a3b8;">'+g.sub+'</span>'+
+        '<span style="font-size:0.72rem;color:#64748b;line-height:1.4;">'+g.desc+'</span>'+
+        '<span class="ttt-go">Zagraj →</span></button>';
+    });
+    s.innerHTML=html;
+}
+
+// Start game
+function startTTTGame(type){
+    TTT.type=type;
+    TTT.scores={X:0,O:0,draws:0};
+    document.getElementById('tttSelector').style.display='none';
+    document.getElementById('tttGame').style.display='block';
+    var info=TTT.GAMES_INFO.find(function(g){return g.id===type;});
+    document.getElementById('tttTitle').textContent=info.icon+' '+info.title;
+    document.getElementById('tttSubtitle').textContent=info.sub;
+    tttBuildModeBar();
+    tttBuildQuickSwitch();
+    tttNewGame();
+}
+
+function tttBuildModeBar(){
+    var mb=document.getElementById('tttModeBar');
+    mb.innerHTML='<div class="ttt-mode-bar">'+
+        '<button class="ttt-mode-btn'+(TTT.mode==='pvp'?' active':'')+'" onclick="tttSetMode(\'pvp\')">👥 2 Graczy</button>'+
+        '<button class="ttt-mode-btn'+(TTT.mode==='ai'?' active':'')+'" onclick="tttSetMode(\'ai\')">🤖 vs AI</button>'+
+        '</div>'+
+        (TTT.mode==='ai'?'<div class="ttt-diff-bar">'+
+            '<button class="ttt-diff-btn'+(TTT.diff==='easy'?' active-easy':'')+'" onclick="tttSetDiff(\'easy\')">🟢 Łatwy</button>'+
+            '<button class="ttt-diff-btn'+(TTT.diff==='medium'?' active-medium':'')+'" onclick="tttSetDiff(\'medium\')">🟡 Średni</button>'+
+            '<button class="ttt-diff-btn'+(TTT.diff==='hard'?' active-hard':'')+'" onclick="tttSetDiff(\'hard\')">🔴 Trudny</button>'+
+        '</div>':'');
+}
+
+function tttBuildQuickSwitch(){
+    var qs=document.getElementById('tttQuickSwitch');
+    var html=TTT.GAMES_INFO.filter(function(g){return g.id!==TTT.type;}).map(function(g){
+        return '<button class="ttt-qsw-btn" onclick="startTTTGame(\''+g.id+'\')">'+g.icon+' '+g.title+'</button>';
+    }).join('');
+    qs.innerHTML=html;
+}
+
+function tttSetMode(m){TTT.mode=m;tttBuildModeBar();tttNewGame();}
+function tttSetDiff(d){TTT.diff=d;tttBuildModeBar();tttNewGame();}
+
+function tttNewGame(){
+    TTT.over=false;TTT.thinking=false;TTT.turn='X';TTT.winLine=[];
+    hideOverlay();
+    if(TTT.type==='ultimate'){
+        TTT.ultBoards=Array(9).fill(null).map(function(){return Array(9).fill(null);});
+        TTT.ultWon=Array(9).fill(null);
+        TTT.ultActive=-1;
+    } else {
+        var size=TTT.type==='five'?25:9;
+        TTT.board=Array(size).fill(null);
+    }
+    tttUpdateScores();
+    tttRender();
+    tttUpdateStatus();
+}
+
+function tttResetAll(){TTT.scores={X:0,O:0,draws:0};tttNewGame();}
+
+function tttUpdateScores(){
+    var xBadge=document.getElementById('tttScoreX');
+    var oBadge=document.getElementById('tttScoreO');
+    var xLabel=TTT.mode==='ai'?'Ty':'Gracz X';
+    var oLabel=TTT.mode==='ai'?'AI':'Gracz O';
+    xBadge.innerHTML='<span class="ttt-label">'+xLabel+'</span><span class="ttt-num">'+TTT.scores.X+'</span>';
+    oBadge.innerHTML='<span class="ttt-label">'+oLabel+'</span><span class="ttt-num">'+TTT.scores.O+'</span>';
+    document.getElementById('tttScoreDraw').textContent=TTT.scores.draws;
+}
+
+function tttUpdateStatus(){
+    var el=document.getElementById('tttStatus');
+    var aiLabel=TTT.mode==='ai';
+    if(TTT.over)return;
+    if(TTT.thinking){el.style.color='#94a3b8';el.textContent='🤖 AI myśli...';return;}
+    var isX=TTT.turn==='X';
+    el.style.color=isX?'#f87171':'#60a5fa';
+    if(aiLabel)el.textContent=isX?'Twój ruch (X)':'Ruch AI (O)';
+    else el.textContent='Ruch gracza '+TTT.turn;
+}
+
+// Render board
+function tttRender(){
+    var board=document.getElementById('tttBoard');
+    if(TTT.type==='ultimate'){tttRenderUltimate(board);return;}
+    var size=TTT.type==='five'?5:3;
+    var cls=TTT.type==='five'?'ttt-board-5':'ttt-board-3';
+    var cells=TTT.board;
+    var winRes=TTT.type==='five'?checkWin5(cells):checkWin3(cells);
+    var winL=winRes?winRes.l:[];
+    var html='<div class="'+cls+'">';
+    cells.forEach(function(c,i){
+        var winCls=winL.includes(i)?(c==='X'?' win-x':' win-o'):'';
+        var symCls=c?(c==='X'?' sym-x':' sym-o'):'';
+        var disabled=(TTT.over||TTT.thinking||(TTT.mode==='ai'&&TTT.turn==='O'))||c?'disabled':'';
+        html+='<button class="ttt-cell'+winCls+symCls+'" '+disabled+' onclick="tttClick('+i+')">'+(c||'')+'</button>';
+    });
+    html+='</div>';
+    board.innerHTML=html;
+}
+
+function tttClick(i){
+    if(TTT.over||TTT.thinking||TTT.board[i])return;
+    if(TTT.mode==='ai'&&TTT.turn==='O')return;
+    TTT.board[i]=TTT.turn;
+    TTT.turn=TTT.turn==='X'?'O':'X';
+    tttRender();
+    tttCheckEnd();
+    if(!TTT.over&&TTT.mode==='ai'&&TTT.turn==='O')tttAIMove();
+}
+
+function tttCheckEnd(){
+    var res,draw,misere=TTT.type==='misere';
+    if(TTT.type==='five'){res=checkWin5(TTT.board);draw=isDraw5(TTT.board);}
+    else{res=checkWin3(TTT.board);draw=isDraw3(TTT.board);}
+    if(res){
+        var winner=misere?(res.w==='X'?'O':'X'):res.w;
+        TTT.over=true;TTT.winLine=res.l;
+        TTT.scores[winner]++;
+        tttUpdateScores();tttRender();
+        showGameOver(winner,false);
+    } else if(draw){
+        TTT.over=true;TTT.scores.draws++;
+        tttUpdateScores();
+        showGameOver(null,true);
+    }
+}
+
+function tttAIMove(){
+    TTT.thinking=true;tttUpdateStatus();
+    setTimeout(function(){
+        var move;
+        if(TTT.type==='five')move=getBest5(TTT.board,TTT.diff);
+        else move=getBest3(TTT.board,TTT.diff,TTT.type==='misere');
+        TTT.board[move]='O';TTT.turn='X';TTT.thinking=false;
+        tttRender();tttUpdateStatus();tttCheckEnd();
+    },350+Math.random()*250);
+}
+
+// Ultimate game
+function tttRenderUltimate(board){
+    var html='<div class="ttt-ult-board">';
+    for(var mb=0;mb<9;mb++){
+        var isActive=(TTT.ultActive===-1||TTT.ultActive===mb)&&!TTT.ultWon[mb]&&!TTT.over;
+        var wonCls=TTT.ultWon[mb]==='X'?' won-x':TTT.ultWon[mb]==='O'?' won-o':TTT.ultWon[mb]==='D'?' drawn':'';
+        var activeCls=isActive&&!TTT.ultWon[mb]?' active-board':'';
+        html+='<div class="ttt-ult-mini'+wonCls+activeCls+'">';
+        if(TTT.ultWon[mb]&&TTT.ultWon[mb]!=='D'){
+            html+='<div class="ttt-ult-won-sym'+(TTT.ultWon[mb]==='X'?' sym-x':' sym-o')+'">'+TTT.ultWon[mb]+'</div>';
+        } else if(TTT.ultWon[mb]==='D'){
+            html+='<div class="ttt-ult-won-sym" style="color:#475569">—</div>';
+        } else {
+            html+='<div class="ttt-ult-mini-grid">';
+            TTT.ultBoards[mb].forEach(function(c,ci){
+                var canClick=isActive&&!c&&!TTT.over&&!TTT.thinking&&!(TTT.mode==='ai'&&TTT.turn==='O');
+                html+='<button class="ttt-ult-mini-cell'+(c==='X'?' sym-x':c==='O'?' sym-o':'')+'" '+(canClick?'':'disabled')+' onclick="tttUltClick('+mb+','+ci+')">'+(c||'')+'</button>';
+            });
+            html+='</div>';
+        }
+        html+='</div>';
+    }
+    html+='</div>';
+    board.innerHTML=html;
+}
+
+function tttUltClick(mb,ci){
+    if(TTT.over||TTT.thinking)return;
+    if(TTT.mode==='ai'&&TTT.turn==='O')return;
+    if(TTT.ultWon[mb])return;
+    if(TTT.ultActive!==-1&&TTT.ultActive!==mb)return;
+    if(TTT.ultBoards[mb][ci])return;
+    TTT.ultBoards[mb][ci]=TTT.turn;
+    tttUltCheckMini(mb);
+    TTT.ultActive=(!TTT.ultWon[ci])?ci:-1;
+    TTT.turn=TTT.turn==='X'?'O':'X';
+    tttRender();tttUpdateStatus();
+    if(!TTT.over&&TTT.mode==='ai'&&TTT.turn==='O')tttUltAI();
+}
+
+function tttUltCheckMini(mb){
+    var res=checkWin3(TTT.ultBoards[mb]);
+    if(res){TTT.ultWon[mb]=res.w;tttUltCheckMega();}
+    else if(isDraw3(TTT.ultBoards[mb])){TTT.ultWon[mb]='D';}
+}
+
+function tttUltCheckMega(){
+    var metaRes=checkWin3(TTT.ultWon.map(function(w){return w==='D'?null:w;}));
+    if(metaRes){
+        TTT.over=true;TTT.scores[metaRes.w]++;
+        tttUpdateScores();
+        setTimeout(function(){showGameOver(metaRes.w,false);},100);
+    } else if(TTT.ultWon.every(function(w){return w;})){
+        TTT.over=true;TTT.scores.draws++;
+        tttUpdateScores();
+        setTimeout(function(){showGameOver(null,true);},100);
+    }
+}
+
+function tttUltAI(){
+    TTT.thinking=true;tttUpdateStatus();
+    setTimeout(function(){
+        // Pick board
+        var targetMb=TTT.ultActive!==-1&&!TTT.ultWon[TTT.ultActive]?TTT.ultActive:-1;
+        if(targetMb===-1){
+            var freeBoards=[];for(var i=0;i<9;i++){if(!TTT.ultWon[i])freeBoards.push(i);}
+            targetMb=freeBoards[Math.floor(Math.random()*freeBoards.length)];
+        }
+        var freeCells=TTT.ultBoards[targetMb].reduce(function(a,c,i){if(!c)a.push(i);return a;},[]);
+        var ci=freeCells[Math.floor(Math.random()*freeCells.length)];
+        TTT.ultBoards[targetMb][ci]='O';
+        tttUltCheckMini(targetMb);
+        TTT.ultActive=!TTT.ultWon[ci]?ci:-1;
+        TTT.turn='X';TTT.thinking=false;
+        tttRender();tttUpdateStatus();
+    },350+Math.random()*250);
+}
+
+// Game over overlay
+function showGameOver(winner,isDraw){
+    var ov=document.getElementById('tttOverlay');
+    var emoji=isDraw?'🤝':winner==='X'?(TTT.mode==='ai'?'🎉':'🎉'):'🤖';
+    var title=isDraw?'Remis! 🤝':winner==='X'?(TTT.mode==='ai'?'Wygrałeś! 🎉':'Gracz X wygrywa! 🎉'):(TTT.mode==='ai'?'AI wygrywa! 🤖':'Gracz O wygrywa! 🎉');
+    var sub=isDraw?'Dobra gra! Nikt nie wygrywa.':winner==='X'?(TTT.mode==='ai'?'Niesamowite! Pokonałeś AI!':'Gracz X zdobywa punkt!'):(TTT.mode==='ai'?'AI znalazło zwycięski ruch.':'Gracz O zdobywa punkt!');
+    var color=isDraw?'#fbbf24':winner==='X'?'#f87171':'#60a5fa';
+    var btnColor=isDraw?'#f59e0b':winner==='X'?'#ef4444':'#3b82f6';
+    document.getElementById('tttOverlayEmoji').textContent=emoji;
+    document.getElementById('tttOverlayTitle').textContent=title;
+    document.getElementById('tttOverlayTitle').style.color=color;
+    document.getElementById('tttOverlaySub').textContent=sub;
+    document.getElementById('tttOverlayPlay').style.background=btnColor;
+    ov.style.display='flex';
+}
+function hideOverlay(){var ov=document.getElementById('tttOverlay');if(ov)ov.style.display='none';}
+
 /*SITE_DATA_START*/
-var embeddedSiteData = {"profile":{"name":"Beagle Apps Studio","role":"Niezależny deweloper aplikacji","badge":"🐶 Beagle Apps Studio","headline":"Tworzę |praktyczne| aplikacje","subtitle":"Projektuję aplikacje mobilne i webowe, które ułatwiają codzienne życie. Od sportu, przez muzykę, po naukę języków.","aboutTitle":"Niezależny deweloper<br>aplikacji","aboutText1":"Tworzę aplikacje mobilne i webowe, które rozwiązują realne problemy. Pracuję głównie z Flutter i technologiami PWA, integrując AI tam, gdzie ma to sens.","aboutText2":"Moje projekty wyrastają z osobistych pasji — darty, muzyka, rośliny, nauka języków. Każda aplikacja to projekt od zera do publikacji w Google Play lub jako PWA."},"apps":[{"name":"Dart Score Pro","category":"mobile","desc":"Aplikacja do liczenia punktów w darcie. Obsługuje tryby 301, 501, Cricket z zapisem nazw graczy, podglądem wyników na żywo i auto-scrollem do aktywnego gracza.","desc_en":"Dart scoring app. Supports 301, 501, Cricket modes with player names, live score preview and auto-scroll to active player.","desc_de":"Dart-Zähler-App. Unterstützt 301, 501, Cricket mit Spielernamen, Live-Vorschau und Auto-Scroll zum aktiven Spieler.","icon":"fas fa-bullseye","color":"linear-gradient(135deg, #f5576c, #ff6b6b)","badge":"popular","tech":["Flutter","Dart","Google Play"],"demo":"","github":"","playstore":"https://play.google.com/store/apps/details?id=com.ezra.dartscore","appstore":"","rating":"4.8","downloads":""},{"name":"PlantCare","category":"web","desc":"PWA do zarządzania roślinami z AI skanowaniem przez Gemini, dziennikiem zdjęć, synchronizacją Firebase i encyklopedią 88+ gatunków roślin.","desc_en":"Plant management PWA with AI scanning via Gemini, photo journals, Firebase sync and encyclopedia of 88+ plant species.","desc_de":"Pflanzenpflege-PWA mit KI-Scan über Gemini, Foto-Tagebüchern, Firebase-Sync und Enzyklopädie mit 88+ Pflanzenarten.","icon":"fas fa-leaf","color":"linear-gradient(135deg, #43e97b, #38f9d7)","badge":"new","tech":["PWA","Firebase","Gemini AI","TWA"],"demo":"","github":"https://marcinchudaszek-cmd.github.io/plantcare/","playstore":"https://play.google.com/store/apps/details?id=com.beagleappsstudio.plantcare","appstore":"","rating":"","downloads":"","iconImage":""},{"name":"Kolekcja Muzyki","category":"mobile","desc":"Aplikacja do katalogowania kolekcji muzycznej — płyt CD, winyli i kaset. Z wyborem okładek i przejrzystym interfejsem kolekcjonera.","desc_en":"Music collection catalog app — CDs, vinyl and cassettes. With cover art selection and clean collector interface.","desc_de":"Musiksammlungs-Katalog — CDs, Vinyl und Kassetten. Mit Cover-Auswahl und übersichtlichem Sammler-Interface.","icon":"fas fa-compact-disc","color":"linear-gradient(135deg, #667eea, #764ba2)","badge":"new","tech":["Flutter","Dart","Google Play"],"demo":"","github":"","playstore":"https://play.google.com/store/apps/details?id=com.beagleappsstudio.kolekcjamuzyki","appstore":"","rating":"","downloads":""},{"name":"Voyager","category":"web","desc":"Planer podróży z AI — sugestie miejsc, planowanie dziennych tras, integracja z Wikipedia i OpenTripMap. Napędzany przez Groq API.","desc_en":"AI travel planner — place suggestions, daily route planning, Wikipedia and OpenTripMap integration. Powered by Groq API.","desc_de":"KI-Reiseplaner — Ortsvorschläge, Tagesroutenplanung, Wikipedia- und OpenTripMap-Integration. Angetrieben von Groq API.","icon":"fas fa-plane","color":"linear-gradient(135deg, #4facfe, #00f2fe)","badge":"beta","tech":["PWA","Groq API","OpenTripMap"],"demo":"","github":"","playstore":"https://play.google.com/store/apps/details?id=com.beagleappsstudio.voyager","appstore":"","rating":"","downloads":""},{"name":"Deutsch Lernen","category":"web","desc":"Aplikacja do nauki niemieckiego z 760+ słówkami, czatem AI (Gemini), rozpoznawaniem mowy, grywalizacją i trybem offline. Glassmorphism UI.","desc_en":"German learning app with 760+ words, AI chat (Gemini), speech recognition, gamification and offline mode. Glassmorphism UI.","desc_de":"Deutsch-Lern-App mit 760+ Wörtern, KI-Chat (Gemini), Spracherkennung, Gamification und Offline-Modus. Glassmorphism UI.","icon":"fas fa-language","color":"linear-gradient(135deg, #f093fb, #f5576c)","badge":"none","tech":["React","PWA","Gemini AI","Speech API"],"demo":"","github":"https://marcinchudaszek-cmd.github.io/deutsch-lernen-gut/","playstore":"https://play.google.com/store/apps/details?id=com.beagleappsstudio.deutschlernen","appstore":"","rating":"","downloads":"","iconImage":""},{"name":"Notatnik Pro","category":"mobile","desc":"Prosty i elegancki notatnik na Androida. Tworzenie, edycja i organizacja notatek z przejrzystym Material Design.","desc_en":"Simple and elegant notepad for Android. Create, edit and organize notes with clean Material Design.","desc_de":"Einfacher und eleganter Notizblock für Android. Erstellen, bearbeiten und organisieren Sie Notizen mit klarem Material Design.","icon":"fas fa-sticky-note","color":"linear-gradient(135deg, #a18cd1, #fbc2eb)","badge":"none","tech":["Flutter","Dart","Material Design"],"demo":"","github":"","playstore":"https://play.google.com/store/apps/details?id=beagle.apps.studio.notatnik","appstore":"","rating":"","downloads":""},{"name":"Czytnik eBook","category":"mobile","desc":"Czytnik e-booków na Androida obsługujący formaty TXT, EPUB i PDF. Z funkcją odczytu na głos (TTS), płynnym przewijaniem i zarządzaniem biblioteką książek.","desc_en":"E-book reader for Android supporting TXT, EPUB and PDF formats. With text-to-speech (TTS), smooth scrolling and library management.","desc_de":"E-Book-Reader für Android mit TXT-, EPUB- und PDF-Unterstützung. Mit Text-to-Speech (TTS), flüssigem Scrollen und Bibliotheksverwaltung.","icon":"fas fa-book-open","color":"linear-gradient(135deg, #2456a4, #06b6d4)","badge":"new","tech":["Flutter","Dart","TTS","EPUB"],"demo":"","github":"","playstore":"https://play.google.com/store/apps/details?id=com.beagleappsstudio.ebook_reader","appstore":"","rating":"","downloads":""}],"contact":{"email":"beagleappsstudio@gmail.com","location":"Eichendorf Niemcy, Jelenia Góra Polska","hours":"","github":"","linkedin":"","twitter":"","discord":""},"stats":{"stat1Value":7,"stat1Label":"Aplikacji","stat2Value":6,"stat2Label":"Platformy","stat3Value":7,"stat3Label":"W Google Play"},"gallery":[{"file":"gemini-3.1-flash-image-preview__nano-banana-2__a_czy_to_jest_animacja.png","title":"Grafika","path":"img/gemini-3.1-flash-image-preview__nano-banana-2__a_czy_to_jest_animacja.png"},{"file":"gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_fajn__animacj_.png","title":"Grafika","path":"img/gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_fajn__animacj_.png"},{"file":"gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_mi_takie_t_o_z___1_.png","title":"Grafika","path":"img/gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_mi_takie_t_o_z___1_.png"},{"file":"gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_takie_samo_t_o_.png","title":"Grafika","path":"img/gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_takie_samo_t_o_.png"},{"file":"gpt-image-1.5-high-fidelity_b_zr_b_mi_takie_t_o_z___1_.png","title":"Grafika","path":"img/gpt-image-1.5-high-fidelity_b_zr_b_mi_takie_t_o_z___1_.png"},{"file":"gpt-image-1.5-high-fidelity_b_zr_b_mi_takie_t_o_z_.png","title":"Grafika","path":"img/gpt-image-1.5-high-fidelity_b_zr_b_mi_takie_t_o_z_.png"},{"file":"zawsze_tam_gdzie_ty.png","title":"Grafika","path":"img/zawsze_tam_gdzie_ty.png"},{"file":"gpt-image-1.5-high-fidelity_b_zr_b_fajn__animacj_.png","title":"Grafika","path":"img/gpt-image-1.5-high-fidelity_b_zr_b_fajn__animacj_.png"}],"musicPlaylist":[{"name":"Bask in the morning light so tender","file":"Bask_in_the_morning_light_so_tender.mp3","path":"Muzyka/Bask_in_the_morning_light_so_tender.mp3"},{"name":"BEAGLE NOIR","file":"BEAGLE_NOIR.mp3","path":"Muzyka/BEAGLE_NOIR.mp3"},{"name":"Beagle w Bawarii","file":"Beagle_w_Bawarii.mp3","path":"Muzyka/Beagle_w_Bawarii.mp3"},{"name":"English Version","file":"English_Version.mp3","path":"Muzyka/English_Version.mp3"},{"name":"jeden dzień","file":"jeden_dzie_.mp3","path":"Muzyka/jeden_dzie_.mp3"},{"name":"Koalicja zjednoczona w kłopocie","file":"Koalicja_zjednoczona_w_k_opocie.mp3","path":"Muzyka/Koalicja_zjednoczona_w_k_opocie.mp3"},{"name":"Ref_","file":"Ref_.mp3","path":"Muzyka/Ref_.mp3"},{"name":"Spoken low, vocoder-tinged","file":"Spoken_low__vocoder-tinged.mp3","path":"Muzyka/Spoken_low__vocoder-tinged.mp3"},{"name":"Tam, gdzie światło Twoich oczu” (1)","file":"Tam__gdzie__wiat_o_Twoich_oczu___1_.mp3","path":"Muzyka/Tam__gdzie__wiat_o_Twoich_oczu___1_.mp3"},{"name":"Tam, gdzie światło Twoich oczu”","file":"Tam__gdzie__wiat_o_Twoich_oczu_.mp3","path":"Muzyka/Tam__gdzie__wiat_o_Twoich_oczu_.mp3"},{"name":"Tamta Noc","file":"Tamta_Noc.mp3","path":"Muzyka/Tamta_Noc.mp3"},{"name":"Zwrotka","file":"Zwrotka.mp3","path":"Muzyka/Zwrotka.mp3"}],"videos":[{"title":"40 years","file":"40-year-old-polish-man-in-grey-tracksuit-and-slipp.mp4","path":"video/40-year-old-polish-man-in-grey-tracksuit-and-slipp.mp4"},{"title":"mor","file":"morph-do-2d-live-action-man-being-pulled-into-2d-c.mp4","path":"video/morph-do-2d-live-action-man-being-pulled-into-2d-c.mp4"},{"title":"neu","file":"video-1063996180132930.mp4","path":"video/video-1063996180132930.mp4"},{"title":"Beagle","file":"4d0d9f95-6b27-47a5-82e3-38096e56aaec.mp4","path":"Wideo/4d0d9f95-6b27-47a5-82e3-38096e56aaec.mp4"},{"title":"Beagle2","file":"a_lighthearted_comedic_short_film_starring_a_mischievous_tricolor_beagle_living_in_a_small_european_5q64vi7vksftgjm9cetg_1.mp4","path":"Wideo/a_lighthearted_comedic_short_film_starring_a_mischievous_tricolor_beagle_living_in_a_small_european_5q64vi7vksftgjm9cetg_1.mp4"}],"animations":[]};
+var embeddedSiteData = {"profile": {"name": "Beagle Apps Studio", "role": "Niezależny deweloper aplikacji", "badge": "🐶 Beagle Apps Studio", "headline": "Tworzę |praktyczne| aplikacje", "subtitle": "Projektuję aplikacje mobilne i webowe, które ułatwiają codzienne życie. Od sportu, przez muzykę, po naukę języków.", "aboutTitle": "Niezależny deweloper<br>aplikacji", "aboutText1": "Tworzę aplikacje mobilne i webowe, które rozwiązują realne problemy. Pracuję głównie z Flutter i technologiami PWA, integrując AI tam, gdzie ma to sens.", "aboutText2": "Moje projekty wyrastają z osobistych pasji — darty, muzyka, rośliny, nauka języków. Każda aplikacja to projekt od zera do publikacji w Google Play lub jako PWA."}, "apps": [{"name": "Dart Score Pro", "category": "mobile", "desc": "Aplikacja do liczenia punktów w darcie. Obsługuje tryby 301, 501, Cricket z zapisem nazw graczy, podglądem wyników na żywo i auto-scrollem do aktywnego gracza.", "desc_en": "Dart scoring app. Supports 301, 501, Cricket modes with player names, live score preview and auto-scroll to active player.", "desc_de": "Dart-Zähler-App. Unterstützt 301, 501, Cricket mit Spielernamen, Live-Vorschau und Auto-Scroll zum aktiven Spieler.", "icon": "fas fa-bullseye", "color": "linear-gradient(135deg, #f5576c, #ff6b6b)", "badge": "popular", "tech": ["Flutter", "Dart", "Google Play"], "demo": "", "github": "", "playstore": "https://play.google.com/store/apps/details?id=com.ezra.dartscore", "appstore": "", "rating": "4.8", "downloads": ""}, {"name": "PlantCare", "category": "web", "desc": "PWA do zarządzania roślinami z AI skanowaniem przez Gemini, dziennikiem zdjęć, synchronizacją Firebase i encyklopedią 88+ gatunków roślin.", "desc_en": "Plant management PWA with AI scanning via Gemini, photo journals, Firebase sync and encyclopedia of 88+ plant species.", "desc_de": "Pflanzenpflege-PWA mit KI-Scan über Gemini, Foto-Tagebüchern, Firebase-Sync und Enzyklopädie mit 88+ Pflanzenarten.", "icon": "fas fa-leaf", "color": "linear-gradient(135deg, #43e97b, #38f9d7)", "badge": "new", "tech": ["PWA", "Firebase", "Gemini AI", "TWA"], "demo": "", "github": "https://marcinchudaszek-cmd.github.io/plantcare/", "playstore": "https://play.google.com/store/apps/details?id=com.beagleappsstudio.plantcare", "appstore": "", "rating": "", "downloads": "", "iconImage": ""}, {"name": "Kolekcja Muzyki", "category": "mobile", "desc": "Aplikacja do katalogowania kolekcji muzycznej — płyt CD, winyli i kaset. Z wyborem okładek i przejrzystym interfejsem kolekcjonera.", "desc_en": "Music collection catalog app — CDs, vinyl and cassettes. With cover art selection and clean collector interface.", "desc_de": "Musiksammlungs-Katalog — CDs, Vinyl und Kassetten. Mit Cover-Auswahl und übersichtlichem Sammler-Interface.", "icon": "fas fa-compact-disc", "color": "linear-gradient(135deg, #667eea, #764ba2)", "badge": "new", "tech": ["Flutter", "Dart", "Google Play"], "demo": "", "github": "", "playstore": "https://play.google.com/store/apps/details?id=com.beagleappsstudio.kolekcjamuzyki", "appstore": "", "rating": "", "downloads": ""}, {"name": "Voyager", "category": "web", "desc": "Planer podróży z AI — sugestie miejsc, planowanie dziennych tras, integracja z Wikipedia i OpenTripMap. Napędzany przez Groq API.", "desc_en": "AI travel planner — place suggestions, daily route planning, Wikipedia and OpenTripMap integration. Powered by Groq API.", "desc_de": "KI-Reiseplaner — Ortsvorschläge, Tagesroutenplanung, Wikipedia- und OpenTripMap-Integration. Angetrieben von Groq API.", "icon": "fas fa-plane", "color": "linear-gradient(135deg, #4facfe, #00f2fe)", "badge": "beta", "tech": ["PWA", "Groq API", "OpenTripMap"], "demo": "", "github": "", "playstore": "https://play.google.com/store/apps/details?id=com.beagleappsstudio.voyager", "appstore": "", "rating": "", "downloads": ""}, {"name": "Deutsch Lernen", "category": "web", "desc": "Aplikacja do nauki niemieckiego z 760+ słówkami, czatem AI (Gemini), rozpoznawaniem mowy, grywalizacją i trybem offline. Glassmorphism UI.", "desc_en": "German learning app with 760+ words, AI chat (Gemini), speech recognition, gamification and offline mode. Glassmorphism UI.", "desc_de": "Deutsch-Lern-App mit 760+ Wörtern, KI-Chat (Gemini), Spracherkennung, Gamification und Offline-Modus. Glassmorphism UI.", "icon": "fas fa-language", "color": "linear-gradient(135deg, #f093fb, #f5576c)", "badge": "none", "tech": ["React", "PWA", "Gemini AI", "Speech API"], "demo": "", "github": "https://marcinchudaszek-cmd.github.io/deutsch-lernen-gut/", "playstore": "https://play.google.com/store/apps/details?id=com.beagleappsstudio.deutschlernen", "appstore": "", "rating": "", "downloads": "", "iconImage": ""}, {"name": "Notatnik Pro", "category": "mobile", "desc": "Prosty i elegancki notatnik na Androida. Tworzenie, edycja i organizacja notatek z przejrzystym Material Design.", "desc_en": "Simple and elegant notepad for Android. Create, edit and organize notes with clean Material Design.", "desc_de": "Einfacher und eleganter Notizblock für Android. Erstellen, bearbeiten und organisieren Sie Notizen mit klarem Material Design.", "icon": "fas fa-sticky-note", "color": "linear-gradient(135deg, #a18cd1, #fbc2eb)", "badge": "none", "tech": ["Flutter", "Dart", "Material Design"], "demo": "", "github": "", "playstore": "https://play.google.com/store/apps/details?id=beagle.apps.studio.notatnik", "appstore": "", "rating": "", "downloads": ""}, {"name": "Czytnik eBook", "category": "mobile", "desc": "Czytnik e-booków na Androida obsługujący formaty TXT, EPUB i PDF. Z funkcją odczytu na głos (TTS), płynnym przewijaniem i zarządzaniem biblioteką książek.", "desc_en": "E-book reader for Android supporting TXT, EPUB and PDF formats. With text-to-speech (TTS), smooth scrolling and library management.", "desc_de": "E-Book-Reader für Android mit TXT-, EPUB- und PDF-Unterstützung. Mit Text-to-Speech (TTS), flüssigem Scrollen und Bibliotheksverwaltung.", "icon": "fas fa-book-open", "color": "linear-gradient(135deg, #2456a4, #06b6d4)", "badge": "new", "tech": ["Flutter", "Dart", "TTS", "EPUB"], "demo": "", "github": "", "playstore": "https://play.google.com/store/apps/details?id=com.beagleappsstudio.ebook_reader", "appstore": "", "rating": "", "downloads": ""}], "contact": {"email": "beagleappsstudio@gmail.com", "location": "Eichendorf Niemcy, Jelenia Góra Polska", "hours": "", "github": "", "linkedin": "", "twitter": "", "discord": ""}, "stats": {"stat1Value": 7, "stat1Label": "Aplikacji", "stat2Value": 6, "stat2Label": "Platformy", "stat3Value": 7, "stat3Label": "W Google Play"}, "gallery": [{"file": "gemini-3.1-flash-image-preview__nano-banana-2__a_czy_to_jest_animacja.png", "title": "Grafika", "path": "img/gemini-3.1-flash-image-preview__nano-banana-2__a_czy_to_jest_animacja.png"}, {"file": "gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_fajn__animacj_.png", "title": "Grafika", "path": "img/gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_fajn__animacj_.png"}, {"file": "gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_mi_takie_t_o_z___1_.png", "title": "Grafika", "path": "img/gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_mi_takie_t_o_z___1_.png"}, {"file": "gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_takie_samo_t_o_.png", "title": "Grafika", "path": "img/gemini-3.1-flash-image-preview__nano-banana-2__a_zr_b_takie_samo_t_o_.png"}, {"file": "gpt-image-1.5-high-fidelity_b_zr_b_mi_takie_t_o_z___1_.png", "title": "Grafika", "path": "img/gpt-image-1.5-high-fidelity_b_zr_b_mi_takie_t_o_z___1_.png"}, {"file": "gpt-image-1.5-high-fidelity_b_zr_b_mi_takie_t_o_z_.png", "title": "Grafika", "path": "img/gpt-image-1.5-high-fidelity_b_zr_b_mi_takie_t_o_z_.png"}, {"file": "zawsze_tam_gdzie_ty.png", "title": "Grafika", "path": "img/zawsze_tam_gdzie_ty.png"}, {"file": "gpt-image-1.5-high-fidelity_b_zr_b_fajn__animacj_.png", "title": "Grafika", "path": "img/gpt-image-1.5-high-fidelity_b_zr_b_fajn__animacj_.png"}], "musicPlaylist": [{"name": "Tamta Noc", "file": "___Tamta_Noc_.mp3", "path": "music/___Tamta_Noc_.mp3"}, {"name": "# BEAGLE NOIR", "file": "__BEAGLE_NOIR.mp3", "path": "music/__BEAGLE_NOIR.mp3"}, {"name": "English Version", "file": "_English_Version_.mp3", "path": "music/_English_Version_.mp3"}, {"name": "Spoken low, vocoder-tinged", "file": "_Spoken_low__vocoder-tinged_.mp3", "path": "music/_Spoken_low__vocoder-tinged_.mp3"}, {"name": "Bask in the morning light so tender,", "file": "Bask_in_the_morning_light_so_tender___.mp3", "path": "music/Bask_in_the_morning_light_so_tender___.mp3"}, {"name": "Beagle w Bawarii", "file": "Beagle_w_Bawarii__2_.mp3", "path": "music/Beagle_w_Bawarii__2_.mp3"}, {"name": "jeden dzień", "file": "jeden_dzie_.mp3", "path": "music/jeden_dzie_.mp3"}, {"name": "Koalicja zjednoczona w kłopocie", "file": "Koalicja_zjednoczona_w_k_opocie.mp3", "path": "music/Koalicja_zjednoczona_w_k_opocie.mp3"}, {"name": "Tam, gdzie światło Twoich oczu", "file": "Tam__gdzie__wiat_o_Twoich_oczu___1_.mp3", "path": "music/Tam__gdzie__wiat_o_Twoich_oczu___1_.mp3"}], "videos": [{"title": "40 years", "file": "40-year-old-polish-man-in-grey-tracksuit-and-slipp.mp4", "path": "video/40-year-old-polish-man-in-grey-tracksuit-and-slipp.mp4"}, {"title": "mor", "file": "morph-do-2d-live-action-man-being-pulled-into-2d-c.mp4", "path": "video/morph-do-2d-live-action-man-being-pulled-into-2d-c.mp4"}, {"title": "neu", "file": "video-1063996180132930.mp4", "path": "video/video-1063996180132930.mp4"}], "animations": []};
 /*SITE_DATA_END*/
 applySiteData();
 if (currentLang !== 'pl') setLanguage(currentLang);
