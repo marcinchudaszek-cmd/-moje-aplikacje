@@ -11,19 +11,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #0a0a1a; color: #f1f5f9; min-height: 100vh; }
 
-        /* Password Screen */
-        .admin-lock { position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); z-index: 99999; display: flex; align-items: center; justify-content: center; }
-        .admin-lock-box { background: rgba(30,41,59,0.9); border: 1px solid rgba(74,142,212,0.3); border-radius: 20px; padding: 48px 40px; text-align: center; max-width: 380px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-        .admin-lock-logo { font-size: 3rem; margin-bottom: 12px; }
-        .admin-lock-title { font-size: 1.4rem; font-weight: 800; color: #f1f5f9; margin-bottom: 6px; }
-        .admin-lock-sub { font-size: 0.9rem; color: #64748b; margin-bottom: 28px; }
-        .admin-lock-input { width: 100%; padding: 14px 18px; background: rgba(15,23,42,0.8); border: 2px solid rgba(74,142,212,0.3); border-radius: 10px; color: #f1f5f9; font-size: 1rem; font-family: inherit; outline: none; text-align: center; letter-spacing: 4px; margin-bottom: 14px; transition: border-color 0.3s; box-sizing: border-box; }
-        .admin-lock-input:focus { border-color: #f5a623; }
-        .admin-lock-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #2456a4, #f5a623); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.3s; }
-        .admin-lock-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,166,35,0.4); }
-        .admin-lock-error { color: #ef4444; font-size: 0.85rem; margin-top: 10px; min-height: 20px; }
-        .admin-lock-hint { color: #334155; font-size: 0.75rem; margin-top: 16px; }
-
         .admin-topbar {
             background: rgba(18,18,42,0.95);
             backdrop-filter: blur(20px);
@@ -559,46 +546,9 @@
             .stats-grid { grid-template-columns: 1fr; }
             .admin-main { padding: 20px; }
         }
-
-        /* Animation preview classes */
-        .anim-bounce { animation: adm-bounce 1s infinite; display: inline-block; }
-        @keyframes adm-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        .anim-pulse { animation: adm-pulse 1.5s infinite; display: inline-block; }
-        @keyframes adm-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } }
-        .anim-shake { animation: adm-shake 0.5s infinite; display: inline-block; }
-        @keyframes adm-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        .anim-float { animation: adm-float 3s ease-in-out infinite; display: inline-block; }
-        @keyframes adm-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        .anim-spin { animation: adm-spin 2s linear infinite; display: inline-block; }
-        @keyframes adm-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .anim-flip { animation: adm-flip 1.5s ease-in-out infinite; display: inline-block; }
-        @keyframes adm-flip { 0%, 100% { transform: perspective(400px) rotateY(0); } 50% { transform: perspective(400px) rotateY(180deg); } }
-        .anim-jello { animation: adm-jello 1s infinite; display: inline-block; }
-        @keyframes adm-jello { 0%, 100% { transform: scale3d(1,1,1); } 30% { transform: scale3d(1.25,0.75,1); } 40% { transform: scale3d(0.75,1.25,1); } 50% { transform: scale3d(1.15,0.85,1); } 65% { transform: scale3d(0.95,1.05,1); } 75% { transform: scale3d(1.05,0.95,1); } }
-        .anim-swing { animation: adm-swing 1s ease-in-out infinite; transform-origin: top center; display: inline-block; }
-        @keyframes adm-swing { 20% { transform: rotate(15deg); } 40% { transform: rotate(-10deg); } 60% { transform: rotate(5deg); } 80% { transform: rotate(-5deg); } 100% { transform: rotate(0deg); } }
-        .anim-rubber { animation: adm-rubber 1s infinite; display: inline-block; }
-        @keyframes adm-rubber { 0% { transform: scale3d(1,1,1); } 30% { transform: scale3d(1.25,0.75,1); } 40% { transform: scale3d(0.75,1.25,1); } 50% { transform: scale3d(1.15,0.85,1); } 65% { transform: scale3d(0.95,1.05,1); } 75% { transform: scale3d(1.05,0.95,1); } 100% { transform: scale3d(1,1,1); } }
-        .anim-tada { animation: adm-tada 1s infinite; display: inline-block; }
-        @keyframes adm-tada { 0%, 100% { transform: scale(1) rotate(0); } 10%, 20% { transform: scale(0.9) rotate(-3deg); } 30%,50%,70%,90% { transform: scale(1.1) rotate(3deg); } 40%,60%,80% { transform: scale(1.1) rotate(-3deg); } }
     </style>
 </head>
 <body>
-
-    <!-- PASSWORD LOCK SCREEN -->
-    <div class="admin-lock" id="adminLock">
-        <div class="admin-lock-box">
-            <div class="admin-lock-logo">🐶</div>
-            <div class="admin-lock-title">Beagle Admin</div>
-            <div class="admin-lock-sub">Panel administracyjny — podaj hasło</div>
-            <input type="password" class="admin-lock-input" id="adminPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkAdminPassword()">
-            <button class="admin-lock-btn" onclick="checkAdminPassword()">
-                <i class="fas fa-unlock"></i> Wejdź
-            </button>
-            <div class="admin-lock-error" id="adminLockError"></div>
-            <div class="admin-lock-hint">Zapomniane hasło? Zmień je w pliku admin.html</div>
-        </div>
-    </div>
 
     <div class="admin-topbar">
         <div class="admin-logo">
@@ -644,12 +594,6 @@
             </button>
             <button class="sidebar-btn" onclick="showPage('music-manage')">
                 <i class="fas fa-headphones"></i> Muzyka
-            </button>
-            <button class="sidebar-btn" onclick="showPage('video-manage')">
-                <i class="fas fa-film"></i> Filmy
-            </button>
-            <button class="sidebar-btn" onclick="showPage('miniapps-manage')">
-                <i class="fas fa-th-large"></i> Mini Apki
             </button>
             <div class="sidebar-title" style="margin-top:24px;">Narzędzia</div>
             <button class="sidebar-btn" onclick="showPage('github-settings')">
@@ -817,14 +761,6 @@
                                     <label>Opis <span class="required">*</span></label>
                                     <textarea class="form-input" id="appDesc" placeholder="Co robi ta aplikacja?" oninput="updatePreview()"></textarea>
                                 </div>
-                                <div class="form-group full-width">
-                                    <label><span style="background:#00247d;color:white;padding:2px 8px;border-radius:4px;font-size:0.75rem;margin-right:6px;">EN</span> Opis po angielsku</label>
-                                    <textarea class="form-input" id="appDescEn" placeholder="What does this app do? (English description)"></textarea>
-                                </div>
-                                <div class="form-group full-width">
-                                    <label><span style="background:#dd0000;color:#ffcc00;padding:2px 8px;border-radius:4px;font-size:0.75rem;margin-right:6px;">DE</span> Opis po niemiecku</label>
-                                    <textarea class="form-input" id="appDescDe" placeholder="Was macht diese App? (Deutsche Beschreibung)"></textarea>
-                                </div>
                             </div>
                         </div>
 
@@ -865,13 +801,6 @@
                                     <div class="icon-option" data-icon="fas fa-brain" onclick="selectIcon(this)"><i class="fas fa-brain"></i></div>
                                     <div class="icon-option" data-icon="fas fa-mobile-alt" onclick="selectIcon(this)"><i class="fas fa-mobile-alt"></i></div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-image"></i> Własna ikona (PNG z Google Play / projektu)</label>
-                                <input type="file" class="form-input" id="appIconImage" accept=".png,.jpg,.jpeg,.webp" style="padding:10px;">
-                                <small style="color:#64748b;">Wgraj ikonę aplikacji (np. z <code>mipmap-xxxhdpi/ic_launcher.png</code>). Zastąpi ikonę Font Awesome powyżej.</small>
-                                <div id="appIconPreview" style="margin-top:8px;"></div>
-                                <input type="hidden" id="appIconImagePath" value="">
                             </div>
                             <div class="form-group">
                                 <label>Kolor tła karty</label>
@@ -1128,86 +1057,6 @@
                 </div>
             </div>
 
-            <!-- VIDEO MANAGEMENT -->
-            <div class="admin-page" id="page-video-manage">
-                <div class="page-header">
-                    <h1><i class="fas fa-film" style="color:#6366f1"></i> Zarządzanie Filmami</h1>
-                    <p>Dodawaj pliki MP4/WebM do sekcji Filmy na stronie.</p>
-                </div>
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <div class="admin-card-title"><i class="fas fa-plus-circle"></i> Dodaj film</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Wybierz plik wideo</label>
-                        <input type="file" class="form-input" id="videoFileInput" accept=".mp4,.webm" style="padding:10px;">
-                        <small style="color:#64748b;">MP4 lub WebM, maks. ~25 MB (limit GitHub)</small>
-                    </div>
-                    <div class="form-group">
-                        <label>Tytuł filmu <span class="required">*</span></label>
-                        <input type="text" class="form-input" id="videoTitle" placeholder="np. Demo Kolekcji Muzyki, Prezentacja PlantCare...">
-                    </div>
-                    <div class="form-actions" style="margin-top:12px;">
-                        <button class="btn btn-save" onclick="uploadVideoFile()">
-                            <i class="fas fa-cloud-upload-alt"></i> Wgraj na stronę
-                        </button>
-                    </div>
-                    <div id="videoUploadStatus" style="margin-top:12px;"></div>
-                </div>
-                <div class="admin-card" style="margin-top:20px;">
-                    <div class="admin-card-header">
-                        <div class="admin-card-title"><i class="fas fa-list"></i> Twoje filmy</div>
-                    </div>
-                    <div id="videoManageList">
-                        <p style="color:#64748b;">Ładowanie...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MINI APPS MANAGEMENT -->
-            <div class="admin-page" id="page-miniapps-manage">
-                <div class="page-header">
-                    <h1><i class="fas fa-th-large" style="color:#6366f1"></i> Mini Apki</h1>
-                    <p>Zarządzaj mini aplikacjami w zakładce "Mini Apki" na stronie portfolio.</p>
-                </div>
-
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <div class="admin-card-title"><i class="fas fa-info-circle"></i> Dostępne mini apki</div>
-                    </div>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-top:8px;">
-                        <div style="background:#1a1a3e;border-radius:12px;padding:20px;text-align:center;border:2px solid #4a8ed4;">
-                            <div style="font-size:2.5rem;margin-bottom:8px;">😂</div>
-                            <div style="font-weight:700;margin-bottom:4px;">Meme Creator</div>
-                            <div style="font-size:0.8rem;color:#64748b;margin-bottom:12px;">Twórz memy z przeciąganymi tekstami, 12 szablonami i pobieraniem PNG</div>
-                            <span style="background:#10b981;color:white;padding:3px 12px;border-radius:20px;font-size:0.75rem;font-weight:600;">✓ Aktywna</span>
-                        </div>
-                        <div style="background:#1a1a3e;border-radius:12px;padding:20px;text-align:center;border:2px dashed #334155;opacity:0.6;">
-                            <div style="font-size:2.5rem;margin-bottom:8px;">➕</div>
-                            <div style="font-weight:700;margin-bottom:4px;">Kolejna apka</div>
-                            <div style="font-size:0.8rem;color:#64748b;margin-bottom:12px;">Wkrótce — Kalkulator, Generator haseł, Konwerter jednostek...</div>
-                            <span style="background:#334155;color:#94a3b8;padding:3px 12px;border-radius:20px;font-size:0.75rem;">Wkrótce</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="admin-card" style="margin-top:20px;">
-                    <div class="admin-card-header">
-                        <div class="admin-card-title"><i class="fas fa-paint-brush"></i> Dostosuj Meme Creator</div>
-                    </div>
-                    <p style="color:#64748b;font-size:0.85rem;margin-bottom:16px;">Chcesz zmienić nazwę zakładki lub dodać kolejną mini apkę? Powiedz Claudowi a doda ją do kodu.</p>
-                    <div class="form-group">
-                        <label>Nazwa zakładki na stronie</label>
-                        <input type="text" class="form-input" id="miniAppsTabName" placeholder="np. Mini Apki, Narzędzia, Apps..." value="Mini Apki">
-                    </div>
-                    <div class="form-actions" style="margin-top:12px;">
-                        <button class="btn btn-save" onclick="saveMiniAppsSettings()">
-                            <i class="fas fa-save"></i> Zapisz
-                        </button>
-                    </div>
-                </div>
-            </div>
-
             <!-- GITHUB SETTINGS -->
             <div class="admin-page" id="page-github-settings">
                 <div class="page-header">
@@ -1225,7 +1074,7 @@
                         </div>
                         <div class="form-group">
                             <label>Nazwa repozytorium <span class="required">*</span></label>
-                            <input type="text" class="form-input" id="ghRepo" placeholder="np. -moje-aplikacje" value="-moje-aplikacje">
+                            <input type="text" class="form-input" id="ghRepo" placeholder="np. marcinchudaszek-cmd.github.io" value="marcinchudaszek-cmd.github.io">
                         </div>
                         <div class="form-group full-width">
                             <label>Personal Access Token <span class="required">*</span></label>
@@ -1284,6 +1133,13 @@
                 <div class="admin-card">
                     <div class="admin-card-title" style="margin-bottom:20px"><i class="fas fa-save"></i> Gdzie zapisują się dane?</div>
                     <p style="color:#94a3b8;margin-bottom:8px;">Dane zapisują się w <strong>localStorage</strong> przeglądarki.</p>
+                    <div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:12px;padding:16px;margin-bottom:16px;">
+                        <div style="font-weight:700;margin-bottom:8px;">🔄 Synchronizacja z beagleapps.pl</div>
+                        <p style="font-size:0.85rem;color:#94a3b8;margin-bottom:12px;">Jeśli admin nie zgadza się ze stroną (brakuje muzyki, filmów, aplikacji) — kliknij poniżej żeby pobrać aktualne dane z opublikowanego index.html.</p>
+                        <button class="btn btn-save" onclick="syncFromSite()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">
+                            <i class="fas fa-sync"></i> Synchronizuj z beagleapps.pl
+                        </button>
+                    </div>
                     <ul style="color:#94a3b8;margin-left:20px;margin-top:8px;list-style:disc;">
                         <li>Dane zostają po zamknięciu przeglądarki ✅</li>
                         <li>Dane są tylko w TWOJEJ przeglądarce ✅</li>
@@ -1297,73 +1153,18 @@
 
     <div class="toast" id="toast"></div>
     <script>
-// ===== PASSWORD PROTECTION =====
-// Zmień hasło poniżej na swoje własne!
-var ADMIN_PASSWORD = 'beagle2025';
-var ADMIN_SESSION_KEY = 'adminUnlocked';
-
-function checkAdminPassword() {
-    var input = document.getElementById('adminPassword').value;
-    var error = document.getElementById('adminLockError');
-    // Hash-like check — compare with stored hash
-    if (input === ADMIN_PASSWORD || sessionStorage.getItem(ADMIN_SESSION_KEY) === '1') {
-        sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
-        var lock = document.getElementById('adminLock');
-        lock.style.opacity = '0';
-        lock.style.transition = 'opacity 0.4s';
-        setTimeout(function() { lock.style.display = 'none'; }, 400);
-        error.textContent = '';
-    } else {
-        error.textContent = '❌ Złe hasło! Spróbuj ponownie.';
-        var input_el = document.getElementById('adminPassword');
-        input_el.style.borderColor = '#ef4444';
-        input_el.value = '';
-        setTimeout(function() { input_el.style.borderColor = ''; }, 1500);
-    }
-}
-
-// Check session on load
-(function() {
-    if (sessionStorage.getItem(ADMIN_SESSION_KEY) === '1') {
-        var lock = document.getElementById('adminLock');
-        if (lock) lock.style.display = 'none';
-    } else {
-        setTimeout(function() {
-            var input = document.getElementById('adminPassword');
-            if (input) input.focus();
-        }, 100);
-    }
-})();
-
 // ===== ADMIN.JS INLINE =====
 function getData() {
-    var defaults = {
-        profile: { name:'Beagle Apps Studio', role:'Niezależny deweloper aplikacji', badge:'🐶 Beagle Apps Studio', headline:'Tworzę |praktyczne| aplikacje', subtitle:'Projektuję aplikacje mobilne i webowe, które ułatwiają codzienne życie. Od sportu, przez muzykę, po naukę języków.', aboutTitle:'Niezależny deweloper<br>aplikacji', aboutText1:'Tworzę aplikacje mobilne i webowe, które rozwiązują realne problemy. Pracuję głównie z Flutter i technologiami PWA, integrując AI tam, gdzie ma to sens.', aboutText2:'Moje projekty wyrastają z osobistych pasji — darty, muzyka, rośliny, nauka języków. Każda aplikacja to projekt od zera do publikacji w Google Play lub jako PWA.' },
-        apps: [
-            { name:'Dart Score Pro', category:'mobile', desc:'Aplikacja do liczenia punktów w darcie. Obsługuje tryby 301, 501, Cricket z zapisem nazw graczy, podglądem wyników na żywo i auto-scrollem do aktywnego gracza.', desc_en:'Dart scoring app. Supports 301, 501, Cricket modes with player names, live score preview and auto-scroll to active player.', desc_de:'Dart-Zähler-App. Unterstützt 301, 501, Cricket mit Spielernamen, Live-Vorschau und Auto-Scroll zum aktiven Spieler.', icon:'fas fa-bullseye', color:'linear-gradient(135deg, #f5576c, #ff6b6b)', badge:'popular', tech:['Flutter','Dart','Google Play'], demo:'', github:'', playstore:'https://play.google.com/store/apps/details?id=com.ezra.dartscore', appstore:'', rating:'4.8', downloads:'' },
-            { name:'PlantCare', category:'web', desc:'PWA do zarządzania roślinami z AI skanowaniem przez Gemini, dziennikiem zdjęć, synchronizacją Firebase i encyklopedią 88+ gatunków roślin.', desc_en:'Plant management PWA with AI scanning via Gemini, photo journals, Firebase sync and encyclopedia of 88+ plant species.', desc_de:'Pflanzenpflege-PWA mit KI-Scan über Gemini, Foto-Tagebüchern, Firebase-Sync und Enzyklopädie mit 88+ Pflanzenarten.', icon:'fas fa-leaf', color:'linear-gradient(135deg, #43e97b, #38f9d7)', badge:'new', tech:['PWA','Firebase','Gemini AI','TWA'], demo:'', github:'', playstore:'', appstore:'', rating:'', downloads:'' },
-            { name:'Kolekcja Muzyki', category:'mobile', desc:'Aplikacja do katalogowania kolekcji muzycznej — płyt CD, winyli i kaset. Z wyborem okładek i przejrzystym interfejsem kolekcjonera.', desc_en:'Music collection catalog app — CDs, vinyl and cassettes. With cover art selection and clean collector interface.', desc_de:'Musiksammlungs-Katalog — CDs, Vinyl und Kassetten. Mit Cover-Auswahl und übersichtlichem Sammler-Interface.', icon:'fas fa-compact-disc', color:'linear-gradient(135deg, #667eea, #764ba2)', badge:'new', tech:['Flutter','Dart','Google Play'], demo:'', github:'', playstore:'https://play.google.com/store/apps/details?id=com.beagleappsstudio.kolekcjamuzyki', appstore:'', rating:'', downloads:'' },
-            { name:'Voyager', category:'web', desc:'Planer podróży z AI — sugestie miejsc, planowanie dziennych tras, integracja z Wikipedia i OpenTripMap. Napędzany przez Groq API.', desc_en:'AI travel planner — place suggestions, daily route planning, Wikipedia and OpenTripMap integration. Powered by Groq API.', desc_de:'KI-Reiseplaner — Ortsvorschläge, Tagesroutenplanung, Wikipedia- und OpenTripMap-Integration. Angetrieben von Groq API.', icon:'fas fa-plane', color:'linear-gradient(135deg, #4facfe, #00f2fe)', badge:'beta', tech:['PWA','Groq API','OpenTripMap'], demo:'', github:'', playstore:'https://play.google.com/store/apps/details?id=com.beagleappsstudio.voyager', appstore:'', rating:'', downloads:'' },
-            { name:'Deutsch Lernen', category:'web', desc:'Aplikacja do nauki niemieckiego z 760+ słówkami, czatem AI (Gemini), rozpoznawaniem mowy, grywalizacją i trybem offline. Glassmorphism UI.', desc_en:'German learning app with 760+ words, AI chat (Gemini), speech recognition, gamification and offline mode. Glassmorphism UI.', desc_de:'Deutsch-Lern-App mit 760+ Wörtern, KI-Chat (Gemini), Spracherkennung, Gamification und Offline-Modus. Glassmorphism UI.', icon:'fas fa-language', color:'linear-gradient(135deg, #f093fb, #f5576c)', badge:'none', tech:['React','PWA','Gemini AI','Speech API'], demo:'', github:'', playstore:'', appstore:'', rating:'', downloads:'' },
-            { name:'Notatnik Pro', category:'mobile', desc:'Prosty i elegancki notatnik na Androida. Tworzenie, edycja i organizacja notatek z przejrzystym Material Design.', desc_en:'Simple and elegant notepad for Android. Create, edit and organize notes with clean Material Design.', desc_de:'Einfacher und eleganter Notizblock für Android. Erstellen, bearbeiten und organisieren Sie Notizen mit klarem Material Design.', icon:'fas fa-sticky-note', color:'linear-gradient(135deg, #a18cd1, #fbc2eb)', badge:'none', tech:['Flutter','Dart','Material Design'], demo:'', github:'', playstore:'https://play.google.com/store/apps/details?id=beagle.apps.studio.notatnik', appstore:'', rating:'', downloads:'' },
-            { name:'Czytnik eBook', category:'mobile', desc:'Czytnik e-booków na Androida obsługujący formaty TXT, EPUB i PDF. Z funkcją odczytu na głos (TTS), płynnym przewijaniem i zarządzaniem biblioteką książek.', desc_en:'E-book reader for Android supporting TXT, EPUB and PDF formats. With text-to-speech (TTS), smooth scrolling and library management.', desc_de:'E-Book-Reader für Android mit TXT-, EPUB- und PDF-Unterstützung. Mit Text-to-Speech (TTS), flüssigem Scrollen und Bibliotheksverwaltung.', icon:'fas fa-book-open', color:'linear-gradient(135deg, #2456a4, #06b6d4)', badge:'new', tech:['Flutter','Dart','TTS','EPUB'], demo:'', github:'', playstore:'https://play.google.com/store/apps/details?id=com.beagleappsstudio.ebook_reader', appstore:'', rating:'', downloads:'' }
-        ],
-        contact: { email:'', location:'', hours:'', github:'', linkedin:'', twitter:'', discord:'' },
-        stats: { stat1Value:7, stat1Label:'Aplikacji', stat2Value:3, stat2Label:'Platformy', stat3Value:5, stat3Label:'W Google Play' },
-        gallery: [],
-        musicPlaylist: [],
-        videos: [],
-        animations: []
-    };
     try {
         var saved = localStorage.getItem('siteData');
         if (saved) {
             var parsed = JSON.parse(saved);
+            // Return with all fields
             return {
-                profile: Object.assign({}, defaults.profile, parsed.profile || {}),
-                apps: parsed.apps || defaults.apps,
-                contact: Object.assign({}, defaults.contact, parsed.contact || {}),
-                stats: Object.assign({}, defaults.stats, parsed.stats || {}),
+                profile: parsed.profile || {},
+                apps: parsed.apps || [],
+                contact: parsed.contact || {},
+                stats: parsed.stats || {},
                 gallery: parsed.gallery || [],
                 musicPlaylist: parsed.musicPlaylist || [],
                 videos: parsed.videos || [],
@@ -1371,10 +1172,42 @@ function getData() {
             };
         }
     } catch(e) { console.error('getData error:', e); }
-    return defaults;
+    // No localStorage — return empty so syncFromSite triggers
+    return null;
 }
 
 function saveData(data) { localStorage.setItem('siteData', JSON.stringify(data)); }
+
+// ===== SYNC FROM LIVE SITE =====
+function syncFromSite(callback) {
+    var url = 'https://beagleapps.pl/index.html?nocache=' + Date.now();
+    showToast('Pobieranie danych z beagleapps.pl...', 'info');
+    fetch(url)
+        .then(function(r) { return r.text(); })
+        .then(function(html) {
+            var match = html.match(/\/\*SITE_DATA_START\*\/([\s\S]*?)\/\*SITE_DATA_END\*\//);
+            if (!match) { showToast('Nie znaleziono danych w index.html!', 'error'); return; }
+            var jsCode = match[1].trim().replace(/^var\s+embeddedSiteData\s*=\s*/, '').replace(/;\s*$/, '');
+            var data = JSON.parse(jsCode);
+            saveData(data);
+            showToast('✅ Dane zsynchronizowane z beagleapps.pl!', 'success');
+            if (callback) callback(data);
+            else location.reload();
+        })
+        .catch(function(e) {
+            showToast('Błąd połączenia z beagleapps.pl', 'error');
+            console.error(e);
+        });
+}
+
+// Auto-sync on load if localStorage is empty
+(function() {
+    if (!localStorage.getItem('siteData')) {
+        setTimeout(function() { syncFromSite(); }, 500);
+    }
+})();
+
+
 
 function showPage(pageId) {
     document.querySelectorAll('.admin-page').forEach(function(p) { p.classList.remove('active'); });
@@ -1393,8 +1226,6 @@ function showPage(pageId) {
     if (pageId === 'add-app' && !document.getElementById('editingAppId').value) clearAppForm();
     if (pageId === 'gallery-manage') loadGalleryList();
     if (pageId === 'music-manage') loadMusicList();
-    if (pageId === 'video-manage') loadVideoList();
-    if (pageId === 'miniapps-manage') loadMiniAppsList();
 }
 
 function showToast(message, type) {
@@ -1580,8 +1411,6 @@ function saveApp() {
         name: name,
         category: document.getElementById('appCategory').value,
         desc: desc,
-        desc_en: document.getElementById('appDescEn').value.trim(),
-        desc_de: document.getElementById('appDescDe').value.trim(),
         icon: selectedIcon,
         color: selectedColor,
         badge: selectedBadge,
@@ -1591,8 +1420,7 @@ function saveApp() {
         playstore: document.getElementById('appPlayStore').value.trim(),
         appstore: document.getElementById('appAppStore').value.trim(),
         rating: document.getElementById('appRating').value || '',
-        downloads: document.getElementById('appDownloads').value || '',
-        iconImage: document.getElementById('appIconImagePath').value || ''
+        downloads: document.getElementById('appDownloads').value || ''
     };
 
     var data = getData();
@@ -1615,8 +1443,6 @@ function editApp(index) {
     document.getElementById('appName').value = app.name;
     document.getElementById('appCategory').value = app.category;
     document.getElementById('appDesc').value = app.desc;
-    document.getElementById('appDescEn').value = app.desc_en || '';
-    document.getElementById('appDescDe').value = app.desc_de || '';
     document.getElementById('appDemo').value = app.demo || '';
     document.getElementById('appGithub').value = app.github || '';
     document.getElementById('appPlayStore').value = app.playstore || '';
@@ -1626,14 +1452,6 @@ function editApp(index) {
     document.getElementById('editingAppId').value = index;
     document.getElementById('addAppPageTitle').textContent = 'Edytuj aplikację';
     document.getElementById('saveAppBtnText').textContent = 'Zapisz zmiany';
-
-    document.getElementById('appIconImagePath').value = app.iconImage || '';
-    var iconPreview = document.getElementById('appIconPreview');
-    if (app.iconImage) {
-        iconPreview.innerHTML = '<div style="display:flex;align-items:center;gap:10px;"><img src="' + app.iconImage + '" style="width:48px;height:48px;border-radius:10px;"> <span style="color:#10b981;font-size:0.85rem;">Ikona wgrana</span> <button onclick="clearAppIcon()" style="background:#ef4444;color:white;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:0.8rem;">Usuń</button></div>';
-    } else {
-        iconPreview.innerHTML = '';
-    }
 
     selectedIcon = app.icon || 'fas fa-code';
     document.querySelectorAll('.icon-option').forEach(function(o) {
@@ -1673,8 +1491,6 @@ function clearAppForm() {
     document.getElementById('appName').value = '';
     document.getElementById('appCategory').value = 'web';
     document.getElementById('appDesc').value = '';
-    document.getElementById('appDescEn').value = '';
-    document.getElementById('appDescDe').value = '';
     document.getElementById('appDemo').value = '';
     document.getElementById('appGithub').value = '';
     document.getElementById('appPlayStore').value = '';
@@ -1684,9 +1500,6 @@ function clearAppForm() {
     document.getElementById('editingAppId').value = '';
     document.getElementById('addAppPageTitle').textContent = 'Dodaj aplikację';
     document.getElementById('saveAppBtnText').textContent = 'Dodaj aplikację';
-    document.getElementById('appIconImagePath').value = '';
-    document.getElementById('appIconPreview').innerHTML = '';
-    if (document.getElementById('appIconImage')) document.getElementById('appIconImage').value = '';
     selectedIcon = 'fas fa-code';
     selectedColor = 'linear-gradient(135deg, #667eea, #764ba2)';
     selectedBadge = 'none';
@@ -1819,7 +1632,7 @@ function uploadMusicTrack() {
 
     var file = fileInput.files[0];
     var fileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-    var filePath = 'Muzyka/' + fileName;
+    var filePath = 'music/' + fileName;
 
     statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#f5a623;"><i class="fas fa-spinner fa-spin"></i> Wgrywam ' + fileName + '... (może potrwać chwilę)</div>';
 
@@ -1871,125 +1684,12 @@ function removeMusicTrack(index) {
     showToast('Utwór usunięty. Kliknij "Publikuj zmiany".', 'info');
 }
 
-// ===== VIDEO MANAGEMENT =====
-function uploadVideoFile() {
-    var fileInput = document.getElementById('videoFileInput');
-    var title = document.getElementById('videoTitle').value.trim();
-    var statusEl = document.getElementById('videoUploadStatus');
-
-    if (!fileInput.files || !fileInput.files[0]) { showToast('Wybierz plik wideo!', 'error'); return; }
-    if (!title) { showToast('Wpisz tytuł filmu!', 'error'); return; }
-
-    var file = fileInput.files[0];
-    if (file.size > 25 * 1024 * 1024) {
-        showToast('Plik za duży! Maksymalnie 25 MB.', 'error');
-        return;
-    }
-
-    var fileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-    var filePath = 'Wideo/' + fileName;
-
-    statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#f5a623;"><i class="fas fa-spinner fa-spin"></i> Wgrywam ' + fileName + '... (filmy mogą trwać dłużej)</div>';
-
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        var base64 = e.target.result.split(',')[1];
-        uploadFileToGitHub(filePath, base64, 'Dodano film: ' + title, function(err) {
-            if (err) {
-                statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#ef4444;"><i class="fas fa-times-circle"></i> Błąd: ' + err + '</div>';
-            } else {
-                var data = getData();
-                if (!data.videos) data.videos = [];
-                data.videos.push({ title: title, file: fileName, path: filePath });
-                saveData(data);
-                statusEl.innerHTML = '<div style="padding:12px;background:#1a1a3e;border-radius:8px;color:#10b981;"><i class="fas fa-check-circle"></i> Wgrano! Kliknij "Publikuj zmiany" żeby film pojawił się na stronie.</div>';
-                fileInput.value = '';
-                document.getElementById('videoTitle').value = '';
-                loadVideoList();
-            }
-        });
-    };
-    reader.readAsDataURL(file);
-}
-
-function loadVideoList() {
-    var data = getData();
-    var container = document.getElementById('videoManageList');
-    if (!data.videos || data.videos.length === 0) {
-        container.innerHTML = '<p style="color:#64748b;">Brak filmów. Dodaj pierwszy powyżej!</p>';
-        return;
-    }
-    var html = '';
-    data.videos.forEach(function(vid, i) {
-        html += '<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a1a3e;border-radius:10px;margin-bottom:8px;">' +
-            '<span style="font-size:1.3rem;">🎬</span>' +
-            '<div style="flex:1;"><div style="font-weight:600;">' + vid.title + '</div><div style="font-size:0.8rem;color:#64748b;">' + vid.file + '</div></div>' +
-            '<button onclick="removeVideo(' + i + ')" style="background:#ef4444;color:white;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:0.8rem;">Usuń</button>' +
-            '</div>';
-    });
-    container.innerHTML = html;
-}
-
-function removeVideo(index) {
-    if (!confirm('Usunąć ten film z listy?')) return;
-    var data = getData();
-    data.videos.splice(index, 1);
-    saveData(data);
-    loadVideoList();
-    showToast('Film usunięty. Kliknij "Publikuj zmiany".', 'info');
-}
-
-// ===== MINI APPS MANAGEMENT =====
-function loadMiniAppsList() {
-    // Static info page — nothing to load dynamically
-}
-
-function saveMiniAppsSettings() {
-    var name = document.getElementById('miniAppsTabName').value.trim();
-    if (!name) { showToast('Wpisz nazwę zakładki!', 'error'); return; }
-    var data = getData();
-    if (!data.settings) data.settings = {};
-    data.settings.miniAppsTabName = name;
-    saveData(data);
-    showToast('Zapisano! Kliknij "Publikuj zmiany" żeby zobaczyć na stronie.', 'success');
-}
-
-// ===== APP ICON UPLOAD =====
-document.getElementById('appIconImage').addEventListener('change', function() {
-    var file = this.files[0];
-    if (!file) return;
-    var fileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-    var filePath = 'Ikony/' + fileName;
-    var preview = document.getElementById('appIconPreview');
-    preview.innerHTML = '<div style="padding:8px;color:#f5a623;"><i class="fas fa-spinner fa-spin"></i> Wgrywam ikonę...</div>';
-
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        var base64 = e.target.result.split(',')[1];
-        uploadFileToGitHub(filePath, base64, 'Dodano ikonę: ' + fileName, function(err) {
-            if (err) {
-                preview.innerHTML = '<div style="color:#ef4444;"><i class="fas fa-times-circle"></i> Błąd: ' + err + '</div>';
-            } else {
-                document.getElementById('appIconImagePath').value = filePath;
-                preview.innerHTML = '<div style="display:flex;align-items:center;gap:10px;"><img src="' + filePath + '" style="width:48px;height:48px;border-radius:10px;border:2px solid #10b981;"> <span style="color:#10b981;font-size:0.85rem;">Ikona wgrana!</span> <button onclick="clearAppIcon()" style="background:#ef4444;color:white;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:0.8rem;">Usuń</button></div>';
-            }
-        });
-    };
-    reader.readAsDataURL(file);
-});
-
-function clearAppIcon() {
-    document.getElementById('appIconImagePath').value = '';
-    document.getElementById('appIconPreview').innerHTML = '<span style="color:#64748b;font-size:0.85rem;">Ikona usunięta — będzie użyta ikona Font Awesome.</span>';
-    document.getElementById('appIconImage').value = '';
-}
-
 function getGitHubSettings() {
     try {
         var s = localStorage.getItem('ghSettings');
         if (s) return JSON.parse(s);
     } catch(e) {}
-    return { user: 'marcinchudaszek-cmd', repo: '-moje-aplikacje', token: '' };
+    return { user: 'marcinchudaszek-cmd', repo: 'marcinchudaszek-cmd.github.io', token: '' };
 }
 
 function saveGitHubSettings() {
@@ -2041,130 +1741,66 @@ function publishToGitHub() {
     var apiBase = 'https://api.github.com/repos/' + s.user + '/' + s.repo + '/contents/';
     var headers = {
         'Authorization': 'token ' + s.token,
-        'Content-Type': 'application/json',
-        'Accept': 'application/vnd.github.v3+json'
+        'Content-Type': 'application/json'
     };
 
-    // Step 1: Get file metadata (sha + download_url)
     fetch(apiBase + 'index.html', { headers: headers })
     .then(function(r) { return r.json(); })
     .then(function(fileData) {
         var sha = fileData.sha || '';
-        var downloadUrl = fileData.download_url || '';
-
-        if (!downloadUrl) {
-            throw new Error('Nie mogę pobrać pliku z GitHuba');
+        var currentContent = '';
+        if (fileData.content) {
+            currentContent = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
         }
 
-        // Step 2: Download RAW file content (not base64 — handles any size)
-        return fetch(downloadUrl)
-        .then(function(r) { return r.text(); })
-        .then(function(currentContent) {
-            console.log('Plik pobrany (raw), rozmiar:', currentContent.length);
+        var marker = '/*SITE_DATA_START*/';
+        var markerEnd = '/*SITE_DATA_END*/';
+        var dataStr = 'var embeddedSiteData = ' + JSON.stringify(siteData) + ';';
+        var newContent = '';
 
-            var marker = '/*SITE_DATA_START*/';
-            var markerEnd = '/*SITE_DATA_END*/';
-            var dataStr = 'var embeddedSiteData = ' + JSON.stringify(siteData) + ';';
-            var newContent = '';
-
-            if (currentContent.indexOf(marker) !== -1) {
-                var before = currentContent.substring(0, currentContent.indexOf(marker));
-                var after = currentContent.substring(currentContent.indexOf(markerEnd) + markerEnd.length);
-                newContent = before + marker + '\n' + dataStr + '\n' + markerEnd + after;
+        if (currentContent.indexOf(marker) !== -1) {
+            var before = currentContent.substring(0, currentContent.indexOf(marker));
+            var after = currentContent.substring(currentContent.indexOf(markerEnd) + markerEnd.length);
+            newContent = before + marker + '\n' + dataStr + '\n' + markerEnd + after;
+        } else {
+            var insertPoint = currentContent.indexOf('applySiteData();');
+            if (insertPoint !== -1) {
+                newContent = currentContent.substring(0, insertPoint) +
+                    marker + '\n' + dataStr + '\n' + markerEnd + '\n' +
+                    currentContent.substring(insertPoint);
             } else {
-                var insertPoint = currentContent.indexOf('applySiteData();');
-                if (insertPoint !== -1) {
-                    newContent = currentContent.substring(0, insertPoint) +
-                        marker + '\n' + dataStr + '\n' + markerEnd + '\n' +
-                        currentContent.substring(insertPoint);
-                } else {
-                    throw new Error('Nie znaleziono markerów SITE_DATA w pliku. Wgraj ponownie index.html.');
-                }
+                var scriptEnd = currentContent.lastIndexOf('</' + 'script>');
+                newContent = currentContent.substring(0, scriptEnd) +
+                    marker + '\n' + dataStr + '\n' + markerEnd + '\n' +
+                    currentContent.substring(scriptEnd);
             }
+        }
 
-            console.log('Nowy plik rozmiar:', newContent.length, '| musicPlaylist:', siteData.musicPlaylist ? siteData.musicPlaylist.length : 0);
+        var body = {
+            message: 'Aktualizacja z panelu admina — ' + new Date().toLocaleString('pl-PL'),
+            content: btoa(unescape(encodeURIComponent(newContent))),
+            sha: sha
+        };
 
-            // Step 3: Upload via Blobs API (handles large files)
-            var blobUrl = 'https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/blobs';
-            return fetch(blobUrl, {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify({ content: newContent, encoding: 'utf-8' })
-            })
-            .then(function(r) { return r.json(); })
-            .then(function(blob) {
-                if (!blob.sha) throw new Error('Błąd tworzenia blob: ' + (blob.message || ''));
-
-                // Step 4: Get current commit SHA
-                var refUrl = 'https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/ref/heads/main';
-                return fetch(refUrl, { headers: headers })
-                .then(function(r) {
-                    if (r.status === 404) {
-                        // Try master branch
-                        return fetch(refUrl.replace('heads/main', 'heads/master'), { headers: headers });
-                    }
-                    return r;
-                })
-                .then(function(r) { return r.json(); })
-                .then(function(ref) {
-                    var commitSha = ref.object.sha;
-                    var branch = ref.ref.replace('refs/heads/', '');
-
-                    // Step 5: Get current tree
-                    return fetch('https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/commits/' + commitSha, { headers: headers })
-                    .then(function(r) { return r.json(); })
-                    .then(function(commit) {
-                        // Step 6: Create new tree with updated file
-                        return fetch('https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/trees', {
-                            method: 'POST',
-                            headers: headers,
-                            body: JSON.stringify({
-                                base_tree: commit.tree.sha,
-                                tree: [{ path: 'index.html', mode: '100644', type: 'blob', sha: blob.sha }]
-                            })
-                        })
-                        .then(function(r) { return r.json(); })
-                        .then(function(tree) {
-                            // Step 7: Create commit
-                            return fetch('https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/commits', {
-                                method: 'POST',
-                                headers: headers,
-                                body: JSON.stringify({
-                                    message: 'Aktualizacja z panelu admina — ' + new Date().toLocaleString('pl-PL'),
-                                    tree: tree.sha,
-                                    parents: [commitSha]
-                                })
-                            })
-                            .then(function(r) { return r.json(); })
-                            .then(function(newCommit) {
-                                // Step 8: Update branch reference
-                                return fetch('https://api.github.com/repos/' + s.user + '/' + s.repo + '/git/refs/heads/' + branch, {
-                                    method: 'PATCH',
-                                    headers: headers,
-                                    body: JSON.stringify({ sha: newCommit.sha })
-                                });
-                            });
-                        });
-                    });
-                });
-            });
+        return fetch(apiBase + 'index.html', {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify(body)
         });
     })
     .then(function(r) { return r.json(); })
     .then(function(result) {
         btn.innerHTML = origHTML;
         btn.disabled = false;
-        if (result.object) {
+        if (result.content) {
             showToast('Opublikowano! Zmiany widoczne za ~1 min na beagleapps.pl', 'success');
         } else {
-            console.log('Publish result:', JSON.stringify(result));
             showToast('Błąd: ' + (result.message || 'Nieznany'), 'error');
         }
     })
     .catch(function(e) {
         btn.innerHTML = origHTML;
         btn.disabled = false;
-        console.log('Publish error:', e);
         showToast('Błąd: ' + e.message, 'error');
     });
 }
