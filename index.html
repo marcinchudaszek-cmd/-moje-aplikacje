@@ -946,7 +946,13 @@ img { max-width: 100%; display: block; }
         font-size: 0.95rem;
         min-height: 48px;
         border-radius: var(--radius-md);
+        color: #cbd5e1;
     }
+    .nav-link:hover, .nav-link.active {
+        background: rgba(74,142,212,0.2);
+        color: #f1f5f9;
+    }
+    .nav-link.active::after { display: none; }
     .nav-toggle { display: flex; min-width: 42px; min-height: 42px; }
     .lang-switcher { margin-left: 0; margin-right: 4px; }
     .hero-title { font-size: 2.2rem; }
