@@ -855,9 +855,8 @@ img { max-width: 100%; display: block; }
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.55);
     z-index: 1000;
-    backdrop-filter: blur(2px);
 }
 .nav-overlay.active { display: block; }
 
@@ -936,6 +935,9 @@ img { max-width: 100%; display: block; }
         z-index: 1001;
         overflow-y: auto;
         box-shadow: -8px 0 32px rgba(0,0,0,0.6);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        isolation: isolate;
     }
     .nav-menu::before {
         content: 'Menu';
