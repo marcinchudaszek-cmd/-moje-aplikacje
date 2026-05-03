@@ -2421,10 +2421,17 @@ var currentLang = 'pl';
 function switchLang(lang) {
     currentLang = lang;
     document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active-lang'); });
-    document.getElementById('lang-' + lang).classList.add('active-lang');
-    var data = getSiteData();
-    if (!data || !data.apps) return;
+    var btn = document.getElementById('lang-' + lang);
+    if (btn) btn.classList.add('active-lang');
+    // Always use embeddedSiteData for translations (fresh from file)
+    var data = (typeof embeddedSiteData !== 'undefined' && embeddedSiteData) ? embeddedSiteData : null;
+    // Fallback to localStorage if embeddedSiteData missing
+    if (!data) {
+        try { var saved = localStorage.getItem('siteData'); if (saved) data = JSON.parse(saved); } catch(e) {}
+    }
+    if (!data || !data.apps) { console.warn('switchLang: no data available'); return; }
     var cards = document.querySelectorAll('.app-card');
+    console.log('switchLang to', lang, '- found', cards.length, 'cards,', data.apps.length, 'apps');
     cards.forEach(function(card, i) {
         var app = data.apps[i];
         if (!app) return;
