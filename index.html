@@ -1066,6 +1066,10 @@ img { max-width: 100%; display: block; }
     .meme-inputs { border-right: none; border-bottom: 1px solid var(--border); }
 }
 
+.lang-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; padding: 4px; border-radius: 6px; opacity: 0.5; transition: var(--transition); line-height: 1; }
+.lang-btn:hover { opacity: 0.9; transform: scale(1.15); }
+.lang-btn.active-lang { opacity: 1; transform: scale(1.15); }
+
 /* Mini Games */
 .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 .game-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; text-align: center; transition: var(--transition); box-shadow: var(--shadow-sm); }
@@ -1161,6 +1165,11 @@ img { max-width: 100%; display: block; }
                 <li><a href="#tech" class="nav-link">Technologie</a></li>
                 <li><a href="#fun" class="nav-link">Rozrywka</a></li>
                 <li><a href="#contact" class="nav-link">Kontakt</a></li>
+                <li style="display:flex;gap:4px;align-items:center;padding:8px 4px;">
+                    <button onclick="switchLang('pl')" id="lang-pl" class="lang-btn active-lang" title="Polski">🇵🇱</button>
+                    <button onclick="switchLang('en')" id="lang-en" class="lang-btn" title="English">🇬🇧</button>
+                    <button onclick="switchLang('de')" id="lang-de" class="lang-btn" title="Deutsch">🇩🇪</button>
+                </li>
             </ul>
             <button class="nav-toggle" id="navToggle">
                 <span></span>
@@ -2222,6 +2231,26 @@ function saveInlineEdits() {
 
 // applySiteData moved to end
 revealOnScroll();
+
+// ===== LANGUAGE SWITCHER =====
+var currentLang = 'pl';
+function switchLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active-lang'); });
+    document.getElementById('lang-' + lang).classList.add('active-lang');
+    var data = getSiteData();
+    if (!data || !data.apps) return;
+    var cards = document.querySelectorAll('.app-card');
+    cards.forEach(function(card, i) {
+        var app = data.apps[i];
+        if (!app) return;
+        var descEl = card.querySelector('.app-desc');
+        if (!descEl) return;
+        if (lang === 'en' && app.desc_en) descEl.textContent = app.desc_en;
+        else if (lang === 'de' && app.desc_de) descEl.textContent = app.desc_de;
+        else descEl.textContent = app.desc;
+    });
+}
 
 // ===== ENTERTAINMENT SECTION =====
 
