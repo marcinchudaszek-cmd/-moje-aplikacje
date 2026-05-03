@@ -1556,9 +1556,15 @@ img { max-width: 100%; display: block; }
 
                 <!-- App selector -->
                 <div class="mini-apps-nav">
-                    <button class="mini-app-btn active" onclick="showMiniApp('meme')">
-                        <span>😂</span> Meme Creator
-                    </button>
+                    <button class="mini-app-btn active" onclick="showMiniApp('meme', this)"><span>😂</span> Meme Creator</button>
+                    <button class="mini-app-btn" onclick="showMiniApp('calc', this)"><span>🔢</span> Kalkulator</button>
+                    <button class="mini-app-btn" onclick="showMiniApp('pass', this)"><span>🔑</span> Hasła</button>
+                    <button class="mini-app-btn" onclick="showMiniApp('bmi', this)"><span>⚖️</span> BMI</button>
+                    <button class="mini-app-btn" onclick="showMiniApp('conv', this)"><span>🔄</span> Konwerter</button>
+                    <button class="mini-app-btn" onclick="showMiniApp('timer', this)"><span>⏱️</span> Stoper</button>
+                    <button class="mini-app-btn" onclick="showMiniApp('note', this)"><span>📝</span> Notatka</button>
+                    <button class="mini-app-btn" onclick="showMiniApp('color', this)"><span>🎨</span> Kolory</button>
+                    <button class="mini-app-btn" onclick="showMiniApp('qr', this)"><span>📱</span> QR Kod</button>
                 </div>
 
                 <!-- MEME CREATOR -->
