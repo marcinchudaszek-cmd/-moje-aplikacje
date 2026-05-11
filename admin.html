@@ -547,9 +547,104 @@
             .stats-grid { grid-template-columns: 1fr; }
             .admin-main { padding: 20px; }
         }
+
+        /* Login overlay */
+        #adminLoginOverlay {
+            position: fixed;
+            inset: 0;
+            background: #0a0a1a;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+        }
+        .login-box {
+            background: rgba(18,18,42,0.98);
+            border: 1px solid rgba(99,102,241,0.25);
+            border-radius: 20px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .login-logo {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+        .login-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg,#6366f1,#ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+        .login-subtitle {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 32px;
+        }
+        .login-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(30,41,59,0.8);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 10px;
+            color: #f1f5f9;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            margin-bottom: 16px;
+            transition: border-color 0.3s;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        .login-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg,#6366f1,#ec4899);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .login-error {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 12px;
+            min-height: 20px;
+        }
+        .login-hint {
+            font-size: 0.78rem;
+            color: #475569;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Login overlay — SHA-256 hash of "BeagleAdmin2026" -->
+    <!-- Aby zmienić hasło: wygeneruj SHA-256 nowego hasła i podmień stałą ADMIN_HASH poniżej -->
+    <div id="adminLoginOverlay">
+        <div class="login-box">
+            <div class="login-logo">🐶</div>
+            <div class="login-title">Beagle Apps Studio</div>
+            <div class="login-subtitle">Panel administracyjny</div>
+            <input type="password" class="login-input" id="loginPasswordInput" placeholder="Hasło" autocomplete="current-password">
+            <button class="login-btn" id="loginSubmitBtn">Zaloguj się</button>
+            <div class="login-error" id="loginError"></div>
+            <div class="login-hint">Domyślne hasło: BeagleAdmin2026</div>
+        </div>
+    </div>
 
     <div class="admin-topbar">
         <div class="admin-logo">
@@ -1815,6 +1910,47 @@ function initAdmin() {
 }
 
 initAdmin();
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+var ADMIN_HASH = '19984dd60621e6a6b2fd994e476324d84a03bee5852065fddfe30aa419447639';
+
+async function hashPassword(pwd) {
+    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
+    return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
+}
+
+function checkAdminSession() {
+    if (sessionStorage.getItem('adminAuth') === '1') {
+        document.getElementById('adminLoginOverlay').style.display = 'none';
+    }
+}
+
+async function handleLogin() {
+    var pwd = document.getElementById('loginPasswordInput').value;
+    var err = document.getElementById('loginError');
+    if (!pwd) { err.textContent = 'Podaj hasło.'; return; }
+    var hash = await hashPassword(pwd);
+    if (hash === ADMIN_HASH) {
+        sessionStorage.setItem('adminAuth', '1');
+        var overlay = document.getElementById('adminLoginOverlay');
+        overlay.style.transition = 'opacity 0.3s';
+        overlay.style.opacity = '0';
+        setTimeout(function() { overlay.style.display = 'none'; }, 300);
+    } else {
+        err.textContent = 'Nieprawidłowe hasło.';
+        document.getElementById('loginPasswordInput').value = '';
+        document.getElementById('loginPasswordInput').focus();
+    }
+}
+
+checkAdminSession();
+
+document.getElementById('loginSubmitBtn').addEventListener('click', handleLogin);
+document.getElementById('loginPasswordInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleLogin();
+    document.getElementById('loginError').textContent = '';
+});
+// ──────────────────────────────────────────────────────────────────────────────
     </script>
 </body>
 </html>
