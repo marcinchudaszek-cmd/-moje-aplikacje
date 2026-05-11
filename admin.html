@@ -1267,7 +1267,9 @@ function getData() {
                 contact: Object.assign({}, defaults.contact, parsed.contact || {}),
                 stats: Object.assign({}, defaults.stats, parsed.stats || {}),
                 gallery: parsed.gallery || [],
-                musicPlaylist: parsed.musicPlaylist || []
+                musicPlaylist: parsed.musicPlaylist || [],
+                videos: parsed.videos || [],
+                animations: parsed.animations || []
             };
         }
     } catch(e) { console.error('getData error:', e); }
