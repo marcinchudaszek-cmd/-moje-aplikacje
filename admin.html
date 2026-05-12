@@ -1220,34 +1220,20 @@
             <div class="admin-page" id="page-analytics">
                 <div class="page-header">
                     <div class="page-title"><i class="fas fa-chart-line"></i> Odwiedziny</div>
+                    <a href="https://beagleapps.goatcounter.com" target="_blank" class="topbar-btn topbar-btn-primary" style="text-decoration:none;"><i class="fas fa-external-link-alt"></i> Otwórz GoatCounter</a>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:28px;" id="gcStatsCards">
-                    <div class="admin-card" style="text-align:center;padding:24px 16px;">
-                        <div style="font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="gcTotal">—</div>
-                        <div style="font-size:0.82rem;color:#64748b;margin-top:4px;">Wszystkich odsłon</div>
-                    </div>
-                    <div class="admin-card" style="text-align:center;padding:24px 16px;">
-                        <div style="font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#06b6d4,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="gcToday">—</div>
-                        <div style="font-size:0.82rem;color:#64748b;margin-top:4px;">Dzisiaj</div>
-                    </div>
-                    <div class="admin-card" style="text-align:center;padding:24px 16px;">
-                        <div style="font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#10b981,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="gcUnique">—</div>
-                        <div style="font-size:0.82rem;color:#64748b;margin-top:4px;">Unikalni dziś</div>
+                <div class="admin-card" style="margin-bottom:20px;padding:16px 20px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(16,185,129,0.08));border:1px solid rgba(99,102,241,0.25);">
+                    <i class="fas fa-info-circle" style="color:#6366f1;font-size:1.3rem;flex-shrink:0;"></i>
+                    <div style="font-size:0.88rem;color:#94a3b8;line-height:1.5;">
+                        Statystyki są widoczne poniżej gdy jesteś <strong style="color:#e2e8f0;">zalogowany na GoatCounter</strong> w tej przeglądarce. Jeśli widzisz stronę logowania — zaloguj się w nowej karcie, potem wróć tutaj i odśwież.
                     </div>
                 </div>
-                <div class="admin-card" style="margin-bottom:24px;">
-                    <div class="admin-card-header">
-                        <div class="admin-card-title"><i class="fas fa-globe"></i> Lokalizacje (ostatnie 30 dni)</div>
-                        <button class="topbar-btn topbar-btn-outline" onclick="loadAnalytics()" style="font-size:0.8rem;padding:6px 14px;"><i class="fas fa-sync-alt"></i> Odśwież</button>
+                <div class="admin-card" style="padding:0;overflow:hidden;border:1px solid rgba(99,102,241,0.2);">
+                    <div style="background:#0f172a;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(99,102,241,0.15);">
+                        <span style="color:#94a3b8;font-size:0.82rem;"><i class="fas fa-globe" style="margin-right:6px;color:#6366f1;"></i>beagleapps.goatcounter.com</span>
+                        <button onclick="document.getElementById('gcFrame').src=document.getElementById('gcFrame').src" class="topbar-btn topbar-btn-outline" style="font-size:0.75rem;padding:4px 10px;"><i class="fas fa-sync-alt"></i> Odśwież</button>
                     </div>
-                    <div id="gcLocations" style="margin-top:12px;"><div style="color:#64748b;font-size:0.9rem;padding:20px;text-align:center;"><i class="fas fa-spinner fa-spin"></i> Ładowanie...</div></div>
-                </div>
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <div class="admin-card-title"><i class="fas fa-external-link-alt"></i> Pełne statystyki</div>
-                    </div>
-                    <p style="color:#94a3b8;font-size:0.9rem;margin:12px 0 16px;">Szczegółowe dane, wykresy i filtry dostępne na panelu GoatCounter.</p>
-                    <a href="https://beagleapps.goatcounter.com" target="_blank" class="topbar-btn topbar-btn-primary" style="display:inline-flex;text-decoration:none;"><i class="fas fa-chart-bar"></i> Otwórz GoatCounter</a>
+                    <iframe id="gcFrame" src="https://beagleapps.goatcounter.com" style="width:100%;height:700px;border:none;background:#fff;" loading="lazy"></iframe>
                 </div>
             </div>
 
@@ -1337,64 +1323,7 @@ function showPage(pageId) {
 }
 
 function loadAnalytics() {
-    var GC_API = 'https://beagleapps.goatcounter.com/api/v0';
-    var token = localStorage.getItem('gcToken') || '';
-
-    function apiFetch(path) {
-        return fetch(GC_API + path, {
-            headers: token ? { 'Authorization': 'Bearer ' + token } : {}
-        });
-    }
-
-    // Fetch total hits (all time)
-    apiFetch('/stats/total?start=2020-01-01&end=2099-12-31')
-        .then(function(r) { return r.ok ? r.json() : null; })
-        .then(function(data) {
-            document.getElementById('gcTotal').textContent = data && data.total !== undefined ? data.total.toLocaleString('pl-PL') : '—';
-        }).catch(function() { document.getElementById('gcTotal').textContent = '—'; });
-
-    // Fetch today's hits
-    var today = new Date().toISOString().slice(0, 10);
-    apiFetch('/stats/total?start=' + today + '&end=' + today)
-        .then(function(r) { return r.ok ? r.json() : null; })
-        .then(function(data) {
-            document.getElementById('gcToday').textContent = data && data.total !== undefined ? data.total.toLocaleString('pl-PL') : '—';
-            document.getElementById('gcUnique').textContent = data && data.total_unique !== undefined ? data.total_unique.toLocaleString('pl-PL') : '—';
-        }).catch(function() {
-            document.getElementById('gcToday').textContent = '—';
-            document.getElementById('gcUnique').textContent = '—';
-        });
-
-    // Fetch locations (last 30 days)
-    var end = new Date().toISOString().slice(0, 10);
-    var startD = new Date(); startD.setDate(startD.getDate() - 30);
-    var start = startD.toISOString().slice(0, 10);
-    var locEl = document.getElementById('gcLocations');
-    locEl.innerHTML = '<div style="color:#64748b;font-size:0.9rem;padding:20px;text-align:center;"><i class="fas fa-spinner fa-spin"></i> Ładowanie...</div>';
-
-    apiFetch('/stats/countries?start=' + start + '&end=' + end + '&limit=20')
-        .then(function(r) { return r.ok ? r.json() : null; })
-        .then(function(data) {
-            if (!data || !data.stats || data.stats.length === 0) {
-                locEl.innerHTML = '<div style="color:#64748b;font-size:0.9rem;padding:20px;text-align:center;">Brak danych lub wymagany token API.</div>';
-                return;
-            }
-            var rows = data.stats.map(function(s) {
-                return '<tr style="border-bottom:1px solid #1e293b;">' +
-                    '<td style="padding:8px 12px;">' + (s.id || '—') + '</td>' +
-                    '<td style="padding:8px 12px;text-align:right;">' + (s.count || 0).toLocaleString('pl-PL') + '</td>' +
-                    '<td style="padding:8px 12px;text-align:right;color:#64748b;">' + (s.count_unique || 0).toLocaleString('pl-PL') + '</td>' +
-                    '</tr>';
-            }).join('');
-            locEl.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:0.88rem;">' +
-                '<thead><tr style="color:#64748b;border-bottom:2px solid #334155;">' +
-                '<th style="padding:8px 12px;text-align:left;">Kraj</th>' +
-                '<th style="padding:8px 12px;text-align:right;">Odsłony</th>' +
-                '<th style="padding:8px 12px;text-align:right;">Unikalni</th>' +
-                '</tr></thead><tbody>' + rows + '</tbody></table>';
-        }).catch(function() {
-            locEl.innerHTML = '<div style="color:#64748b;font-size:0.9rem;padding:20px;text-align:center;">Błąd połączenia z GoatCounter API.</div>';
-        });
+    // iframe-based — nothing to load dynamically
 }
 
 function showToast(message, type) {
