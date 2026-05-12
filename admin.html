@@ -1220,20 +1220,57 @@
             <div class="admin-page" id="page-analytics">
                 <div class="page-header">
                     <div class="page-title"><i class="fas fa-chart-line"></i> Odwiedziny</div>
-                    <a href="https://beagleapps.goatcounter.com" target="_blank" class="topbar-btn topbar-btn-primary" style="text-decoration:none;"><i class="fas fa-external-link-alt"></i> Otwórz GoatCounter</a>
                 </div>
-                <div class="admin-card" style="margin-bottom:20px;padding:16px 20px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(16,185,129,0.08));border:1px solid rgba(99,102,241,0.25);">
-                    <i class="fas fa-info-circle" style="color:#6366f1;font-size:1.3rem;flex-shrink:0;"></i>
-                    <div style="font-size:0.88rem;color:#94a3b8;line-height:1.5;">
-                        Statystyki są widoczne poniżej gdy jesteś <strong style="color:#e2e8f0;">zalogowany na GoatCounter</strong> w tej przeglądarce. Jeśli widzisz stronę logowania — zaloguj się w nowej karcie, potem wróć tutaj i odśwież.
+
+                <!-- Big CTA -->
+                <div class="admin-card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(236,72,153,0.08));border:1px solid rgba(99,102,241,0.3);text-align:center;padding:40px 24px;">
+                    <div style="font-size:3rem;margin-bottom:16px;">📊</div>
+                    <div style="font-size:1.25rem;font-weight:700;color:#e2e8f0;margin-bottom:8px;">Panel GoatCounter</div>
+                    <div style="color:#94a3b8;font-size:0.9rem;margin-bottom:24px;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.6;">
+                        Pełne statystyki odwiedzin, lokalizacje, przeglądarki i źródła ruchu dostępne na GoatCounter.
+                    </div>
+                    <a href="https://beagleapps.goatcounter.com" target="_blank" style="text-decoration:none;display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;padding:14px 28px;border-radius:10px;font-weight:600;font-size:1rem;box-shadow:0 4px 20px rgba(99,102,241,0.4);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 24px rgba(99,102,241,0.55)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(99,102,241,0.4)'">
+                        <i class="fas fa-chart-bar"></i> Otwórz GoatCounter
+                    </a>
+                </div>
+
+                <!-- Status cards -->
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:20px;">
+                    <div class="admin-card" style="padding:20px;display:flex;align-items:center;gap:14px;">
+                        <div style="width:42px;height:42px;border-radius:10px;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-check-circle" style="color:#10b981;font-size:1.2rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.78rem;color:#64748b;margin-bottom:2px;">Skrypt trackujący</div>
+                            <div style="font-weight:600;color:#10b981;font-size:0.9rem;">Aktywny</div>
+                        </div>
+                    </div>
+                    <div class="admin-card" style="padding:20px;display:flex;align-items:center;gap:14px;">
+                        <div style="width:42px;height:42px;border-radius:10px;background:rgba(245,166,35,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-clock" style="color:#f5a623;font-size:1.2rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.78rem;color:#64748b;margin-bottom:2px;">Pierwsze dane</div>
+                            <div style="font-weight:600;color:#f5a623;font-size:0.9rem;">Po pierwszej wizycie</div>
+                        </div>
+                    </div>
+                    <div class="admin-card" style="padding:20px;display:flex;align-items:center;gap:14px;">
+                        <div style="width:42px;height:42px;border-radius:10px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas fa-user-secret" style="color:#6366f1;font-size:1.2rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.78rem;color:#64748b;margin-bottom:2px;">Twoje wizyty</div>
+                            <div style="font-weight:600;color:#6366f1;font-size:0.9rem;">Nie są liczone</div>
+                        </div>
                     </div>
                 </div>
-                <div class="admin-card" style="padding:0;overflow:hidden;border:1px solid rgba(99,102,241,0.2);">
-                    <div style="background:#0f172a;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(99,102,241,0.15);">
-                        <span style="color:#94a3b8;font-size:0.82rem;"><i class="fas fa-globe" style="margin-right:6px;color:#6366f1;"></i>beagleapps.goatcounter.com</span>
-                        <button onclick="document.getElementById('gcFrame').src=document.getElementById('gcFrame').src" class="topbar-btn topbar-btn-outline" style="font-size:0.75rem;padding:4px 10px;"><i class="fas fa-sync-alt"></i> Odśwież</button>
+
+                <!-- Info -->
+                <div class="admin-card" style="padding:16px 20px;display:flex;align-items:flex-start;gap:12px;background:rgba(15,23,42,0.6);">
+                    <i class="fas fa-lightbulb" style="color:#f5a623;margin-top:2px;flex-shrink:0;"></i>
+                    <div style="font-size:0.85rem;color:#94a3b8;line-height:1.6;">
+                        GoatCounter nie zlicza Twoich własnych odwiedzin gdy jesteś zalogowany — to celowe. Dane o lokalizacjach, przeglądarkach i źródłach ruchu zobaczysz w pełnym dashboardzie po kliknięciu przycisku powyżej.
                     </div>
-                    <iframe id="gcFrame" src="https://beagleapps.goatcounter.com" style="width:100%;height:700px;border:none;background:#fff;" loading="lazy"></iframe>
                 </div>
             </div>
 
