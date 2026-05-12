@@ -692,6 +692,9 @@
                 <i class="fas fa-headphones"></i> Muzyka
             </button>
             <div class="sidebar-title" style="margin-top:24px;">Narzędzia</div>
+            <button class="sidebar-btn" onclick="showPage('analytics')">
+                <i class="fas fa-chart-line"></i> Odwiedziny
+            </button>
             <button class="sidebar-btn" onclick="showPage('github-settings')">
                 <i class="fab fa-github"></i> GitHub / Publikacja
             </button>
@@ -1213,6 +1216,41 @@
                 <div id="ghStatus" style="margin-top:16px;"></div>
             </div>
 
+            <!-- ANALYTICS -->
+            <div class="admin-page" id="page-analytics">
+                <div class="page-header">
+                    <div class="page-title"><i class="fas fa-chart-line"></i> Odwiedziny</div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:28px;" id="gcStatsCards">
+                    <div class="admin-card" style="text-align:center;padding:24px 16px;">
+                        <div style="font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="gcTotal">—</div>
+                        <div style="font-size:0.82rem;color:#64748b;margin-top:4px;">Wszystkich odsłon</div>
+                    </div>
+                    <div class="admin-card" style="text-align:center;padding:24px 16px;">
+                        <div style="font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#06b6d4,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="gcToday">—</div>
+                        <div style="font-size:0.82rem;color:#64748b;margin-top:4px;">Dzisiaj</div>
+                    </div>
+                    <div class="admin-card" style="text-align:center;padding:24px 16px;">
+                        <div style="font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#10b981,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="gcUnique">—</div>
+                        <div style="font-size:0.82rem;color:#64748b;margin-top:4px;">Unikalni dziś</div>
+                    </div>
+                </div>
+                <div class="admin-card" style="margin-bottom:24px;">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-globe"></i> Lokalizacje (ostatnie 30 dni)</div>
+                        <button class="topbar-btn topbar-btn-outline" onclick="loadAnalytics()" style="font-size:0.8rem;padding:6px 14px;"><i class="fas fa-sync-alt"></i> Odśwież</button>
+                    </div>
+                    <div id="gcLocations" style="margin-top:12px;"><div style="color:#64748b;font-size:0.9rem;padding:20px;text-align:center;"><i class="fas fa-spinner fa-spin"></i> Ładowanie...</div></div>
+                </div>
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <div class="admin-card-title"><i class="fas fa-external-link-alt"></i> Pełne statystyki</div>
+                    </div>
+                    <p style="color:#94a3b8;font-size:0.9rem;margin:12px 0 16px;">Szczegółowe dane, wykresy i filtry dostępne na panelu GoatCounter.</p>
+                    <a href="https://beagleapps.goatcounter.com" target="_blank" class="topbar-btn topbar-btn-primary" style="display:inline-flex;text-decoration:none;"><i class="fas fa-chart-bar"></i> Otwórz GoatCounter</a>
+                </div>
+            </div>
+
             <!-- HELP -->
             <div class="admin-page" id="page-help">
                 <div class="page-header">
@@ -1295,6 +1333,68 @@ function showPage(pageId) {
     if (pageId === 'add-app' && !document.getElementById('editingAppId').value) clearAppForm();
     if (pageId === 'gallery-manage') loadGalleryList();
     if (pageId === 'music-manage') loadMusicList();
+    if (pageId === 'analytics') loadAnalytics();
+}
+
+function loadAnalytics() {
+    var GC_API = 'https://beagleapps.goatcounter.com/api/v0';
+    var token = localStorage.getItem('gcToken') || '';
+
+    function apiFetch(path) {
+        return fetch(GC_API + path, {
+            headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+        });
+    }
+
+    // Fetch total hits (all time)
+    apiFetch('/stats/total?start=2020-01-01&end=2099-12-31')
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(data) {
+            document.getElementById('gcTotal').textContent = data && data.total !== undefined ? data.total.toLocaleString('pl-PL') : '—';
+        }).catch(function() { document.getElementById('gcTotal').textContent = '—'; });
+
+    // Fetch today's hits
+    var today = new Date().toISOString().slice(0, 10);
+    apiFetch('/stats/total?start=' + today + '&end=' + today)
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(data) {
+            document.getElementById('gcToday').textContent = data && data.total !== undefined ? data.total.toLocaleString('pl-PL') : '—';
+            document.getElementById('gcUnique').textContent = data && data.total_unique !== undefined ? data.total_unique.toLocaleString('pl-PL') : '—';
+        }).catch(function() {
+            document.getElementById('gcToday').textContent = '—';
+            document.getElementById('gcUnique').textContent = '—';
+        });
+
+    // Fetch locations (last 30 days)
+    var end = new Date().toISOString().slice(0, 10);
+    var startD = new Date(); startD.setDate(startD.getDate() - 30);
+    var start = startD.toISOString().slice(0, 10);
+    var locEl = document.getElementById('gcLocations');
+    locEl.innerHTML = '<div style="color:#64748b;font-size:0.9rem;padding:20px;text-align:center;"><i class="fas fa-spinner fa-spin"></i> Ładowanie...</div>';
+
+    apiFetch('/stats/countries?start=' + start + '&end=' + end + '&limit=20')
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(data) {
+            if (!data || !data.stats || data.stats.length === 0) {
+                locEl.innerHTML = '<div style="color:#64748b;font-size:0.9rem;padding:20px;text-align:center;">Brak danych lub wymagany token API.</div>';
+                return;
+            }
+            var rows = data.stats.map(function(s) {
+                return '<tr style="border-bottom:1px solid #1e293b;">' +
+                    '<td style="padding:8px 12px;">' + (s.id || '—') + '</td>' +
+                    '<td style="padding:8px 12px;text-align:right;">' + (s.count || 0).toLocaleString('pl-PL') + '</td>' +
+                    '<td style="padding:8px 12px;text-align:right;color:#64748b;">' + (s.count_unique || 0).toLocaleString('pl-PL') + '</td>' +
+                    '</tr>';
+            }).join('');
+            locEl.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:0.88rem;">' +
+                '<thead><tr style="color:#64748b;border-bottom:2px solid #334155;">' +
+                '<th style="padding:8px 12px;text-align:left;">Kraj</th>' +
+                '<th style="padding:8px 12px;text-align:right;">Odsłony</th>' +
+                '<th style="padding:8px 12px;text-align:right;">Unikalni</th>' +
+                '</tr></thead><tbody>' + rows + '</tbody></table>';
+        }).catch(function() {
+            locEl.innerHTML = '<div style="color:#64748b;font-size:0.9rem;padding:20px;text-align:center;">Błąd połączenia z GoatCounter API.</div>';
+        });
 }
 
 function showToast(message, type) {
