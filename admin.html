@@ -1887,6 +1887,50 @@ function publishToGitHub() {
             currentContent = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
         }
 
+        // Merge: parse current embeddedSiteData from GitHub and combine with local edits
+        // This prevents overwriting apps/gallery/music added via git push
+        try {
+            var liveMatch = currentContent.match(/\/\*SITE_DATA_START\*\/([\s\S]*?)\/\*SITE_DATA_END\*\//);
+            if (liveMatch) {
+                var liveJs = liveMatch[1].trim().replace(/^var\s+embeddedSiteData\s*=\s*/, '').replace(/;\s*$/, '');
+                var liveData = JSON.parse(liveJs);
+
+                // Apps: merge by name — start with live (has git-added apps), add any local-only apps
+                var mergedApps = liveData.apps ? liveData.apps.slice() : [];
+                (siteData.apps || []).forEach(function(localApp) {
+                    var exists = mergedApps.some(function(a) { return a.name === localApp.name; });
+                    if (!exists) mergedApps.push(localApp);
+                    else {
+                        // Update existing app with local edits (in case user edited it in admin)
+                        var idx = mergedApps.findIndex(function(a) { return a.name === localApp.name; });
+                        if (idx !== -1) mergedApps[idx] = localApp;
+                    }
+                });
+                siteData.apps = mergedApps;
+
+                // Gallery, music, videos, animations: merge by path/file, prefer local additions
+                function mergeLists(liveList, localList, keyField) {
+                    var merged = liveList ? liveList.slice() : [];
+                    (localList || []).forEach(function(item) {
+                        var exists = merged.some(function(x) { return x[keyField] === item[keyField]; });
+                        if (!exists) merged.push(item);
+                    });
+                    return merged;
+                }
+                siteData.gallery = mergeLists(liveData.gallery, siteData.gallery, 'file');
+                siteData.musicPlaylist = mergeLists(liveData.musicPlaylist, siteData.musicPlaylist, 'file');
+                siteData.videos = mergeLists(liveData.videos, siteData.videos, 'path');
+                siteData.animations = mergeLists(liveData.animations, siteData.animations, 'path');
+
+                // Stats: use whichever has more apps (higher stat1Value = more up to date)
+                if (liveData.stats && liveData.stats.stat1Value > (siteData.stats && siteData.stats.stat1Value || 0)) {
+                    siteData.stats = liveData.stats;
+                }
+            }
+        } catch(mergeErr) {
+            console.warn('Merge warning (using local data):', mergeErr);
+        }
+
         var marker = '/*SITE_DATA_START*/';
         var markerEnd = '/*SITE_DATA_END*/';
         var dataStr = 'var embeddedSiteData = ' + JSON.stringify(siteData) + ';';
