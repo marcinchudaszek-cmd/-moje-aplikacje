@@ -1908,9 +1908,12 @@ function publishToGitHub() {
                     var exists = mergedApps.some(function(a) { return a.name === localApp.name; });
                     if (!exists) mergedApps.push(localApp);
                     else {
-                        // Update existing app with local edits (in case user edited it in admin)
+                        // Update existing app with local edits (in case user edited it in admin).
+                        // Field-level merge (not wholesale replace!): start from the live app object
+                        // so any fields that exist live but are missing from a stale local copy
+                        // (e.g. a new field added directly via git push) survive the publish.
                         var idx = mergedApps.findIndex(function(a) { return a.name === localApp.name; });
-                        if (idx !== -1) mergedApps[idx] = localApp;
+                        if (idx !== -1) mergedApps[idx] = Object.assign({}, mergedApps[idx], localApp);
                     }
                 });
                 siteData.apps = mergedApps;
