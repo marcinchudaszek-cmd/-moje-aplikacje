@@ -2126,8 +2126,9 @@ function applySiteData() {
                 var downloadsHtml = app.downloads ? '<span><i class="fas fa-download"></i> ' + app.downloads + '</span>' : '';
 
                 var sameLink = demoUrl && githubUrl && demoUrl === githubUrl;
+                var openLabel = (i18n[currentLang] && i18n[currentLang].btn_open) || i18n.pl.btn_open;
                 var linksHtml = '';
-                if (demoUrl) linksHtml += '<a href="' + demoUrl + '" class="card-link-btn" target="_blank" rel="noopener"><i class="fas fa-eye"></i> Demo</a>';
+                if (demoUrl) linksHtml += '<a href="' + demoUrl + '" class="card-link-btn card-link-open" target="_blank" rel="noopener"><i class="fas fa-eye"></i> <span class="btn-label">' + openLabel + '</span></a>';
                 if (githubUrl && !sameLink) linksHtml += '<a href="' + githubUrl + '" class="card-link-btn" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>';
                 if (playUrl) linksHtml += '<a href="' + playUrl + '" class="card-link-btn card-link-play" target="_blank" rel="noopener"><i class="fab fa-google-play"></i> Google Play</a>';
                 if (appStoreUrl) linksHtml += '<a href="' + appStoreUrl + '" class="card-link-btn" target="_blank" rel="noopener"><i class="fab fa-app-store"></i> App Store</a>';
@@ -2490,6 +2491,7 @@ var i18n = {
         hl3: 'AI: Gemini, Groq, Capacitor', hl4: 'Polska & Niemcy 🐾',
         tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Rozrywka', tag_contact: 'Kontakt',
         apps_desc: 'Każdy projekt to unikalne rozwiązanie. Filtruj według kategorii.',
+        btn_open: 'Otwórz',
         tech_desc: 'Narzędzia i technologie, z których korzystam na co dzień.',
         fun_desc: 'Galeria, muzyka, animacje, filmy i mini gry — bo życie to nie tylko kod!',
         contact_desc: 'Masz pomysł na aplikację? Napisz — zbuduję to razem z Tobą.'
@@ -2513,6 +2515,7 @@ var i18n = {
         hl3: 'AI: Gemini, Groq, Capacitor', hl4: 'Poland & Germany 🐾',
         tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Creative', tag_contact: 'Contact',
         apps_desc: 'Every project is a unique solution. Filter by category.',
+        btn_open: 'Open',
         tech_desc: 'Tools and technologies I use every day.',
         fun_desc: 'Gallery, music, animations, short films and mini games — because life is more than just code!',
         contact_desc: 'Got an app idea? Let me know — I\'ll build it with you.'
@@ -2536,6 +2539,7 @@ var i18n = {
         hl3: 'KI: Gemini, Groq, Capacitor', hl4: 'Polen & Deutschland 🐾',
         tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Kreativ', tag_contact: 'Kontakt',
         apps_desc: 'Jedes Projekt ist eine einzigartige Lösung. Nach Kategorie filtern.',
+        btn_open: 'Öffnen',
         tech_desc: 'Tools und Technologien, die ich täglich einsetze.',
         fun_desc: 'Galerie, Musik, Animationen, Kurzfilme und Mini-Spiele — weil das Leben mehr ist als nur Code!',
         contact_desc: 'Hast du eine App-Idee? Schreib mir — ich baue sie mit dir.'
@@ -2554,6 +2558,13 @@ function switchLang(lang) {
         var key = el.getAttribute('data-i18n');
         if (t[key] !== undefined) el.innerHTML = t[key];
     });
+
+    // Translate "Open" button labels on app cards
+    if (t.btn_open) {
+        document.querySelectorAll('.card-link-open .btn-label').forEach(function(el) {
+            el.textContent = t.btn_open;
+        });
+    }
 
     // Translate app descriptions
     var data = (typeof embeddedSiteData !== 'undefined' && embeddedSiteData) ? embeddedSiteData : null;
