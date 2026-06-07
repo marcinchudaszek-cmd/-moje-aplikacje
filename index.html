@@ -2125,9 +2125,10 @@ function applySiteData() {
                 var ratingHtml = app.rating ? '<span><i class="fas fa-star"></i> ' + app.rating + '</span>' : '';
                 var downloadsHtml = app.downloads ? '<span><i class="fas fa-download"></i> ' + app.downloads + '</span>' : '';
 
+                var sameLink = demoUrl && githubUrl && demoUrl === githubUrl;
                 var linksHtml = '';
                 if (demoUrl) linksHtml += '<a href="' + demoUrl + '" class="card-link-btn" target="_blank" rel="noopener"><i class="fas fa-eye"></i> Demo</a>';
-                if (githubUrl) linksHtml += '<a href="' + githubUrl + '" class="card-link-btn" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>';
+                if (githubUrl && !sameLink) linksHtml += '<a href="' + githubUrl + '" class="card-link-btn" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>';
                 if (playUrl) linksHtml += '<a href="' + playUrl + '" class="card-link-btn card-link-play" target="_blank" rel="noopener"><i class="fab fa-google-play"></i> Google Play</a>';
                 if (appStoreUrl) linksHtml += '<a href="' + appStoreUrl + '" class="card-link-btn" target="_blank" rel="noopener"><i class="fab fa-app-store"></i> App Store</a>';
                 if (groupUrl) linksHtml += '<a href="' + groupUrl + '" class="card-link-btn" target="_blank" rel="noopener"><i class="fas fa-users"></i> Grupa testerów</a>';
