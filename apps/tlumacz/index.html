@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tłumacz</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>#file-btn{display:none!important}</style>
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>🌐 Tłumacz</h1>
+      <button id="theme-toggle" class="icon-btn" title="Przełącz motyw">🌙</button>
+    </header>
+
+    <main class="container">
+      <div class="lang-bar">
+        <select id="source-lang" class="lang-select"></select>
+        <button id="swap" class="swap-btn" title="Zamień języki">⇄</button>
+        <select id="target-lang" class="lang-select"></select>
+      </div>
+
+      <div class="panels">
+        <!-- Panel wejściowy -->
+        <div class="panel">
+          <textarea
+            id="input"
+            placeholder="Wpisz tekst lub użyj mikrofonu..."
+            maxlength="5000"
+          ></textarea>
+          <div class="panel-footer">
+            <div class="actions">
+              <button id="mic" class="icon-btn" title="Dyktuj">🎤</button>
+              <button id="speak-input" class="icon-btn" title="Odczytaj">🔊</button>
+              <button id="clear" class="icon-btn" title="Wyczyść">✕</button>
+              <label id="file-btn" class="icon-btn" title="Wczytaj plik .txt">
+                📄
+                <input id="file-input" type="file" accept=".txt,.pdf,.docx" hidden />
+              </label>
+            </div>
+            <div class="meta">
+              <span id="detected" class="detected"></span>
+              <span id="char-count" class="char-count">0 / 5000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel wyjściowy -->
+        <div class="panel output-panel">
+          <div id="output" class="output"></div>
+          <div class="panel-footer">
+            <div class="actions">
+              <button id="speak-output" class="icon-btn" title="Odczytaj">🔊</button>
+              <button id="copy" class="icon-btn" title="Kopiuj">📋</button>
+              <button id="favorite" class="icon-btn" title="Dodaj do ulubionych">☆</button>
+            </div>
+            <span id="status" class="status"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Słownik i definicje -->
+      <section id="dictionary" class="dictionary" hidden></section>
+
+      <!-- Historia i ulubione -->
+      <section class="library">
+        <div class="tabs">
+          <button class="tab active" data-tab="history">🕓 Historia</button>
+          <button class="tab" data-tab="favorites">⭐ Ulubione</button>
+          <button id="clear-list" class="icon-btn clear-list" title="Wyczyść listę">🗑️</button>
+        </div>
+        <ul id="list" class="list"></ul>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
