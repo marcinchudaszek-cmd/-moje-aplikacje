@@ -1208,6 +1208,7 @@ img { max-width: 100%; display: block; }
             <ul class="nav-menu" id="navMenu">
                 <li><a href="#home" class="nav-link active" data-i18n="nav_home">Start</a></li>
                 <li><a href="#apps" class="nav-link" data-i18n="nav_apps">Aplikacje</a></li>
+                <li><a href="#games" class="nav-link" data-i18n="nav_games">Gry</a></li>
                 <li><a href="#about" class="nav-link" data-i18n="nav_about">O mnie</a></li>
                 <li><a href="#tech" class="nav-link" data-i18n="nav_tech">Technologie</a></li>
                 <li><a href="#fun" class="nav-link" data-i18n="nav_fun">Rozrywka</a></li>
@@ -1290,7 +1291,6 @@ img { max-width: 100%; display: block; }
                 <span class="section-tag" data-i18n="tag_portfolio">Portfolio</span>
                 <h2 class="section-title" data-i18n="section_apps">Moje Aplikacje</h2>
                 <p class="section-desc" data-i18n="apps_desc">Każdy projekt to unikalne rozwiązanie. Filtruj według kategorii.</p>
-                <p class="section-desc games-note" data-i18n="games_note" style="margin-top:8px;font-weight:600;">🎮 Gry to nie tylko dodatek — to moja mocna strona! Tworzę zaawansowane gry mobilne na Androida (pasjans, gry logiczne, przeciwnicy AI) — sprawdź filtr „Gry” i pobierz je od razu jako pliki APK. Wkrótce pojawi się ich więcej!</p>
             </div>
 
             <div class="filter-bar">
@@ -1302,9 +1302,6 @@ img { max-width: 100%; display: block; }
                 </button>
                 <button class="filter-btn" data-filter="mobile">
                     <i class="fas fa-mobile-alt"></i> Mobile
-                </button>
-                <button class="filter-btn" data-filter="games">
-                    <i class="fas fa-gamepad"></i> Gry
                 </button>
             </div>
 
@@ -1460,6 +1457,20 @@ img { max-width: 100%; display: block; }
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section class="apps-section games-section" id="games">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag" data-i18n="tag_games">Gry</span>
+                <h2 class="section-title" data-i18n="section_games">Moje Gry</h2>
+                <p class="section-desc games-note" data-i18n="games_note" style="font-weight:600;">🎮 Gry to nie tylko dodatek — to moja mocna strona! Tworzę gry na Androida oraz grywalne od razu w przeglądarce (pasjans, gry logiczne, przeciwnicy AI, zręcznościówki). Pobierz APK albo zagraj online. Wkrótce pojawi się ich więcej!</p>
+            </div>
+
+            <div class="apps-grid" id="gamesGrid">
             </div>
         </div>
     </section>
@@ -2110,8 +2121,10 @@ function applySiteData() {
 
     if (data.apps && data.apps.length > 0) {
         var grid = document.getElementById('appsGrid');
+        var gamesGrid = document.getElementById('gamesGrid');
         if (grid) {
             grid.innerHTML = '';
+            if (gamesGrid) gamesGrid.innerHTML = '';
             var catLabels = { web:'Web App', mobile:'Mobile App', desktop:'Desktop App', ai:'AI / ML', games:'Gra' };
             var badgeHTML = { 'new':'<span class="app-badge badge-new">Nowa</span>', 'popular':'<span class="app-badge badge-popular">Popularna</span>', 'beta':'<span class="app-badge badge-beta">Beta</span>' };
 
@@ -2148,6 +2161,7 @@ function applySiteData() {
 
                 card.className = 'app-card';
                 card.dataset.category = app.category;
+                var targetGrid = (app.category === 'games' && gamesGrid) ? gamesGrid : grid;
                 card.innerHTML =
                     '<div class="app-image">' +
                         '<div class="app-placeholder" style="background:' + app.color + ';">' + iconHtml + '</div>' +
@@ -2163,7 +2177,7 @@ function applySiteData() {
                         '</div>' +
                         (linksHtml ? '<div class="card-links">' + linksHtml + '</div>' : '') +
                     '</div>';
-                grid.appendChild(card);
+                targetGrid.appendChild(card);
             });
             initFilters();
         }
@@ -2308,7 +2322,7 @@ function initFilters() {
             document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
             newBtn.classList.add('active');
             var filter = newBtn.dataset.filter;
-            document.querySelectorAll('.app-card').forEach(function(card, index) {
+            document.querySelectorAll('#appsGrid .app-card').forEach(function(card, index) {
                 if (filter === 'all' || card.dataset.category === filter) {
                     card.classList.remove('hidden');
                     card.style.animation = 'fadeInUp 0.5s ease ' + (index * 0.1) + 's both';
@@ -2480,11 +2494,12 @@ revealOnScroll();
 var currentLang = 'pl';
 var i18n = {
     pl: {
-        nav_home: 'Start', nav_apps: 'Aplikacje', nav_about: 'O mnie',
+        nav_home: 'Start', nav_apps: 'Aplikacje', nav_games: 'Gry', nav_about: 'O mnie',
         nav_tech: 'Technologie', nav_fun: 'Rozrywka', nav_contact: 'Kontakt',
         hero_title: 'Tworzę <span class="gradient-text">praktyczne</span><br>aplikacje',
         hero_subtitle: 'Projektuję aplikacje mobilne i webowe, które ułatwiają codzienne życie. Od sportu, przez muzykę, po ciekawostki ze świata.',
         section_apps: 'Moje Aplikacje',
+        section_games: 'Moje Gry',
         section_about: 'Niezależny deweloper<br>aplikacji',
         section_tech: 'Technologie',
         section_fun: 'Strefa Kreatywna',
@@ -2496,9 +2511,9 @@ var i18n = {
         about_text2: 'Beagle Apps Studio to nie tylko nazwa — to mój trójkolorowy beagle, który siedzi obok podczas każdej sesji kodowania. 13 aplikacji, własna muzyka, filmy i grafika AI — każdy projekt to nowa historia, która zaczyna się od osobistej pasji.',
         hl1: '12 aplikacji w Google Play', hl2: 'PWA z trybem offline',
         hl3: 'AI: Gemini, Groq, Capacitor', hl4: 'Polska & Niemcy 🐾',
-        tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Rozrywka', tag_contact: 'Kontakt',
+        tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Rozrywka', tag_contact: 'Kontakt', tag_games: 'Gry',
         apps_desc: 'Każdy projekt to unikalne rozwiązanie. Filtruj według kategorii.',
-        games_note: '🎮 Gry to nie tylko dodatek — to moja mocna strona! Tworzę zaawansowane gry mobilne na Androida (pasjans, gry logiczne, przeciwnicy AI) — sprawdź filtr „Gry” i pobierz je od razu jako pliki APK. Wkrótce pojawi się ich więcej!',
+        games_note: '🎮 Gry to nie tylko dodatek — to moja mocna strona! Tworzę gry na Androida oraz grywalne od razu w przeglądarce (pasjans, gry logiczne, przeciwnicy AI, zręcznościówki). Pobierz APK albo zagraj online. Wkrótce pojawi się ich więcej!',
         btn_open: 'Otwórz',
         btn_download_apk: 'Pobierz APK',
         tech_desc: 'Narzędzia i technologie, z których korzystam na co dzień.',
@@ -2506,11 +2521,12 @@ var i18n = {
         contact_desc: 'Masz pomysł na aplikację? Napisz — zbuduję to razem z Tobą.'
     },
     en: {
-        nav_home: 'Home', nav_apps: 'Apps', nav_about: 'About',
+        nav_home: 'Home', nav_apps: 'Apps', nav_games: 'Games', nav_about: 'About',
         nav_tech: 'Technologies', nav_fun: 'Creative', nav_contact: 'Contact',
         hero_title: 'I build <span class=\"gradient-text\">practical</span><br>apps',
         hero_subtitle: 'I design mobile and web apps that make everyday life easier — from sports and music to trivia and culinary adventures.',
         section_apps: 'My Apps',
+        section_games: 'My Games',
         section_about: 'Independent App<br>Developer',
         section_tech: 'Technologies',
         section_fun: 'Creative Zone',
@@ -2522,9 +2538,9 @@ var i18n = {
         about_text2: "Beagle Apps Studio isn't just a name — it's my tricolor beagle who sits beside me through every coding session. 13 apps, original music, short films and AI art — every project starts with a personal passion and ends with something real.",
         hl1: '12 apps on Google Play', hl2: 'PWA with offline mode',
         hl3: 'AI: Gemini, Groq, Capacitor', hl4: 'Poland & Germany 🐾',
-        tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Creative', tag_contact: 'Contact',
+        tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Creative', tag_contact: 'Contact', tag_games: 'Games',
         apps_desc: 'Every project is a unique solution. Filter by category.',
-        games_note: '🎮 Games aren\'t just a side project — they\'re one of my strengths! I build advanced mobile games for Android (solitaire, puzzle games, AI opponents) — check out the "Games" filter and download them right away as APK files. More are on the way!',
+        games_note: '🎮 Games aren\'t just a side project — they\'re one of my strengths! I build games for Android as well as ones playable right in the browser (solitaire, puzzle games, AI opponents, arcade). Download the APK or play online. More are on the way!',
         btn_open: 'Open',
         btn_download_apk: 'Download APK',
         tech_desc: 'Tools and technologies I use every day.',
@@ -2532,11 +2548,12 @@ var i18n = {
         contact_desc: 'Got an app idea? Let me know — I\'ll build it with you.'
     },
     de: {
-        nav_home: 'Start', nav_apps: 'Apps', nav_about: 'Über mich',
+        nav_home: 'Start', nav_apps: 'Apps', nav_games: 'Spiele', nav_about: 'Über mich',
         nav_tech: 'Technologien', nav_fun: 'Kreativ', nav_contact: 'Kontakt',
         hero_title: 'Ich entwickle <span class=\"gradient-text\">praktische</span><br>Apps',
         hero_subtitle: 'Ich baue mobile und Web-Apps, die den Alltag leichter machen — von Sport und Musik bis hin zu Trivia und kulinarischen Abenteuern.',
         section_apps: 'Meine Apps',
+        section_games: 'Meine Spiele',
         section_about: 'Unabhängiger App-<br>Entwickler',
         section_tech: 'Technologien',
         section_fun: 'Kreativzone',
@@ -2548,9 +2565,9 @@ var i18n = {
         about_text2: 'Beagle Apps Studio ist nicht nur ein Name — es ist mein dreifarbiger Beagle, der bei jeder Coding-Session neben mir sitzt. 13 Apps, eigene Musik, Kurzfilme und KI-Kunst — jedes Projekt beginnt mit einer persönlichen Leidenschaft.',
         hl1: '12 Apps bei Google Play', hl2: 'PWA mit Offline-Modus',
         hl3: 'KI: Gemini, Groq, Capacitor', hl4: 'Polen & Deutschland 🐾',
-        tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Kreativ', tag_contact: 'Kontakt',
+        tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Kreativ', tag_contact: 'Kontakt', tag_games: 'Spiele',
         apps_desc: 'Jedes Projekt ist eine einzigartige Lösung. Nach Kategorie filtern.',
-        games_note: '🎮 Spiele sind nicht nur ein Nebenprojekt — sie gehören zu meinen Stärken! Ich entwickle fortgeschrittene mobile Spiele für Android (Solitaire, Logikspiele, KI-Gegner) — schau dir den Filter „Spiele" an und lade sie direkt als APK-Datei herunter. Bald gibt es mehr davon!',
+        games_note: '🎮 Spiele sind nicht nur ein Nebenprojekt — sie gehören zu meinen Stärken! Ich entwickle Spiele für Android sowie welche, die direkt im Browser spielbar sind (Solitaire, Logikspiele, KI-Gegner, Arcade). Lade das APK herunter oder spiele online. Bald gibt es mehr davon!',
         btn_open: 'Öffnen',
         btn_download_apk: 'APK herunterladen',
         tech_desc: 'Tools und Technologien, die ich täglich einsetze.',
