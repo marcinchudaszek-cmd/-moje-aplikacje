@@ -1345,7 +1345,7 @@ function getData() {
     return defaults;
 }
 
-function saveData(data) { localStorage.setItem('siteData', JSON.stringify(data)); }
+function saveData(data) { localStorage.setItem('siteData', JSON.stringify(data)); localStorage.setItem('siteDataDirty', '1'); }
 
 function showPage(pageId) {
     document.querySelectorAll('.admin-page').forEach(function(p) { p.classList.remove('active'); });
@@ -1989,6 +1989,7 @@ function publishToGitHub() {
         btn.innerHTML = origHTML;
         btn.disabled = false;
         if (result.content) {
+            localStorage.removeItem('siteDataDirty'); // opublikowane — strona wraca do danych z serwera
             showToast('Opublikowano! Zmiany widoczne za ~1 min na beagleapps.pl', 'success');
         } else {
             showToast('Błąd: ' + (result.message || 'Nieznany'), 'error');
@@ -2026,6 +2027,7 @@ function initAdmin() {
                 var jsCode = match[1].trim().replace(/^var\s+embeddedSiteData\s*=\s*/, '').replace(/;\s*$/, '');
                 var data = JSON.parse(jsCode);
                 localStorage.setItem('siteData', JSON.stringify(data));
+                localStorage.removeItem('siteDataDirty'); // zsynchronizowano z serwerem
             }
         })
         .catch(function() {

@@ -2044,11 +2044,20 @@ img { max-width: 100%; display: block; }
 
     <script>
 function getSiteData() {
+    // Opublikowane dane wbudowane w HTML są źródłem prawdy — każde wejście
+    // pokazuje świeżą wersję bez czyszczenia danych przeglądarki.
+    // Wyjątek: niezapublikowane edycje lokalne (flaga siteDataDirty) mają pierwszeństwo.
     try {
-        var saved = localStorage.getItem('siteData');
-        if (saved) return JSON.parse(saved);
+        if (localStorage.getItem('siteDataDirty') === '1') {
+            var saved = localStorage.getItem('siteData');
+            if (saved) return JSON.parse(saved);
+        }
     } catch(e) {}
-    if (typeof embeddedSiteData !== 'undefined' && embeddedSiteData) return embeddedSiteData;
+    if (typeof embeddedSiteData !== 'undefined' && embeddedSiteData) {
+        try { localStorage.setItem('siteData', JSON.stringify(embeddedSiteData)); } catch(e) {}
+        return embeddedSiteData;
+    }
+    try { var s2 = localStorage.getItem('siteData'); if (s2) return JSON.parse(s2); } catch(e) {}
     return null;
 }
 
@@ -2480,6 +2489,7 @@ function saveInlineEdits() {
     if (aboutTexts[0]) data.profile.aboutText1 = aboutTexts[0].textContent;
     if (aboutTexts[1]) data.profile.aboutText2 = aboutTexts[1].textContent;
     localStorage.setItem('siteData', JSON.stringify(data));
+    localStorage.setItem('siteDataDirty', '1'); // niezapublikowane edycje — chroni je getSiteData()
     var notif = document.createElement('div');
     notif.style.cssText = 'position:fixed;bottom:30px;right:30px;padding:16px 24px;background:linear-gradient(135deg,#10b981,#059669);color:white;border-radius:12px;font-family:Inter,sans-serif;font-weight:600;z-index:99999;box-shadow:0 10px 40px rgba(0,0,0,0.3);';
     notif.textContent = '✅ Zmiany zapisane!';
