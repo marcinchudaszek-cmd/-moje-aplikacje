@@ -266,13 +266,13 @@ img { max-width: 100%; display: block; }
 
 /* Hero */
 .hero {
-    min-height: 100vh;
+    min-height: 92vh;
     display: flex;
     align-items: center;
-    padding: 120px 24px 80px;
+    padding: 96px 24px 48px;
     max-width: 1200px;
     margin: 0 auto;
-    gap: 60px;
+    gap: 40px;
     position: relative;
     z-index: 1;
 }
@@ -474,8 +474,8 @@ img { max-width: 100%; display: block; }
 
 .apps-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 28px;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 20px;
 }
 
 .app-card {
@@ -498,7 +498,7 @@ img { max-width: 100%; display: block; }
 
 .app-image {
     position: relative;
-    height: 220px;
+    height: 140px;
     overflow: hidden;
 }
 
@@ -507,7 +507,7 @@ img { max-width: 100%; display: block; }
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 4rem;
+    font-size: 3rem;
     color: rgba(255,255,255,0.8);
     transition: var(--transition);
 }
@@ -530,9 +530,9 @@ img { max-width: 100%; display: block; }
 .badge-popular { background: #f59e0b; color: #1a1a2e; }
 .badge-beta { background: #2456a4; color: white; }
 
-.app-content { padding: 24px; }
+.app-content { padding: 18px 20px; }
 
-.card-links { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 24px 20px; }
+.card-links { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 20px 16px; }
 .card-link-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 50px; font-size: 0.82rem; font-weight: 600; color: var(--primary); background: var(--bg-surface); border: 1px solid var(--border); text-decoration: none; transition: var(--transition); cursor: pointer; }
 .card-link-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
 .card-link-btn.card-link-play { background: var(--primary); color: white; border-color: var(--primary); }
@@ -547,16 +547,22 @@ img { max-width: 100%; display: block; }
     margin-bottom: 8px;
 }
 
-.app-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+.app-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
 
 .app-desc {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--text-secondary);
-    margin-bottom: 16px;
-    line-height: 1.6;
+    margin-bottom: 14px;
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.app-tech { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.app-card:hover .app-desc { -webkit-line-clamp: unset; }
+
+.app-tech { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 
 .tech-tag {
     padding: 4px 12px;
@@ -965,7 +971,7 @@ img { max-width: 100%; display: block; }
     .hero-visual { display: none; }
     .hero-stats { gap: 30px; }
     .apps-grid { grid-template-columns: 1fr; }
-    .app-image { height: 180px; }
+    .app-image { height: 120px; }
     .form-row { grid-template-columns: 1fr; }
     .footer-content { flex-direction: column; text-align: center; }
     .about-highlights { grid-template-columns: 1fr; }
@@ -2165,7 +2171,7 @@ function applySiteData() {
 
                 var card = document.createElement('div');
                 var iconHtml = app.iconImage
-                    ? '<img src="' + app.iconImage + '" alt="' + app.name + '" style="width:80px;height:80px;border-radius:16px;object-fit:cover;box-shadow:0 4px 15px rgba(0,0,0,0.2);">'
+                    ? '<img src="' + app.iconImage + '" alt="' + app.name + '" style="width:64px;height:64px;border-radius:14px;object-fit:cover;box-shadow:0 4px 15px rgba(0,0,0,0.2);">'
                     : '<i class="' + app.icon + '"></i>';
 
                 card.className = 'app-card';
