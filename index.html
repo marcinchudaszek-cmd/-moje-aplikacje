@@ -495,6 +495,23 @@ img { max-width: 100%; display: block; }
 }
 
 .app-card.hidden { display: none; }
+.app-card.collapsed { display: none; }
+
+.show-more-btn {
+    display: block;
+    margin: 32px auto 0;
+    padding: 13px 36px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+}
+.show-more-btn:hover { border-color: var(--primary); color: var(--primary-light); transform: translateY(-2px); }
 
 .app-image {
     position: relative;
@@ -1079,10 +1096,17 @@ img { max-width: 100%; display: block; }
 @keyframes tada { 0%, 100% { transform: scale(1) rotate(0); } 10%, 20% { transform: scale(0.9) rotate(-3deg); } 30%,50%,70%,90% { transform: scale(1.1) rotate(3deg); } 40%,60%,80% { transform: scale(1.1) rotate(-3deg); } }
 
 /* Mini Apps */
-.mini-apps-nav { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; justify-content: center; }
-.mini-app-btn { display: flex; align-items: center; gap: 8px; padding: 10px 24px; border: 2px solid var(--border); border-radius: 50px; background: var(--bg-card); color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: inherit; }
-.mini-app-btn:hover { border-color: var(--secondary); color: var(--text-primary); }
-.mini-app-btn.active { background: var(--gradient-2); color: white; border-color: transparent; }
+.mini-apps-launcher { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 16px; max-width: 620px; margin: 0 auto 10px; }
+.mini-tile { display: flex; flex-direction: column; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: 12px 6px; border-radius: 16px; transition: var(--transition); font-family: inherit; }
+.mini-tile:hover { background: var(--bg-card); transform: translateY(-4px); }
+.mini-tile-icon { width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.9rem; box-shadow: 0 6px 18px rgba(0,0,0,0.25); transition: var(--transition); }
+.mini-tile:hover .mini-tile-icon { transform: scale(1.08); }
+.mini-tile-name { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+.mini-tile:hover .mini-tile-name { color: var(--text-primary); }
+.mini-app-topbar { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; justify-content: center; }
+.mini-back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border: 1px solid var(--border); border-radius: 50px; background: var(--bg-card); color: var(--text-secondary); font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: var(--transition); font-family: inherit; }
+.mini-back-btn:hover { border-color: var(--secondary); color: var(--text-primary); }
+.mini-app-title { font-weight: 700; font-size: 1.05rem; }
 .mini-app { display: none; }
 .mini-app.active { display: block; }
 
@@ -1614,17 +1638,23 @@ img { max-width: 100%; display: block; }
             <!-- MINI APPS TAB -->
             <div class="fun-content" id="fun-animations">
 
-                <!-- App selector -->
-                <div class="mini-apps-nav">
-                    <button class="mini-app-btn active" onclick="showMiniApp('meme', this)"><span>😂</span> Meme Creator</button>
-                    <button class="mini-app-btn" onclick="showMiniApp('calc', this)"><span>🔢</span> Kalkulator</button>
-                    <button class="mini-app-btn" onclick="showMiniApp('pass', this)"><span>🔑</span> Hasła</button>
-                    <button class="mini-app-btn" onclick="showMiniApp('bmi', this)"><span>⚖️</span> BMI</button>
-                    <button class="mini-app-btn" onclick="showMiniApp('conv', this)"><span>🔄</span> Konwerter</button>
-                    <button class="mini-app-btn" onclick="showMiniApp('timer', this)"><span>⏱️</span> Stoper</button>
-                    <button class="mini-app-btn" onclick="showMiniApp('note', this)"><span>📝</span> Notatka</button>
-                    <button class="mini-app-btn" onclick="showMiniApp('color', this)"><span>🎨</span> Kolory</button>
-                    <button class="mini-app-btn" onclick="showMiniApp('qr', this)"><span>📱</span> QR Kod</button>
+                <!-- Launcher mini apek — siatka kafelków jak ekran telefonu -->
+                <div class="mini-apps-launcher" id="miniAppsLauncher">
+                    <button class="mini-tile" onclick="showMiniApp('meme')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">😂</span><span class="mini-tile-name">Meme Creator</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('calc')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#334155,#64748b);">🔢</span><span class="mini-tile-name">Kalkulator</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('pass')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">🔑</span><span class="mini-tile-name">Hasła</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('bmi')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#059669,#34d399);">⚖️</span><span class="mini-tile-name">BMI</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('conv')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8);">🔄</span><span class="mini-tile-name">Konwerter</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('timer')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#dc2626,#f87171);">⏱️</span><span class="mini-tile-name">Stoper</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('note')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#ca8a04,#facc15);">📝</span><span class="mini-tile-name">Notatka</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('color')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#db2777,#f472b6);">🎨</span><span class="mini-tile-name">Kolory</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('qr')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#1d4ed8,#60a5fa);">📱</span><span class="mini-tile-name">QR Kod</span></button>
+                </div>
+
+                <!-- Pasek powrotu widoczny po otwarciu mini apki -->
+                <div class="mini-app-topbar" id="miniAppTopbar" style="display:none;">
+                    <button class="mini-back-btn" onclick="backToMiniApps()"><i class="fas fa-arrow-left"></i> Mini Apki</button>
+                    <span class="mini-app-title" id="miniAppTitle"></span>
                 </div>
 
                 <!-- MEME CREATOR -->
@@ -2195,6 +2225,7 @@ function applySiteData() {
                 targetGrid.appendChild(card);
             });
             initFilters();
+            setupShowMoreApps();
         }
     }
     updateFilterButtons();
@@ -2328,6 +2359,47 @@ function updateActiveNav() {
 }
 window.addEventListener('scroll', updateActiveNav);
 
+// "Pokaż więcej": sekcja Aplikacje pokazuje najpierw 9 kart, reszta po kliknięciu
+var appsExpanded = false;
+var APPS_VISIBLE_LIMIT = 9;
+
+function applyAppsCollapse() {
+    var btn = document.getElementById('showMoreApps');
+    var cards = document.querySelectorAll('#appsGrid .app-card');
+    if (!btn || !cards.length) return;
+    var activeBtn = document.querySelector('.filter-btn.active');
+    var filter = activeBtn ? activeBtn.dataset.filter : 'all';
+    if (filter !== 'all') {
+        cards.forEach(function(c) { c.classList.remove('collapsed'); });
+        btn.style.display = 'none';
+        return;
+    }
+    cards.forEach(function(c, i) { c.classList.toggle('collapsed', !appsExpanded && i >= APPS_VISIBLE_LIMIT); });
+    btn.style.display = cards.length > APPS_VISIBLE_LIMIT ? '' : 'none';
+    var t = (i18n[currentLang] || i18n.pl);
+    var label = appsExpanded ? (t.btn_show_less || i18n.pl.btn_show_less)
+                             : (t.btn_show_all || i18n.pl.btn_show_all).replace('{n}', cards.length);
+    btn.innerHTML = '<i class="fas fa-chevron-' + (appsExpanded ? 'up' : 'down') + '"></i> ' + label;
+}
+
+function setupShowMoreApps() {
+    var grid = document.getElementById('appsGrid');
+    if (!grid) return;
+    var btn = document.getElementById('showMoreApps');
+    if (!btn) {
+        btn = document.createElement('button');
+        btn.id = 'showMoreApps';
+        btn.className = 'show-more-btn';
+        btn.addEventListener('click', function() {
+            appsExpanded = !appsExpanded;
+            applyAppsCollapse();
+            if (!appsExpanded) document.getElementById('apps').scrollIntoView({ behavior: 'smooth' });
+        });
+        grid.parentNode.insertBefore(btn, grid.nextSibling);
+    }
+    applyAppsCollapse();
+}
+
 function initFilters() {
     var filterBtns = document.querySelectorAll('.filter-btn');
     filterBtns.forEach(function(btn) {
@@ -2345,6 +2417,7 @@ function initFilters() {
                     card.classList.add('hidden');
                 }
             });
+            applyAppsCollapse();
         });
     });
 }
@@ -2532,6 +2605,8 @@ var i18n = {
         games_note: '🎮 Gry to nie tylko dodatek — to moja mocna strona! Tworzę gry na Androida oraz grywalne od razu w przeglądarce (pasjans, gry logiczne, przeciwnicy AI, zręcznościówki). Pobierz APK albo zagraj online. Wkrótce pojawi się ich więcej!',
         btn_open: 'Otwórz',
         btn_download_apk: 'Pobierz APK',
+        btn_show_all: 'Pokaż wszystkie aplikacje ({n})',
+        btn_show_less: 'Pokaż mniej',
         tech_desc: 'Narzędzia i technologie, z których korzystam na co dzień.',
         fun_desc: 'Galeria, muzyka, animacje, filmy i mini gry — bo życie to nie tylko kod!',
         contact_desc: 'Masz pomysł na aplikację? Napisz — zbuduję to razem z Tobą.'
@@ -2559,6 +2634,8 @@ var i18n = {
         games_note: '🎮 Games aren\'t just a side project — they\'re one of my strengths! I build games for Android as well as ones playable right in the browser (solitaire, puzzle games, AI opponents, arcade). Download the APK or play online. More are on the way!',
         btn_open: 'Open',
         btn_download_apk: 'Download APK',
+        btn_show_all: 'Show all apps ({n})',
+        btn_show_less: 'Show less',
         tech_desc: 'Tools and technologies I use every day.',
         fun_desc: 'Gallery, music, animations, short films and mini games — because life is more than just code!',
         contact_desc: 'Got an app idea? Let me know — I\'ll build it with you.'
@@ -2586,6 +2663,8 @@ var i18n = {
         games_note: '🎮 Spiele sind nicht nur ein Nebenprojekt — sie gehören zu meinen Stärken! Ich entwickle Spiele für Android sowie welche, die direkt im Browser spielbar sind (Solitaire, Logikspiele, KI-Gegner, Arcade). Lade das APK herunter oder spiele online. Bald gibt es mehr davon!',
         btn_open: 'Öffnen',
         btn_download_apk: 'APK herunterladen',
+        btn_show_all: 'Alle Apps anzeigen ({n})',
+        btn_show_less: 'Weniger anzeigen',
         tech_desc: 'Tools und Technologien, die ich täglich einsetze.',
         fun_desc: 'Galerie, Musik, Animationen, Kurzfilme und Mini-Spiele — weil das Leben mehr ist als nur Code!',
         contact_desc: 'Hast du eine App-Idee? Schreib mir — ich baue sie mit dir.'
@@ -2618,6 +2697,9 @@ function switchLang(lang) {
             el.textContent = t.btn_download_apk;
         });
     }
+
+    // Refresh the "show all apps" button label in the new language
+    if (typeof applyAppsCollapse === 'function') applyAppsCollapse();
 
     // Translate app descriptions
     var data = (typeof embeddedSiteData !== 'undefined' && embeddedSiteData) ? embeddedSiteData : null;
@@ -3095,15 +3177,28 @@ function guessMath(btn, val) {
 }
 
 // ===== MINI APPS =====
+var MINI_APP_NAMES = { meme:'😂 Meme Creator', calc:'🔢 Kalkulator', pass:'🔑 Hasła', bmi:'⚖️ BMI', conv:'🔄 Konwerter', timer:'⏱️ Stoper', note:'📝 Notatka', color:'🎨 Kolory', qr:'📱 QR Kod' };
+
 function showMiniApp(id) {
     document.querySelectorAll('.mini-app').forEach(function(a) { a.classList.remove('active'); });
-    document.querySelectorAll('.mini-app-btn').forEach(function(b) { b.classList.remove('active'); });
-    document.getElementById('miniapp-' + id).classList.add('active');
-    event.currentTarget.classList.add('active');
+    var app = document.getElementById('miniapp-' + id);
+    if (!app) return;
+    app.classList.add('active');
+    var launcher = document.getElementById('miniAppsLauncher');
+    var topbar = document.getElementById('miniAppTopbar');
+    if (launcher) launcher.style.display = 'none';
+    if (topbar) topbar.style.display = 'flex';
+    var title = document.getElementById('miniAppTitle');
+    if (title) title.textContent = MINI_APP_NAMES[id] || '';
 }
-// Activate first mini app on tab open
-var firstMiniApp = document.querySelector('.mini-app');
-if (firstMiniApp) firstMiniApp.classList.add('active');
+
+function backToMiniApps() {
+    document.querySelectorAll('.mini-app').forEach(function(a) { a.classList.remove('active'); });
+    var launcher = document.getElementById('miniAppsLauncher');
+    var topbar = document.getElementById('miniAppTopbar');
+    if (launcher) launcher.style.display = '';
+    if (topbar) topbar.style.display = 'none';
+}
 
 // ===== MEME CREATOR =====
 var memeImage = null;
