@@ -512,6 +512,7 @@ img { max-width: 100%; display: block; }
     font-family: inherit;
 }
 .show-more-btn:hover { border-color: var(--primary); color: var(--primary-light); transform: translateY(-2px); }
+.is-collapsed { display: none !important; }
 
 .app-image {
     position: relative;
@@ -2243,6 +2244,7 @@ function applySiteData() {
             });
             initFilters();
             setupShowMoreApps();
+            setupSimpleCollapse('gamesGrid', 6, 'btn_show_all_games');
         }
     }
     updateFilterButtons();
@@ -2299,6 +2301,7 @@ function applySiteData() {
                 vHtml += '<div class="video-item"><video controls preload="metadata"><source src="' + vid.path + '" type="video/mp4"></video><div class="video-title">' + (vid.title || 'Film') + '</div></div>';
             });
             videoGrid.innerHTML = vHtml;
+            setupSimpleCollapse('videoGrid', 6, 'btn_show_all_videos');
         }
     }
 
@@ -2437,6 +2440,47 @@ function setupShowMoreApps() {
         grid.parentNode.insertBefore(btn, grid.nextSibling);
     }
     applyAppsCollapse();
+}
+
+// Uniwersalne zwijanie rosnących sekcji (filmy, muzyka, gry) — limit + "Pokaż wszystkie"
+var simpleCollapseConfigs = {};
+var simpleCollapseExpanded = {};
+
+function applySimpleCollapse(gridId) {
+    var cfg = simpleCollapseConfigs[gridId];
+    if (!cfg) return;
+    var grid = document.getElementById(gridId);
+    if (!grid) return;
+    var btn = document.getElementById(gridId + 'ShowMore');
+    var items = [].slice.call(grid.children);
+    var expanded = !!simpleCollapseExpanded[gridId];
+    items.forEach(function(el, i) { el.classList.toggle('is-collapsed', !expanded && i >= cfg.limit); });
+    if (!btn) return;
+    if (items.length <= cfg.limit) { btn.style.display = 'none'; return; }
+    btn.style.display = '';
+    var t = (i18n[currentLang] || i18n.pl);
+    var label = expanded ? (t.btn_show_less || i18n.pl.btn_show_less)
+                         : (t[cfg.labelKey] || i18n.pl[cfg.labelKey]).replace('{n}', items.length);
+    btn.innerHTML = '<i class="fas fa-chevron-' + (expanded ? 'up' : 'down') + '"></i> ' + label;
+}
+
+function setupSimpleCollapse(gridId, limit, labelKey) {
+    var grid = document.getElementById(gridId);
+    if (!grid) return;
+    simpleCollapseConfigs[gridId] = { limit: limit, labelKey: labelKey };
+    var btn = document.getElementById(gridId + 'ShowMore');
+    if (!btn) {
+        btn = document.createElement('button');
+        btn.id = gridId + 'ShowMore';
+        btn.className = 'show-more-btn';
+        btn.addEventListener('click', function() {
+            simpleCollapseExpanded[gridId] = !simpleCollapseExpanded[gridId];
+            applySimpleCollapse(gridId);
+            if (!simpleCollapseExpanded[gridId]) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        grid.parentNode.insertBefore(btn, grid.nextSibling);
+    }
+    applySimpleCollapse(gridId);
 }
 
 function initFilters() {
@@ -2647,6 +2691,9 @@ var i18n = {
         btn_show_all: 'Pokaż wszystkie aplikacje ({n})',
         btn_show_less: 'Pokaż mniej',
         btn_gallery_all: 'Zobacz całą galerię ({n})',
+        btn_show_all_videos: 'Pokaż wszystkie filmy ({n})',
+        btn_show_all_tracks: 'Pokaż wszystkie utwory ({n})',
+        btn_show_all_games: 'Pokaż wszystkie gry ({n})',
         tech_desc: 'Narzędzia i technologie, z których korzystam na co dzień.',
         fun_desc: 'Galeria, muzyka, animacje, filmy i mini gry — bo życie to nie tylko kod!',
         contact_desc: 'Masz pomysł na aplikację? Napisz — zbuduję to razem z Tobą.'
@@ -2677,6 +2724,9 @@ var i18n = {
         btn_show_all: 'Show all apps ({n})',
         btn_show_less: 'Show less',
         btn_gallery_all: 'View full gallery ({n})',
+        btn_show_all_videos: 'Show all videos ({n})',
+        btn_show_all_tracks: 'Show all tracks ({n})',
+        btn_show_all_games: 'Show all games ({n})',
         tech_desc: 'Tools and technologies I use every day.',
         fun_desc: 'Gallery, music, animations, short films and mini games — because life is more than just code!',
         contact_desc: 'Got an app idea? Let me know — I\'ll build it with you.'
@@ -2707,6 +2757,9 @@ var i18n = {
         btn_show_all: 'Alle Apps anzeigen ({n})',
         btn_show_less: 'Weniger anzeigen',
         btn_gallery_all: 'Ganze Galerie ansehen ({n})',
+        btn_show_all_videos: 'Alle Filme anzeigen ({n})',
+        btn_show_all_tracks: 'Alle Titel anzeigen ({n})',
+        btn_show_all_games: 'Alle Spiele anzeigen ({n})',
         tech_desc: 'Tools und Technologien, die ich täglich einsetze.',
         fun_desc: 'Galerie, Musik, Animationen, Kurzfilme und Mini-Spiele — weil das Leben mehr ist als nur Code!',
         contact_desc: 'Hast du eine App-Idee? Schreib mir — ich baue sie mit dir.'
@@ -2743,6 +2796,9 @@ function switchLang(lang) {
     // Refresh the "show all apps" button label in the new language
     if (typeof applyAppsCollapse === 'function') applyAppsCollapse();
     if (typeof updateGalleryViewAllLabel === 'function') updateGalleryViewAllLabel();
+    if (typeof simpleCollapseConfigs === 'object') {
+        Object.keys(simpleCollapseConfigs).forEach(function(id) { applySimpleCollapse(id); });
+    }
 
     // Translate app descriptions
     var data = (typeof embeddedSiteData !== 'undefined' && embeddedSiteData) ? embeddedSiteData : null;
@@ -2838,6 +2894,7 @@ function renderPlaylist() {
         html = '<div style="text-align:center;padding:20px;color:var(--text-muted);"><i class="fas fa-music" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>Wkrótce pojawią się tutaj utwory!</div>';
     }
     document.getElementById('playlistContainer').innerHTML = html;
+    setupSimpleCollapse('playlistContainer', 8, 'btn_show_all_tracks');
 }
 renderPlaylist();
 
