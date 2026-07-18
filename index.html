@@ -1022,9 +1022,26 @@ img { max-width: 100%; display: block; }
 .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
 .gallery-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; color: var(--text-muted); font-size: 0.85rem; }
 .gallery-placeholder i { font-size: 2rem; color: var(--secondary); }
-.gallery-lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 9999; cursor: pointer; }
-.gallery-lightbox.show { display: flex; }
-.gallery-lightbox img { max-width: 90%; max-height: 90%; border-radius: var(--radius-md); }
+/* Nakładka "+N" na ostatniej miniaturze, gdy zdjęć jest więcej niż w siatce */
+.gallery-more-overlay { position: absolute; inset: 0; background: rgba(8,10,22,0.68); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; font-weight: 800; color: #fff; letter-spacing: 1px; }
+
+/* Pełnoekranowa przeglądarka galerii */
+.gallery-viewer { position: fixed; inset: 0; background: rgba(5,7,15,0.96); display: none; align-items: center; justify-content: center; z-index: 9999; }
+.gallery-viewer.show { display: flex; }
+.gv-img { max-width: 88%; max-height: 86%; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); user-select: none; }
+.gv-arrow { position: fixed; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: #fff; font-size: 1.15rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 2; }
+.gv-arrow:hover { background: rgba(255,255,255,0.22); }
+.gv-prev { left: 22px; }
+.gv-next { right: 22px; }
+.gv-close { position: fixed; top: 20px; right: 22px; width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: #fff; font-size: 1.05rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 2; }
+.gv-close:hover { background: rgba(239,68,68,0.5); }
+.gv-counter { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); color: #fff; font-weight: 600; font-size: 0.92rem; background: rgba(255,255,255,0.1); padding: 6px 18px; border-radius: 50px; }
+@media (max-width: 600px) {
+    .gv-arrow { width: 42px; height: 42px; }
+    .gv-prev { left: 10px; }
+    .gv-next { right: 10px; }
+    .gv-img { max-width: 96%; }
+}
 
 /* Music Player */
 .music-player { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; max-width: 600px; margin: 0 auto; box-shadow: var(--shadow-md); }
@@ -2230,15 +2247,37 @@ function applySiteData() {
     }
     updateFilterButtons();
 
-    // Render gallery from data
+    // Render gallery from data — max 8 miniatur, reszta w pełnoekranowej przeglądarce
     if (data.gallery && data.gallery.length > 0) {
+        galleryImages = data.gallery;
         var galleryGrid = document.getElementById('galleryGrid');
         if (galleryGrid) {
+            var GALLERY_THUMBS = 8;
+            var gTotal = data.gallery.length;
+            var gShown = Math.min(GALLERY_THUMBS, gTotal);
             var gHtml = '';
-            data.gallery.forEach(function(img) {
-                gHtml += '<div class="gallery-item" onclick="openLightbox(this)"><img src="' + img.path + '" alt="' + (img.title || '') + '" loading="lazy"></div>';
-            });
+            for (var gi = 0; gi < gShown; gi++) {
+                var gImg = data.gallery[gi];
+                var gOverlay = (gi === gShown - 1 && gTotal > GALLERY_THUMBS)
+                    ? '<div class="gallery-more-overlay">+' + (gTotal - GALLERY_THUMBS) + '</div>'
+                    : '';
+                gHtml += '<div class="gallery-item" onclick="openGallery(' + gi + ')"><img src="' + gImg.path + '" alt="' + (gImg.title || '') + '" loading="lazy">' + gOverlay + '</div>';
+            }
             galleryGrid.innerHTML = gHtml;
+
+            var gBtn = document.getElementById('galleryViewAll');
+            if (gTotal > GALLERY_THUMBS) {
+                if (!gBtn) {
+                    gBtn = document.createElement('button');
+                    gBtn.id = 'galleryViewAll';
+                    gBtn.className = 'show-more-btn';
+                    gBtn.addEventListener('click', function() { openGallery(0); });
+                    galleryGrid.parentNode.insertBefore(gBtn, galleryGrid.nextSibling);
+                }
+                updateGalleryViewAllLabel();
+            } else if (gBtn) {
+                gBtn.remove();
+            }
         }
     }
 
@@ -2607,6 +2646,7 @@ var i18n = {
         btn_download_apk: 'Pobierz APK',
         btn_show_all: 'Pokaż wszystkie aplikacje ({n})',
         btn_show_less: 'Pokaż mniej',
+        btn_gallery_all: 'Zobacz całą galerię ({n})',
         tech_desc: 'Narzędzia i technologie, z których korzystam na co dzień.',
         fun_desc: 'Galeria, muzyka, animacje, filmy i mini gry — bo życie to nie tylko kod!',
         contact_desc: 'Masz pomysł na aplikację? Napisz — zbuduję to razem z Tobą.'
@@ -2636,6 +2676,7 @@ var i18n = {
         btn_download_apk: 'Download APK',
         btn_show_all: 'Show all apps ({n})',
         btn_show_less: 'Show less',
+        btn_gallery_all: 'View full gallery ({n})',
         tech_desc: 'Tools and technologies I use every day.',
         fun_desc: 'Gallery, music, animations, short films and mini games — because life is more than just code!',
         contact_desc: 'Got an app idea? Let me know — I\'ll build it with you.'
@@ -2665,6 +2706,7 @@ var i18n = {
         btn_download_apk: 'APK herunterladen',
         btn_show_all: 'Alle Apps anzeigen ({n})',
         btn_show_less: 'Weniger anzeigen',
+        btn_gallery_all: 'Ganze Galerie ansehen ({n})',
         tech_desc: 'Tools und Technologien, die ich täglich einsetze.',
         fun_desc: 'Galerie, Musik, Animationen, Kurzfilme und Mini-Spiele — weil das Leben mehr ist als nur Code!',
         contact_desc: 'Hast du eine App-Idee? Schreib mir — ich baue sie mit dir.'
@@ -2700,6 +2742,7 @@ function switchLang(lang) {
 
     // Refresh the "show all apps" button label in the new language
     if (typeof applyAppsCollapse === 'function') applyAppsCollapse();
+    if (typeof updateGalleryViewAllLabel === 'function') updateGalleryViewAllLabel();
 
     // Translate app descriptions
     var data = (typeof embeddedSiteData !== 'undefined' && embeddedSiteData) ? embeddedSiteData : null;
@@ -2799,15 +2842,80 @@ function renderPlaylist() {
 renderPlaylist();
 
 // Gallery Lightbox
-function openLightbox(el) {
-    var img = el.querySelector('img');
-    if (!img) return;
-    var lb = document.createElement('div');
-    lb.className = 'gallery-lightbox show';
-    lb.innerHTML = '<img src="' + img.src + '" alt="' + (img.alt || '') + '">';
-    lb.onclick = function() { lb.remove(); };
-    document.body.appendChild(lb);
+// ===== Pełnoekranowa przeglądarka galerii (strzałki, licznik, klawiatura, swipe) =====
+var galleryImages = [];
+var gvIndex = 0;
+
+function updateGalleryViewAllLabel() {
+    var btn = document.getElementById('galleryViewAll');
+    if (!btn) return;
+    var t = (i18n[currentLang] || i18n.pl);
+    var label = (t.btn_gallery_all || i18n.pl.btn_gallery_all).replace('{n}', galleryImages.length);
+    btn.innerHTML = '<i class="fas fa-images"></i> ' + label;
 }
+
+function openGallery(i) {
+    if (!galleryImages.length) return;
+    gvIndex = Math.max(0, Math.min(i, galleryImages.length - 1));
+    var v = document.getElementById('galleryViewer');
+    if (!v) {
+        v = document.createElement('div');
+        v.id = 'galleryViewer';
+        v.className = 'gallery-viewer';
+        v.innerHTML =
+            '<button class="gv-close" onclick="closeGallery()" title="Zamknij (Esc)"><i class="fas fa-times"></i></button>' +
+            '<button class="gv-arrow gv-prev" onclick="gvStep(-1)" title="Poprzednie (←)"><i class="fas fa-chevron-left"></i></button>' +
+            '<img class="gv-img" src="" alt="">' +
+            '<button class="gv-arrow gv-next" onclick="gvStep(1)" title="Następne (→)"><i class="fas fa-chevron-right"></i></button>' +
+            '<div class="gv-counter"></div>';
+        v.addEventListener('click', function(e) { if (e.target === v) closeGallery(); });
+        var gvTouchX = null;
+        v.addEventListener('touchstart', function(e) { gvTouchX = e.touches[0].clientX; }, { passive: true });
+        v.addEventListener('touchend', function(e) {
+            if (gvTouchX === null) return;
+            var dx = e.changedTouches[0].clientX - gvTouchX;
+            if (Math.abs(dx) > 50) gvStep(dx > 0 ? -1 : 1);
+            gvTouchX = null;
+        }, { passive: true });
+        document.body.appendChild(v);
+    }
+    v.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    gvRender();
+}
+
+function gvRender() {
+    var v = document.getElementById('galleryViewer');
+    if (!v) return;
+    var img = galleryImages[gvIndex];
+    var el = v.querySelector('.gv-img');
+    el.src = img.path;
+    el.alt = img.title || '';
+    v.querySelector('.gv-counter').textContent = (gvIndex + 1) + ' / ' + galleryImages.length;
+    // preload sąsiadów, żeby strzałki działały płynnie
+    [gvIndex - 1, gvIndex + 1].forEach(function(n) {
+        if (n >= 0 && n < galleryImages.length) { var p = new Image(); p.src = galleryImages[n].path; }
+    });
+}
+
+function gvStep(d) {
+    gvIndex = (gvIndex + d + galleryImages.length) % galleryImages.length;
+    gvRender();
+}
+
+function closeGallery() {
+    var v = document.getElementById('galleryViewer');
+    if (v) v.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+    var v = document.getElementById('galleryViewer');
+    if (!v || !v.classList.contains('show')) return;
+    if (e.key === 'ArrowLeft') gvStep(-1);
+    else if (e.key === 'ArrowRight') gvStep(1);
+    else if (e.key === 'Escape') closeGallery();
+});
 
 // Reaction Game
 var reactionTimeout = null;
