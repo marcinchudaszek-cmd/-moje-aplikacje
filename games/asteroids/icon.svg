@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Myśliwiec kosmiczny">
+  <rect width="512" height="512" fill="#0a0a14"/>
+
+  <!-- kilka gwiazd w tle -->
+  <g fill="#ffffff" opacity="0.5">
+    <circle cx="86" cy="104" r="3"/>
+    <circle cx="418" cy="138" r="2.5"/>
+    <circle cx="132" cy="392" r="2.5"/>
+    <circle cx="396" cy="404" r="3"/>
+    <circle cx="252" cy="66" r="2"/>
+    <circle cx="62" cy="256" r="2"/>
+    <circle cx="452" cy="284" r="2"/>
+  </g>
+
+  <g fill="none" stroke="#00eeff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <!-- skrzydła w układzie X -->
+    <path d="M238 281 L162 258 M238 301 L166 330 M274 281 L350 258 M274 301 L346 330"/>
+    <!-- działka na końcówkach -->
+    <path d="M162 258 L162 216 M350 258 L350 216 M166 330 L166 294 M346 330 L346 294"/>
+    <!-- kadłub -->
+    <path d="M256 139 L243 207 L238 312 L274 312 L269 207 Z"/>
+    <!-- kabina -->
+    <path d="M247 240 L256 218 L265 240 L263 265 L249 265 Z"/>
+  </g>
+
+  <!-- pasy eskadry -->
+  <path d="M200 272 L227 277 M312 272 L285 277" fill="none" stroke="#ff5555" stroke-width="8" stroke-linecap="round"/>
+</svg>
