@@ -17,13 +17,14 @@ html,body{height:100%}
 body{
   font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
   background:radial-gradient(1200px 700px at 50% -10%,#17203f 0%,var(--bg) 60%);
-  color:var(--text); display:flex; align-items:center; justify-content:center;
+  color:var(--text);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
   padding:14px; overflow:hidden; touch-action:manipulation;
 }
 .wrap{display:flex;gap:20px;align-items:flex-start;max-width:100%}
 .stage{position:relative}
 canvas#board{
-  display:block;border-radius:14px;background:rgba(0,0,0,.42);
+  display:block;border-radius:14px;background:rgba(0,0,0,.42);max-width:100%;
   border:1px solid var(--border);box-shadow:0 24px 70px rgba(0,0,0,.55);touch-action:none;
 }
 .side{display:flex;flex-direction:column;gap:12px;min-width:150px}
@@ -66,13 +67,16 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
 }
 .touch button:active{background:rgba(0,229,255,.18)}
 @media (max-width:820px){
-  body{align-items:flex-start;padding:8px}
-  .wrap{flex-direction:column;gap:10px;align-items:center;width:100%}
-  .side{flex-direction:row;flex-wrap:wrap;min-width:0;width:100%;gap:8px}
-  .side .card{flex:1;min-width:78px;padding:9px}
-  .val{font-size:1.05rem}
+  body{justify-content:flex-start;padding:6px;gap:8px}
+  .wrap{flex-direction:column;gap:8px;align-items:center;width:100%}
+  .side{flex-direction:row;flex-wrap:wrap;min-width:0;width:100%;gap:6px;justify-content:center}
+  .side .card{flex:1;min-width:70px;padding:7px 8px}
+  .side h2{font-size:.6rem;margin-bottom:3px}
+  .val{font-size:1rem}
+  .val.sm{font-size:.95rem}
   .hintCard,.brand{display:none}
-  .touch{display:flex}
+  .touch{display:flex;width:100%;max-width:430px;margin:0 auto}
+  .touch button{padding:16px 0}
 }
 </style>
 </head>
@@ -172,13 +176,28 @@ var nextCv  = document.getElementById('next'),  nctx = nextCv.getContext('2d');
 var holdCv  = document.getElementById('hold'),  hctx = holdCv.getContext('2d');
 var CELL = 30;
 
+var miniPoziomo = false;
+
 function fitCanvas(){
-  var maxH = Math.min(window.innerHeight - (window.innerWidth < 820 ? 210 : 40), 640);
-  var maxW = window.innerWidth < 820 ? window.innerWidth - 26 : 380;
-  CELL = Math.max(14, Math.floor(Math.min(maxW / COLS, maxH / ROWS)));
+  var mobile = window.innerWidth < 820;
+  miniPoziomo = mobile;
+
+  // na telefonie rezerwujemy miejsce na pasek statystyk, podglądy i przyciski
+  var zajete = mobile ? 250 : 40;
+  var maxH = Math.min(window.innerHeight - zajete, 640);
+  var maxW = mobile ? window.innerWidth - 20 : 380;
+  CELL = Math.max(12, Math.floor(Math.min(maxW / COLS, maxH / ROWS)));
   boardCv.width = CELL * COLS;
   boardCv.height = CELL * ROWS;
-  draw();
+
+  if (mobile){
+    nextCv.width = 168; nextCv.height = 44;
+    holdCv.width = 60;  holdCv.height = 44;
+  } else {
+    nextCv.width = 120; nextCv.height = 250;
+    holdCv.width = 120; holdCv.height = 76;
+  }
+  drawNext(); drawHold(); draw();
 }
 
 function emptyBoard(){
@@ -387,7 +406,10 @@ function draw(){
 
 function drawMini(ctx, cv, types){
   ctx.clearRect(0, 0, cv.width, cv.height);
-  var s = 18, slot = 60;
+  var n = Math.max(1, types.length);
+  var s = miniPoziomo ? 9 : 18;                       // rozmiar bloczka
+  var slot = miniPoziomo ? (cv.width / n) : 60;       // miejsce na jeden klocek
+
   types.forEach(function(type, i){
     if (!type) return;
     var cs = SHAPES[type][0];
@@ -395,12 +417,18 @@ function drawMini(ctx, cv, types){
     var minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
     var minY = Math.min.apply(null, ys), maxY = Math.max.apply(null, ys);
     var wBlocks = maxX - minX + 1, hBlocks = maxY - minY + 1;
-    var ox = (cv.width - wBlocks * s) / 2 - minX * s;
-    var oy = i * slot + (slot - hBlocks * s) / 2 - minY * s;
+    var ox, oy;
+    if (miniPoziomo){
+      ox = i * slot + (slot - wBlocks * s) / 2 - minX * s;
+      oy = (cv.height - hBlocks * s) / 2 - minY * s;
+    } else {
+      ox = (cv.width - wBlocks * s) / 2 - minX * s;
+      oy = i * slot + (slot - hBlocks * s) / 2 - minY * s;
+    }
     cs.forEach(function(c){ block(ctx, ox + c[0] * s, oy + c[1] * s, s, COLORS[type]); });
   });
 }
-function drawNext(){ drawMini(nctx, nextCv, nextQueue.slice(0, 4)); }
+function drawNext(){ drawMini(nctx, nextCv, nextQueue.slice(0, miniPoziomo ? 3 : 4)); }
 function drawHold(){ drawMini(hctx, holdCv, [holdPiece]); }
 
 // ---------- HUD ----------
@@ -428,7 +456,9 @@ function loop(ts){
   rafId = requestAnimationFrame(loop);
   if (!running || paused) { lastTime = ts; return; }
   if (!lastTime) lastTime = ts;
-  var dt = ts - lastTime; lastTime = ts;
+  // ograniczamy skok czasu (np. po powrocie z tła telefonu), żeby klocek
+  // nie spadł ani nie zablokował się natychmiast
+  var dt = Math.min(ts - lastTime, 100); lastTime = ts;
 
   if (collides(cur, cur.rot, cur.x, cur.y + 1)){
     lockDelay += dt;
@@ -561,6 +591,16 @@ document.getElementById('tHold').addEventListener('click', hold);
 })();
 
 window.addEventListener('resize', fitCanvas);
+window.addEventListener('orientationchange', function(){ setTimeout(fitCanvas, 200); });
+
+// telefon: wyjście z aplikacji / zablokowanie ekranu wstrzymuje grę zamiast ją psuć
+document.addEventListener('visibilitychange', function(){
+  if (document.hidden && running && !paused && !over){
+    paused = true;
+    showOverlay('Pauza', 'Gra wstrzymana.', 'Wróć do gry');
+  }
+  lastTime = 0;
+});
 
 // start
 board = emptyBoard();
