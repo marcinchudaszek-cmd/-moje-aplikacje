@@ -1,0 +1,19 @@
+{
+  "name": "Solitaire Suite",
+  "short_name": "Solitaire",
+  "description": "Klondike, FreeCell & Spider Solitaire",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f4c2a",
+  "theme_color": "#155e34",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
