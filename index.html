@@ -992,31 +992,9 @@ img { max-width: 100%; display: block; }
 
 /* Responsive */
 @media (max-width: 1024px) {
-    /* hero układa się w kolumnę i jest znacznie wyższy, więc zdjęcie musi sięgać dalej */
-    :root { --wys-tla: clamp(820px, 130vh, 1500px); }
-    .hero { flex-direction: column; text-align: center; padding-top: 110px; }
-    .hero-subtitle { margin-left: auto; margin-right: auto; }
-    .hero-buttons { justify-content: center; }
-    .hero-stats { justify-content: center; }
-    .about-grid { grid-template-columns: 1fr; gap: 50px; text-align: center; }
-    .about-image { display: flex; justify-content: center; }
-    .about-placeholder-img { width: 280px; height: 340px; font-size: 4rem; }
-    .about-highlights { justify-items: center; }
-    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
-}
-
-/* Mobile nav overlay */
-.nav-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(2px);
-    z-index: 1000;
-}
-.nav-overlay.active { display: block; }
-
-@media (max-width: 768px) {
+    /* Hamburger od 1024 px, nie od 768: poziome menu potrzebuje ~995 px
+       (logo 98 + menu 816 w wersji niemieckiej + padding), wiec miedzy
+       768 a ~995 px "Kontakt" i przelacznik jezyka wychodzily poza ekran. */
     .nav-menu {
         position: fixed;
         top: 0; right: -100%;
@@ -1059,6 +1037,31 @@ img { max-width: 100%; display: block; }
     .nav-link.active::after { display: none; }
     .nav-menu li:last-child { margin-top: 12px; padding: 12px 18px; border-top: 1px solid rgba(36,86,164,0.25); }
     .nav-toggle { display: flex; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
+    /* hero układa się w kolumnę i jest znacznie wyższy, więc zdjęcie musi sięgać dalej */
+    :root { --wys-tla: clamp(820px, 130vh, 1500px); }
+    .hero { flex-direction: column; text-align: center; padding-top: 110px; }
+    .hero-subtitle { margin-left: auto; margin-right: auto; }
+    .hero-buttons { justify-content: center; }
+    .hero-stats { justify-content: center; }
+    .about-grid { grid-template-columns: 1fr; gap: 50px; text-align: center; }
+    .about-image { display: flex; justify-content: center; }
+    .about-placeholder-img { width: 280px; height: 340px; font-size: 4rem; }
+    .about-highlights { justify-items: center; }
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+}
+
+/* Mobile nav overlay */
+.nav-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(2px);
+    z-index: 1000;
+}
+.nav-overlay.active { display: block; }
+
+@media (max-width: 768px) {
     .hero-title { font-size: 2.2rem; }
     .hero-visual { display: none; }
     .hero-stats { gap: 30px; }
