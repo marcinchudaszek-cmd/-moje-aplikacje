@@ -63,7 +63,7 @@ body::before {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background-image: url('tlo.png');
+    background-image: url('tlo.webp');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -2148,6 +2148,13 @@ function getSiteData() {
     return null;
 }
 
+// img/cos/nazwa.png -> img/thumb/nazwa.webp (miniatury galerii, generowane skryptem)
+function thumbPath(p) {
+    if (!p || /^https?:/i.test(p)) return p;
+    var nazwa = String(p).split('/').pop().replace(/\.[^.]+$/, '');
+    return 'img/thumb/' + nazwa + '.webp';
+}
+
 function applySiteData() {
     var data = getSiteData();
     if (!data) return;
@@ -2297,7 +2304,9 @@ function applySiteData() {
                 var gOverlay = (gi === gShown - 1 && gTotal > GALLERY_THUMBS)
                     ? '<div class="gallery-more-overlay">+' + (gTotal - GALLERY_THUMBS) + '</div>'
                     : '';
-                gHtml += '<div class="gallery-item" onclick="openGallery(' + gi + ')"><img src="' + gImg.path + '" alt="' + (gImg.title || '') + '" loading="lazy">' + gOverlay + '</div>';
+                // miniatura z img/thumb/ (640 px WebP); onerror wraca do pelnego pliku,
+                // zeby zdjecia dodane pozniej z panelu admina dzialaly bez generowania miniatur
+                gHtml += '<div class="gallery-item" onclick="openGallery(' + gi + ')"><img src="' + thumbPath(gImg.path) + '" data-full="' + gImg.path + '" onerror="this.onerror=null;this.src=this.dataset.full;" alt="' + (gImg.title || '') + '" loading="lazy" decoding="async">' + gOverlay + '</div>';
             }
             galleryGrid.innerHTML = gHtml;
 
