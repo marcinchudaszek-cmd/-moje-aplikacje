@@ -403,13 +403,15 @@ img { max-width: 100%; display: block; }
 .floating-card i { font-size: 2rem; }
 .floating-card span { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
 
-.card-1 { top: 0; left: 20%; animation: float 6s ease-in-out infinite; }
+/* Rozstawienie w czterech narożnikach kontenera 350x350. Poprzednio card-2 (Web)
+   i card-4 (Backend) zachodziły na siebie, przez co napis "Web" był przycięty. */
+.card-1 { top: 0; left: 4%; animation: float 6s ease-in-out infinite; }
 .card-1 i { color: #4a90d9; }
-.card-2 { top: 30%; right: 0; animation: float 6s ease-in-out infinite 1.5s; }
+.card-2 { top: 8%; right: 0; animation: float 6s ease-in-out infinite 1.5s; }
 .card-2 i { color: #f5a623; }
-.card-3 { bottom: 10%; left: 10%; animation: float 6s ease-in-out infinite 3s; }
+.card-3 { bottom: 2%; left: 0; animation: float 6s ease-in-out infinite 3s; }
 .card-3 i { color: #06b6d4; }
-.card-4 { bottom: 30%; right: 15%; animation: float 6s ease-in-out infinite 4.5s; }
+.card-4 { bottom: 6%; right: 4%; animation: float 6s ease-in-out infinite 4.5s; }
 .card-4 i { color: #f59e0b; }
 
 @keyframes float {
@@ -499,6 +501,8 @@ img { max-width: 100%; display: block; }
 }
 
 .app-card {
+    display: flex;
+    flex-direction: column;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
@@ -568,9 +572,11 @@ img { max-width: 100%; display: block; }
 .badge-popular { background: #f59e0b; color: #1a1a2e; }
 .badge-beta { background: #2456a4; color: white; }
 
-.app-content { padding: 18px 20px; }
+.app-content { padding: 18px 20px; display: flex; flex-direction: column; flex: 1; }
 
-.card-links { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 20px 16px; }
+/* margin-top:auto dociska przyciski do dołu karty — dzięki temu w jednym rzędzie
+   leżą na tej samej wysokości niezależnie od liczby tagów i długości opisu */
+.card-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 16px; }
 .card-link-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 50px; font-size: 0.82rem; font-weight: 600; color: var(--primary); background: var(--bg-surface); border: 1px solid var(--border); text-decoration: none; transition: var(--transition); cursor: pointer; }
 .card-link-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
 .card-link-btn.card-link-play { background: var(--primary); color: white; border-color: var(--primary); }
@@ -2262,9 +2268,10 @@ function applySiteData() {
                         '<h3 class="app-title">' + app.name + '</h3>' +
                         '<p class="app-desc">' + app.desc + '</p>' +
                         '<div class="app-tech">' + techTags + '</div>' +
-                        '<div class="app-footer">' +
-                            '<div class="app-stats-row">' + ratingHtml + downloadsHtml + '</div>' +
-                        '</div>' +
+                        // pusty app-footer rysowałby samotną kreskę (border-top) nad przyciskami
+                        ((ratingHtml || downloadsHtml)
+                            ? '<div class="app-footer"><div class="app-stats-row">' + ratingHtml + downloadsHtml + '</div></div>'
+                            : '') +
                         (linksHtml ? '<div class="card-links">' + linksHtml + '</div>' : '') +
                     '</div>';
                 targetGrid.appendChild(card);
