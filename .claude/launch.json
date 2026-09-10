@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "strona", "runtimeExecutable": "npx", "runtimeArgs": ["-y", "serve", "-l", "4177", "."], "port": 4177 }
+  ]
+}
