@@ -1430,13 +1430,13 @@ img { max-width: 100%; display: block; }
 
             <div class="filter-bar">
                 <button class="filter-btn active" data-filter="all">
-                    <i class="fas fa-th"></i> Wszystkie
+                    <i class="fas fa-th"></i> <span data-i18n="filter_all">Wszystkie</span>
                 </button>
                 <button class="filter-btn" data-filter="web">
-                    <i class="fas fa-globe"></i> Web
+                    <i class="fas fa-globe"></i> <span data-i18n="filter_web">Web</span>
                 </button>
                 <button class="filter-btn" data-filter="mobile">
-                    <i class="fas fa-mobile-alt"></i> Mobile
+                    <i class="fas fa-mobile-alt"></i> <span data-i18n="filter_mobile">Mobile</span>
                 </button>
             </div>
 
@@ -1688,11 +1688,11 @@ img { max-width: 100%; display: block; }
             </div>
 
             <div class="fun-tabs">
-                <button class="fun-tab active" onclick="showFunTab('gallery')"><i class="fas fa-images"></i> Galeria</button>
-                <button class="fun-tab" onclick="showFunTab('music')"><i class="fas fa-headphones"></i> Muzyka</button>
-                <button class="fun-tab" onclick="showFunTab('animations')"><i class="fas fa-th-large"></i> Mini Apki</button>
-                <button class="fun-tab" onclick="showFunTab('videos')"><i class="fas fa-film"></i> Filmy</button>
-                <button class="fun-tab" onclick="showFunTab('games')"><i class="fas fa-gamepad"></i> Mini Gry</button>
+                <button class="fun-tab active" onclick="showFunTab('gallery')"><i class="fas fa-images"></i> <span data-i18n="fun_gallery">Galeria</span></button>
+                <button class="fun-tab" onclick="showFunTab('music')"><i class="fas fa-headphones"></i> <span data-i18n="fun_music">Muzyka</span></button>
+                <button class="fun-tab" onclick="showFunTab('animations')"><i class="fas fa-th-large"></i> <span data-i18n="fun_miniapps">Mini Apki</span></button>
+                <button class="fun-tab" onclick="showFunTab('videos')"><i class="fas fa-film"></i> <span data-i18n="fun_videos">Filmy</span></button>
+                <button class="fun-tab" onclick="showFunTab('games')"><i class="fas fa-gamepad"></i> <span data-i18n="fun_minigames">Mini Gry</span></button>
             </div>
 
             <!-- GALLERY TAB -->
@@ -2118,15 +2118,15 @@ img { max-width: 100%; display: block; }
                 <div class="contact-info">
                     <div class="contact-card">
                         <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                        <div><h3>Email</h3><p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3f5450514b5e544b7f5b5a495e4f4f4c114f53">[email&#160;protected]</a></p></div>
+                        <div><h3 data-i18n="contact_email">Email</h3><p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3f5450514b5e544b7f5b5a495e4f4f4c114f53">[email&#160;protected]</a></p></div>
                     </div>
                     <div class="contact-card">
                         <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <div><h3>Lokalizacja</h3><p>Warszawa, Polska</p></div>
+                        <div><h3 data-i18n="contact_location">Lokalizacja</h3><p data-i18n="contact_location_value">Eichendorf (Niemcy), Jelenia Góra (Polska)</p></div>
                     </div>
                     <div class="contact-card">
                         <div class="contact-icon"><i class="fas fa-clock"></i></div>
-                        <div><h3>Dostępność</h3><p>Pon-Pt, 9:00-18:00</p></div>
+                        <div><h3 data-i18n="contact_hours">Dostępność</h3><p data-i18n="contact_hours_value">Pon-Pt, 9:00-18:00</p></div>
                     </div>
                     <div class="social-links">
                         <a href="#" class="social-link"><i class="fab fa-github"></i></a>
@@ -2141,24 +2141,24 @@ img { max-width: 100%; display: block; }
                     <input type="hidden" name="from_name" value="Beagle Apps Studio - Formularz kontaktowy">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="name">Imię</label>
-                            <input type="text" name="name" id="name" placeholder="Twoje imię" required>
+                            <label for="name" data-i18n="form_name">Imię</label>
+                            <input type="text" name="name" id="name" placeholder="Twoje imię" data-i18n-ph="form_name_ph" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" name="email" id="email" placeholder="twoj@email.com" required>
+                            <label for="email" data-i18n="form_email">Email</label>
+                            <input type="email" name="email" id="email" placeholder="twoj@email.com" data-i18n-ph="form_email_ph" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="subject">Temat</label>
-                        <input type="text" id="subject" placeholder="O czym chcesz porozmawiać?" oninput="document.getElementById('w3f_subject').value=this.value||'Nowa wiadomość z beagleapps.pl'">
+                        <label for="subject" data-i18n="form_subject">Temat</label>
+                        <input type="text" id="subject" placeholder="O czym chcesz porozmawiać?" data-i18n-ph="form_subject_ph" oninput="document.getElementById('w3f_subject').value=this.value||'Nowa wiadomość z beagleapps.pl'">
                     </div>
                     <div class="form-group">
-                        <label for="message">Wiadomość</label>
-                        <textarea name="message" id="message" rows="5" placeholder="Twoja wiadomość..." required></textarea>
+                        <label for="message" data-i18n="form_message">Wiadomość</label>
+                        <textarea name="message" id="message" rows="5" placeholder="Twoja wiadomość..." data-i18n-ph="form_message_ph" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary btn-full">
-                        <i class="fas fa-paper-plane"></i> Wyślij wiadomość
+                        <i class="fas fa-paper-plane"></i> <span data-i18n="form_send">Wyślij wiadomość</span>
                     </button>
                 </form>
             </div>
@@ -2170,12 +2170,12 @@ img { max-width: 100%; display: block; }
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand"><img src="img/znak-beagle.png" alt="" width="34" height="32" style="height:32px;width:auto;"><span>Beagle Apps Studio</span><span class="footer-author">— autor: Marcin Chudaszek</span></div>
-                <p class="footer-text">© 2025 Beagle Apps Studio · Marcin Chudaszek — autor wszystkich aplikacji. Wszystkie prawa zastrzeżone.</p>
+                <p class="footer-text" data-i18n="footer_rights">© 2025 Beagle Apps Studio · Marcin Chudaszek — autor wszystkich aplikacji. Wszystkie prawa zastrzeżone.</p>
                 <div class="footer-links">
-                    <a href="#home">Start</a>
-                    <a href="#apps">Aplikacje</a>
-                    <a href="#about">O mnie</a>
-                    <a href="#contact">Kontakt</a>
+                    <a href="#home" data-i18n="footer_start">Start</a>
+                    <a href="#apps" data-i18n="footer_apps">Aplikacje</a>
+                    <a href="#about" data-i18n="footer_about">O mnie</a>
+                    <a href="#contact" data-i18n="footer_contact">Kontakt</a>
                 </div>
             </div>
         </div>
@@ -2292,8 +2292,11 @@ function applySiteData() {
         if (grid) {
             grid.innerHTML = '';
             if (gamesGrid) gamesGrid.innerHTML = '';
-            var catLabels = { web:'Web App', mobile:'Mobile App', desktop:'Desktop App', ai:'AI / ML', games:'Gra' };
-            var badgeHTML = { 'new':'<span class="app-badge badge-new">Nowa</span>', 'popular':'<span class="app-badge badge-popular">Popularna</span>', 'beta':'<span class="app-badge badge-beta">Beta</span>' };
+            // Etykiety zalezne od jezyka; klasy nizej pozwalaja switchLang je
+            // przetlumaczyc bez przerysowywania wszystkich kart.
+            var tr = i18n[currentLang] || i18n.pl;
+            var catLabels = { web:tr.cat_web, mobile:tr.cat_mobile, desktop:tr.cat_desktop, ai:tr.cat_ai, games:tr.cat_games };
+            var badgeHTML = { 'new':'<span class="app-badge badge-new">' + tr.badge_new + '</span>', 'popular':'<span class="app-badge badge-popular">' + tr.badge_popular + '</span>', 'beta':'<span class="app-badge badge-beta">' + tr.badge_beta + '</span>' };
 
             data.apps.forEach(function(app) {
                 var techTags = '';
@@ -2319,7 +2322,7 @@ function applySiteData() {
                 if (playUrl) linksHtml += '<a href="' + playUrl + '" class="card-link-btn card-link-play" target="_blank" rel="noopener"><i class="fab fa-google-play"></i> Google Play</a>';
                 if (appStoreUrl) linksHtml += '<a href="' + appStoreUrl + '" class="card-link-btn" target="_blank" rel="noopener"><i class="fab fa-app-store"></i> App Store</a>';
                 if (apkUrl) linksHtml += '<a href="' + apkUrl + '" class="card-link-btn card-link-apk" download><i class="fas fa-download"></i> <span class="btn-label-apk">' + apkLabel + '</span></a>';
-                if (groupUrl) linksHtml += '<a href="' + groupUrl + '" class="card-link-btn" target="_blank" rel="noopener"><i class="fas fa-users"></i> Grupa testerów</a>';
+                if (groupUrl) linksHtml += '<a href="' + groupUrl + '" class="card-link-btn" target="_blank" rel="noopener"><i class="fas fa-users"></i> <span class="btn-label-testers">' + tr.btn_testers + '</span></a>';
 
                 var card = document.createElement('div');
                 var iconHtml = app.iconImage
@@ -2773,10 +2776,29 @@ revealOnScroll();
 var currentLang = 'pl';
 var i18n = {
     pl: {
+        filter_all: 'Wszystkie', filter_web: 'Web', filter_mobile: 'Mobile',
+        fun_gallery: 'Galeria', fun_music: 'Muzyka', fun_miniapps: 'Mini Apki',
+        fun_videos: 'Filmy', fun_minigames: 'Mini Gry',
+        stat1_label: 'Aplikacji', stat2_label: 'Platformy', stat3_label: 'W Google Play',
+        badge_new: 'Nowa', badge_popular: 'Popularna', badge_beta: 'Beta',
+        cat_web: 'Web App', cat_mobile: 'Mobile App', cat_desktop: 'Desktop App',
+        cat_ai: 'AI / ML', cat_games: 'Gra', tech_game: 'Gra',
+        btn_testers: 'Grupa testerów',
+        contact_email: 'Email', contact_location: 'Lokalizacja',
+        contact_location_value: 'Eichendorf (Niemcy), Jelenia Góra (Polska)',
+        contact_hours: 'Dostępność', contact_hours_value: 'Pon-Pt, 9:00-18:00',
+        form_name: 'Imię', form_name_ph: 'Twoje imię',
+        form_email: 'Email', form_email_ph: 'twoj@email.com',
+        form_subject: 'Temat', form_subject_ph: 'O czym chcesz porozmawiać?',
+        form_message: 'Wiadomość', form_message_ph: 'Twoja wiadomość...',
+        form_send: 'Wyślij wiadomość',
+        footer_start: 'Start', footer_apps: 'Aplikacje', footer_about: 'O mnie',
+        footer_contact: 'Kontakt',
+        footer_rights: '© 2025 Beagle Apps Studio · Marcin Chudaszek — autor wszystkich aplikacji. Wszystkie prawa zastrzeżone.',
         nav_home: 'Start', nav_apps: 'Aplikacje', nav_games: 'Gry', nav_about: 'O mnie',
         nav_tech: 'Technologie', nav_fun: 'Rozrywka', nav_contact: 'Kontakt',
         hero_title: 'Tworzę <span class="gradient-text">praktyczne</span><br>aplikacje',
-        hero_subtitle: 'Projektuję aplikacje mobilne i webowe, które ułatwiają codzienne życie. Od sportu, przez muzykę, po ciekawostki ze świata.',
+        hero_subtitle: 'Projektuję aplikacje mobilne i webowe, które ułatwiają codzienne życie. Od sportu, przez muzykę, po naukę języków.',
         section_apps: 'Moje Aplikacje',
         section_games: 'Moje Gry',
         section_about: 'Niezależny deweloper<br>aplikacji',
@@ -2806,10 +2828,29 @@ var i18n = {
         contact_desc: 'Masz pomysł na aplikację? Napisz — zbuduję to razem z Tobą.'
     },
     en: {
+        filter_all: 'All', filter_web: 'Web', filter_mobile: 'Mobile',
+        fun_gallery: 'Gallery', fun_music: 'Music', fun_miniapps: 'Mini Apps',
+        fun_videos: 'Films', fun_minigames: 'Mini Games',
+        stat1_label: 'Apps', stat2_label: 'Platforms', stat3_label: 'On Google Play',
+        badge_new: 'New', badge_popular: 'Popular', badge_beta: 'Beta',
+        cat_web: 'Web App', cat_mobile: 'Mobile App', cat_desktop: 'Desktop App',
+        cat_ai: 'AI / ML', cat_games: 'Game', tech_game: 'Game',
+        btn_testers: 'Tester group',
+        contact_email: 'Email', contact_location: 'Location',
+        contact_location_value: 'Eichendorf (Germany), Jelenia Góra (Poland)',
+        contact_hours: 'Availability', contact_hours_value: 'Mon-Fri, 9:00-18:00',
+        form_name: 'Name', form_name_ph: 'Your name',
+        form_email: 'Email', form_email_ph: 'you@email.com',
+        form_subject: 'Subject', form_subject_ph: 'What would you like to talk about?',
+        form_message: 'Message', form_message_ph: 'Your message...',
+        form_send: 'Send message',
+        footer_start: 'Home', footer_apps: 'Apps', footer_about: 'About',
+        footer_contact: 'Contact',
+        footer_rights: '© 2025 Beagle Apps Studio · Marcin Chudaszek — author of all the apps. All rights reserved.',
         nav_home: 'Home', nav_apps: 'Apps', nav_games: 'Games', nav_about: 'About',
         nav_tech: 'Technologies', nav_fun: 'Creative', nav_contact: 'Contact',
         hero_title: 'I build <span class=\"gradient-text\">practical</span><br>apps',
-        hero_subtitle: 'I design mobile and web apps that make everyday life easier — from sports and music to trivia and culinary adventures.',
+        hero_subtitle: 'I design mobile and web apps that make everyday life easier — from sports and music to learning languages.',
         section_apps: 'My Apps',
         section_games: 'My Games',
         section_about: 'Independent App<br>Developer',
@@ -2839,10 +2880,29 @@ var i18n = {
         contact_desc: 'Got an app idea? Let me know — I\'ll build it with you.'
     },
     de: {
+        filter_all: 'Alle', filter_web: 'Web', filter_mobile: 'Mobile',
+        fun_gallery: 'Galerie', fun_music: 'Musik', fun_miniapps: 'Mini-Apps',
+        fun_videos: 'Filme', fun_minigames: 'Mini-Spiele',
+        stat1_label: 'Apps', stat2_label: 'Plattformen', stat3_label: 'Bei Google Play',
+        badge_new: 'Neu', badge_popular: 'Beliebt', badge_beta: 'Beta',
+        cat_web: 'Web-App', cat_mobile: 'Mobile App', cat_desktop: 'Desktop-App',
+        cat_ai: 'KI / ML', cat_games: 'Spiel', tech_game: 'Spiel',
+        btn_testers: 'Testergruppe',
+        contact_email: 'E-Mail', contact_location: 'Standort',
+        contact_location_value: 'Eichendorf (Deutschland), Jelenia Góra (Polen)',
+        contact_hours: 'Erreichbarkeit', contact_hours_value: 'Mo-Fr, 9:00-18:00 Uhr',
+        form_name: 'Name', form_name_ph: 'Dein Name',
+        form_email: 'E-Mail', form_email_ph: 'du@email.com',
+        form_subject: 'Betreff', form_subject_ph: 'Worüber möchtest du sprechen?',
+        form_message: 'Nachricht', form_message_ph: 'Deine Nachricht...',
+        form_send: 'Nachricht senden',
+        footer_start: 'Start', footer_apps: 'Apps', footer_about: 'Über mich',
+        footer_contact: 'Kontakt',
+        footer_rights: '© 2025 Beagle Apps Studio · Marcin Chudaszek — Autor aller Apps. Alle Rechte vorbehalten.',
         nav_home: 'Start', nav_apps: 'Apps', nav_games: 'Spiele', nav_about: 'Über mich',
         nav_tech: 'Technologien', nav_fun: 'Kreativ', nav_contact: 'Kontakt',
         hero_title: 'Ich entwickle <span class=\"gradient-text\">praktische</span><br>Apps',
-        hero_subtitle: 'Ich baue mobile und Web-Apps, die den Alltag leichter machen — von Sport und Musik bis hin zu Trivia und kulinarischen Abenteuern.',
+        hero_subtitle: 'Ich baue mobile und Web-Apps, die den Alltag leichter machen — von Sport über Musik bis hin zum Sprachenlernen.',
         section_apps: 'Meine Apps',
         section_games: 'Meine Spiele',
         section_about: 'Unabhängiger App-<br>Entwickler',
@@ -2886,6 +2946,47 @@ function switchLang(lang) {
         if (t[key] !== undefined) el.innerHTML = t[key];
     });
 
+    // Podpowiedzi w polach formularza — osobno, bo to atrybut, nie treść
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n-ph');
+        if (t[key] !== undefined) el.placeholder = t[key];
+    });
+
+    // Etykiety statystyk pod hero. applySiteData() wpisuje tu wartości z danych
+    // (po polsku), więc przy zmianie języka trzeba je nadpisać.
+    var etykietyStat = [t.stat1_label, t.stat2_label, t.stat3_label];
+    document.querySelectorAll('.stat-label').forEach(function(el, i) {
+        if (etykietyStat[i]) el.textContent = etykietyStat[i];
+    });
+
+    // Napisy wygenerowane w JS przy renderowaniu kart. Tłumaczymy je w miejscu,
+    // zamiast przerysowywać wszystkie karty — przerysowanie zgubiłoby stan
+    // zwijania sekcji i filtrów.
+    var plakietki = { 'badge-new': t.badge_new, 'badge-popular': t.badge_popular, 'badge-beta': t.badge_beta };
+    Object.keys(plakietki).forEach(function(klasa) {
+        if (!plakietki[klasa]) return;
+        document.querySelectorAll('.app-badge.' + klasa).forEach(function(el) { el.textContent = plakietki[klasa]; });
+    });
+
+    var kategorie = { web: t.cat_web, mobile: t.cat_mobile, desktop: t.cat_desktop, ai: t.cat_ai, games: t.cat_games };
+    document.querySelectorAll('.app-card').forEach(function(card) {
+        var el = card.querySelector('.app-category');
+        var kat = card.dataset.category;
+        if (el && kategorie[kat]) el.textContent = kategorie[kat];
+    });
+
+    if (t.btn_testers) {
+        document.querySelectorAll('.btn-label-testers').forEach(function(el) { el.textContent = t.btn_testers; });
+    }
+
+    // Jedyny tag technologii, który jest słowem, a nie nazwą własną.
+    if (t.tech_game) {
+        var slowoGra = ['Gra', 'Game', 'Spiel'];
+        document.querySelectorAll('.tech-tag').forEach(function(el) {
+            if (slowoGra.indexOf(el.textContent.trim()) !== -1) el.textContent = t.tech_game;
+        });
+    }
+
     // Translate "Open" button labels on app cards
     if (t.btn_open) {
         document.querySelectorAll('.card-link-open .btn-label').forEach(function(el) {
@@ -2910,6 +3011,21 @@ function switchLang(lang) {
     // Translate app descriptions
     var data = (typeof embeddedSiteData !== 'undefined' && embeddedSiteData) ? embeddedSiteData : null;
     if (!data) { try { var s = localStorage.getItem('siteData'); if (s) data = JSON.parse(s); } catch(e) {} }
+
+    // Po polsku źródłem prawdy są dane z panelu admina, nie i18n — inaczej
+    // teksty edytowane w panelu wracałyby do wersji z i18n po przełączeniu
+    // języka tam i z powrotem. (Tak rozjechał się podtytuł hero: dane mówiły
+    // "po naukę języków", i18n "po ciekawostki ze świata".)
+    if (lang === 'pl' && data && data.profile) {
+        var p = data.profile;
+        var sub = document.querySelector('.hero-subtitle');
+        if (sub && p.subtitle) sub.textContent = p.subtitle;
+        var a1 = document.querySelector('[data-i18n="about_text1"]');
+        if (a1 && p.aboutText1) a1.textContent = p.aboutText1;
+        var a2 = document.querySelector('[data-i18n="about_text2"]');
+        if (a2 && p.aboutText2) a2.textContent = p.aboutText2;
+    }
+
     if (!data || !data.apps) return;
     var cards = document.querySelectorAll('.app-card');
     cards.forEach(function(card, i) {
