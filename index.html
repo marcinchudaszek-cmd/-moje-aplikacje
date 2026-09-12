@@ -1320,7 +1320,345 @@ img { max-width: 100%; display: block; }
     .btn { min-height: 48px; }
     .card-link-btn { padding: 10px 18px; min-height: 44px; font-size: 0.85rem; }
 }
-    </style>
+    
+/* ===== MINI APKI — wygląd =====
+   Markup tych ośmiu narzędzi istniał, ale z 53 użytych klas tylko 2 miały
+   jakikolwiek styl — kalkulator renderował 19 przycisków w 54 px wysokości.
+   Style trzymają się tokenów reszty strony (--bg-card, --border, --primary).
+   Cele dotykowe mają min. 44 px, bo mini apki są używane głównie z telefonu. */
+
+.ma-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    max-width: 460px;
+    margin: 0 auto;
+}
+.ma-center { text-align: center; }
+
+.ma-section-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+.ma-input,
+.ma-select {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+}
+.ma-input:focus,
+.ma-select:focus { outline: 2px solid var(--primary-light); outline-offset: 1px; }
+.ma-select { cursor: pointer; }
+
+.ma-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    width: 100%;
+    margin-top: 14px;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 12px;
+    background: var(--primary);
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.ma-btn:hover { background: var(--primary-dark); }
+.ma-btn:active { transform: scale(0.98); }
+.ma-btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
+.ma-btn-outline:hover { background: var(--bg-surface); color: var(--text-primary); }
+.ma-btn-sm { width: auto; min-height: 40px; margin-top: 0; padding: 8px 14px; font-size: 0.85rem; }
+
+.ma-btn-link {
+    background: none;
+    border: none;
+    color: var(--primary-light);
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 4px 6px;
+    text-decoration: underline;
+}
+
+.ma-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.ma-copy-btn:hover { border-color: var(--primary); color: var(--primary-light); }
+
+/* ── kalkulator ── */
+.calc-display {
+    background: var(--bg-surface);
+    border-radius: 12px;
+    padding: 18px 16px 8px;
+    font-size: 2.3rem;
+    font-weight: 700;
+    text-align: right;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.calc-history {
+    min-height: 20px;
+    padding: 0 16px 12px;
+    background: var(--bg-surface);
+    border-radius: 0 0 12px 12px;
+    margin-bottom: 14px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: right;
+}
+.calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.calc-btn {
+    min-height: 56px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1.15rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.calc-btn:hover { background: var(--bg-card-hover); }
+.calc-btn:active { transform: scale(0.95); }
+.calc-span2 { grid-column: span 2; }
+.calc-op { background: rgba(36,86,164,0.35); color: var(--primary-light); }
+.calc-eq { background: var(--secondary); color: #1a1a2e; border-color: var(--secondary); }
+
+/* ── generator haseł ── */
+.pass-output {
+    min-height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    background: var(--bg-surface);
+    border: 1px dashed var(--border);
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    word-break: break-all;
+}
+.pass-options { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; text-align: left; }
+.pass-opt-row { display: flex; flex-direction: column; gap: 6px; }
+.pass-opt-row input[type="range"] { width: 100%; accent-color: var(--secondary); }
+.pass-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+.pass-check input { width: 18px; height: 18px; accent-color: var(--primary-light); }
+.pass-strength { margin-top: 10px; font-size: 0.85rem; font-weight: 700; min-height: 20px; }
+
+/* ── BMI ── */
+.bmi-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; }
+.bmi-field { display: flex; flex-direction: column; gap: 6px; }
+.bmi-field label { font-size: 0.82rem; color: var(--text-muted); }
+.bmi-result { min-height: 84px; display: flex; flex-direction: column; justify-content: center; gap: 2px; margin: 16px 0 8px; }
+.bmi-scale { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.bmi-range {
+    padding: 8px 4px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.35;
+}
+
+/* ── konwerter ── */
+.conv-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.conv-tab {
+    flex: 1 1 auto;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.conv-tab:hover { color: var(--text-primary); }
+.conv-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.conv-body { display: flex; flex-direction: column; gap: 10px; }
+.conv-row { display: grid; grid-template-columns: 1fr 120px; gap: 8px; }
+
+/* ── stoper i minutnik ── */
+.timer-tabs { display: flex; gap: 6px; margin-bottom: 18px; }
+.timer-tab {
+    flex: 1;
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.timer-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.timer-display {
+    font-family: 'Courier New', monospace;
+    font-size: clamp(2.2rem, 11vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 10px 0 18px;
+}
+.timer-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+/* min-width:0 pozwala przyciskom sie skurczyc; bez tego trzeci ("Okrazenie")
+   wychodzil poza karte na waskim ekranie */
+.timer-btns .ma-btn { margin-top: 0; flex: 1 1 auto; min-width: 0; padding: 11px 12px; }
+.timer-btns .ma-btn span { overflow: hidden; text-overflow: ellipsis; }
+.timer-laps { margin-top: 16px; max-height: 190px; overflow-y: auto; text-align: left; }
+.timer-lap-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    padding: 8px 4px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+.countdown-set { display: flex; justify-content: center; gap: 10px; margin: 10px 0 18px; }
+.cd-field { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cd-field label { font-size: 0.75rem; color: var(--text-muted); }
+.cd-input {
+    width: 74px;
+    min-height: 52px;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* ── notatnik ── */
+.note-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.note-area {
+    width: 100%;
+    min-height: 260px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    resize: vertical;
+}
+.note-area:focus { outline: 2px solid var(--primary-light); outline-offset: 1px; }
+
+/* ── kolory ── */
+.color-picker-wrap { display: flex; flex-direction: column; gap: 16px; }
+.color-main { display: flex; align-items: center; gap: 14px; }
+.color-main input[type="color"] {
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: none;
+    cursor: pointer;
+}
+.color-preview { flex: 1; height: 64px; border-radius: 12px; border: 1px solid var(--border); }
+.color-values { display: flex; flex-direction: column; gap: 8px; }
+.color-val-row { display: grid; grid-template-columns: 42px 1fr auto; gap: 8px; align-items: center; }
+.color-val-row label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); }
+.color-val-input {
+    min-height: 44px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    width: 100%;
+}
+.color-palette-title,
+.color-saved-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+.color-palette,
+.color-saved { display: flex; flex-wrap: wrap; gap: 8px; min-height: 44px; align-items: center; }
+.color-swatch {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: var(--transition);
+}
+.color-swatch:hover { transform: scale(1.08); border-color: var(--secondary); }
+
+/* ── kod QR ── */
+#qrPreview canvas,
+#qrPreview img { border-radius: 10px; background: #fff; padding: 10px; }
+
+@media (max-width: 560px) {
+    .ma-card { padding: 14px; }
+    .conv-row { grid-template-columns: 1fr 104px; }
+    .bmi-inputs { grid-template-columns: 1fr; }
+    .calc-btn { min-height: 52px; font-size: 1.05rem; }
+}
+
+</style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -1937,7 +2275,7 @@ img { max-width: 100%; display: block; }
                     <div class="note-toolbar">
                         <span style="font-size:0.85rem;color:var(--text-muted);" id="noteCount">0 <span data-i18n="note_chars">znaków</span></span>
                         <div style="display:flex;gap:8px;">
-                            <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="copyNote()"><i class="fas fa-copy"></i> <span data-i18n="pass_copy">Kopiuj</span></button>
+                            <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="copyNote(event)"><i class="fas fa-copy"></i> <span data-i18n="pass_copy">Kopiuj</span></button>
                             <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="downloadNote()"><i class="fas fa-download"></i> TXT</button>
                             <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="clearNote()" style="color:#ef4444;border-color:#ef4444;"><i class="fas fa-trash"></i></button>
                         </div>
@@ -1955,14 +2293,14 @@ img { max-width: 100%; display: block; }
                             <div class="color-preview" id="colorPreview" style="background:#2456a4;"></div>
                         </div>
                         <div class="color-values">
-                            <div class="color-val-row"><label>HEX</label><input class="color-val-input" id="colorHex" value="#2456a4" oninput="colorFromHex(this.value)"><button class="ma-copy-btn" onclick="copyColorVal('colorHex')"><i class="fas fa-copy"></i></button></div>
-                            <div class="color-val-row"><label>RGB</label><input class="color-val-input" id="colorRgb" value="rgb(36,86,164)" readonly><button class="ma-copy-btn" onclick="copyColorVal('colorRgb')"><i class="fas fa-copy"></i></button></div>
-                            <div class="color-val-row"><label>HSL</label><input class="color-val-input" id="colorHsl" value="hsl(217,64%,39%)" readonly><button class="ma-copy-btn" onclick="copyColorVal('colorHsl')"><i class="fas fa-copy"></i></button></div>
+                            <div class="color-val-row"><label>HEX</label><input class="color-val-input" id="colorHex" value="#2456a4" oninput="colorFromHex(this.value)"><button class="ma-copy-btn" onclick="copyColorVal('colorHex', event)"><i class="fas fa-copy"></i></button></div>
+                            <div class="color-val-row"><label>RGB</label><input class="color-val-input" id="colorRgb" value="rgb(36,86,164)" readonly><button class="ma-copy-btn" onclick="copyColorVal('colorRgb', event)"><i class="fas fa-copy"></i></button></div>
+                            <div class="color-val-row"><label>HSL</label><input class="color-val-input" id="colorHsl" value="hsl(217,64%,39%)" readonly><button class="ma-copy-btn" onclick="copyColorVal('colorHsl', event)"><i class="fas fa-copy"></i></button></div>
                         </div>
                     </div>
-                    <div class="color-palette-title">Paleta Beagle</div>
+                    <div class="color-palette-title" data-i18n="color_palette">Paleta Beagle</div>
                     <div class="color-palette" id="colorPalette"></div>
-                    <div class="color-saved-title">Zapisane <button class="ma-btn-link" onclick="clearSavedColors()"><span data-i18n="color_clear">wyczyść</span></button></div>
+                    <div class="color-saved-title"><span data-i18n="color_saved">Zapisane</span> <button class="ma-btn-link" onclick="clearSavedColors()"><span data-i18n="color_clear">wyczyść</span></button></div>
                     <div class="color-saved" id="colorSaved"></div>
                     <button class="ma-btn" onclick="saveColor()" style="margin-top:12px;"><i class="fas fa-plus"></i> <span data-i18n="color_save">Zapisz kolor</span></button>
                 </div>
@@ -1991,7 +2329,7 @@ img { max-width: 100%; display: block; }
                     </div>
                     <div style="display:flex;gap:8px;justify-content:center;">
                         <button class="ma-btn" onclick="downloadQR()"><i class="fas fa-download"></i> <span data-i18n="qr_png">Pobierz PNG</span></button>
-                        <button class="ma-copy-btn" onclick="copyQRLink()"><i class="fas fa-link"></i> <span data-i18n="qr_link">Kopiuj link</span></button>
+                        <button class="ma-copy-btn" onclick="copyQRLink(event)"><i class="fas fa-link"></i> <span data-i18n="qr_link">Kopiuj link</span></button>
                     </div>
                 </div>
             </div>
@@ -2776,6 +3114,14 @@ revealOnScroll();
 var currentLang = 'pl';
 var i18n = {
     pl: {
+        copied: 'Skopiowano!', calc_error: 'Nie dzielimy przez zero',
+        pass_pick_set: 'Zaznacz przynajmniej jeden rodzaj znaków',
+        pass_weak: 'Słabe', pass_medium: 'Dobre', pass_strong: 'Bardzo mocne',
+        bmi_fill: 'Podaj wzrost i wagę',
+        timer_start: 'Start', timer_pause: 'Pauza', timer_done: 'Koniec!',
+        note_confirm: 'Wyczyścić notatkę?', color_none: 'Brak zapisanych',
+        qr_offline: 'Nie udało się wczytać generatora QR (brak połączenia?)',
+        color_palette: 'Paleta Beagle', color_saved: 'Zapisane',
         tile_calc: 'Kalkulator', tile_conv: 'Konwerter', tile_timer: 'Stoper', tile_note: 'Notatka',
         tile_color: 'Kolory', tile_qr: 'QR Kod', tile_back: 'Mini Apki',
         meme_upload_btn: 'Wgraj zdjęcie', bmi_calc: 'Oblicz BMI', conv_temp: 'Temperatura',
@@ -2858,6 +3204,14 @@ var i18n = {
         contact_desc: 'Masz pomysł na aplikację? Napisz — zbuduję to razem z Tobą.'
     },
     en: {
+        copied: 'Copied!', calc_error: 'Cannot divide by zero',
+        pass_pick_set: 'Pick at least one character set',
+        pass_weak: 'Weak', pass_medium: 'Good', pass_strong: 'Very strong',
+        bmi_fill: 'Enter height and weight',
+        timer_start: 'Start', timer_pause: 'Pause', timer_done: 'Time up!',
+        note_confirm: 'Clear the note?', color_none: 'Nothing saved yet',
+        qr_offline: 'Could not load the QR generator (offline?)',
+        color_palette: 'Beagle palette', color_saved: 'Saved',
         tile_calc: 'Calculator', tile_conv: 'Converter', tile_timer: 'Stopwatch', tile_note: 'Notepad',
         tile_color: 'Colours', tile_qr: 'QR Code', tile_back: 'Mini Apps',
         meme_upload_btn: 'Upload image', bmi_calc: 'Calculate BMI', conv_temp: 'Temperature',
@@ -2940,6 +3294,14 @@ var i18n = {
         contact_desc: 'Got an app idea? Let me know — I\'ll build it with you.'
     },
     de: {
+        copied: 'Kopiert!', calc_error: 'Division durch null geht nicht',
+        pass_pick_set: 'Mindestens eine Zeichenart auswählen',
+        pass_weak: 'Schwach', pass_medium: 'Gut', pass_strong: 'Sehr stark',
+        bmi_fill: 'Größe und Gewicht eingeben',
+        timer_start: 'Start', timer_pause: 'Pause', timer_done: 'Zeit um!',
+        note_confirm: 'Notiz löschen?', color_none: 'Nichts gespeichert',
+        qr_offline: 'QR-Generator konnte nicht geladen werden (offline?)',
+        color_palette: 'Beagle-Palette', color_saved: 'Gespeichert',
         tile_calc: 'Rechner', tile_conv: 'Umrechner', tile_timer: 'Stoppuhr', tile_note: 'Notiz',
         tile_color: 'Farben', tile_qr: 'QR-Code', tile_back: 'Mini-Apps',
         meme_upload_btn: 'Bild hochladen', bmi_calc: 'BMI berechnen', conv_temp: 'Temperatur',
@@ -3727,6 +4089,552 @@ function setMemeColor(btn, color) {
     memeTextColor = color;
     renderMeme();
 }
+
+/* ===== MINI APKI — obsługa =====
+   Markup tych narzędzi istniał od dawna, ale funkcje wołane z onclick/oninput
+   nigdy nie zostały napisane: 24 z nich rzucały ReferenceError, przez co osiem
+   mini apek nic nie robiło po kliknięciu. Tu jest brakująca warstwa.
+   Teksty widoczne dla użytkownika idą przez T(), żeby działały w PL/EN/DE. */
+
+/* --- wspólne --- */
+
+function maSkopiuj(tekst, przycisk) {
+    // clipboard API wymaga HTTPS; na file:// i starszych przeglądarkach
+    // wracamy do ukrytego pola tekstowego, żeby kopiowanie nie padało cicho
+    function potwierdz() {
+        if (!przycisk) return;
+        var stare = przycisk.innerHTML;
+        przycisk.innerHTML = '<i class="fas fa-check"></i> ' + T('copied', 'Skopiowano!');
+        setTimeout(function () { przycisk.innerHTML = stare; }, 1400);
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(tekst).then(potwierdz, function () {});
+        return;
+    }
+    var pom = document.createElement('textarea');
+    pom.value = tekst;
+    pom.style.cssText = 'position:fixed;opacity:0;';
+    document.body.appendChild(pom);
+    pom.select();
+    try { document.execCommand('copy'); potwierdz(); } catch (e) {}
+    document.body.removeChild(pom);
+}
+
+/* --- KALKULATOR --- */
+
+var calcStan = { biezaca: '0', poprzednia: null, dzialanie: null, nowaLiczba: true };
+
+function calcPokaz() {
+    var d = document.getElementById('calcDisplay');
+    var h = document.getElementById('calcHistory');
+    if (d) d.textContent = calcStan.biezaca;
+    if (h) {
+        h.textContent = calcStan.dzialanie
+            ? calcStan.poprzednia + ' ' + calcStan.dzialanie.replace('*', '×').replace('/', '÷')
+            : '';
+    }
+}
+
+function calcWynik() {
+    var a = parseFloat(calcStan.poprzednia);
+    var b = parseFloat(calcStan.biezaca);
+    if (isNaN(a) || isNaN(b)) return calcStan.biezaca;
+    var w;
+    switch (calcStan.dzialanie) {
+        case '+': w = a + b; break;
+        case '-': w = a - b; break;
+        case '*': w = a * b; break;
+        case '/': w = b === 0 ? null : a / b; break;
+        default: return calcStan.biezaca;
+    }
+    if (w === null) return T('calc_error', 'Nie dzielimy przez zero');
+    // zaokrąglenie ucina błędy zmiennoprzecinkowe (0.1+0.2 = 0.30000000000000004)
+    return String(Math.round(w * 1e10) / 1e10);
+}
+
+function calcInput(k) {
+    var s = calcStan;
+    var bladWidoczny = isNaN(parseFloat(s.biezaca));
+
+    if (k === 'AC') {
+        calcStan = { biezaca: '0', poprzednia: null, dzialanie: null, nowaLiczba: true };
+        return calcPokaz();
+    }
+    if (bladWidoczny && k !== 'AC') {
+        // po komunikacie o błędzie każdy klawisz zaczyna od zera
+        s.biezaca = '0'; s.poprzednia = null; s.dzialanie = null; s.nowaLiczba = true;
+    }
+    if (k === '⌫') {
+        s.biezaca = s.biezaca.length > 1 ? s.biezaca.slice(0, -1) : '0';
+        if (s.biezaca === '-') s.biezaca = '0';
+        return calcPokaz();
+    }
+    if (k === '+/-') {
+        s.biezaca = s.biezaca.charAt(0) === '-' ? s.biezaca.slice(1) : '-' + s.biezaca;
+        return calcPokaz();
+    }
+    if (k === '%') {
+        s.biezaca = String(parseFloat(s.biezaca) / 100);
+        return calcPokaz();
+    }
+    if (k === '.') {
+        if (s.nowaLiczba) { s.biezaca = '0.'; s.nowaLiczba = false; }
+        else if (s.biezaca.indexOf('.') === -1) s.biezaca += '.';
+        return calcPokaz();
+    }
+    if ('0123456789'.indexOf(k) !== -1) {
+        if (s.nowaLiczba) { s.biezaca = k; s.nowaLiczba = false; }
+        else s.biezaca = s.biezaca === '0' ? k : s.biezaca + k;
+        return calcPokaz();
+    }
+    if (k === '=') {
+        if (s.dzialanie === null) return calcPokaz();
+        s.biezaca = calcWynik();
+        s.poprzednia = null; s.dzialanie = null; s.nowaLiczba = true;
+        return calcPokaz();
+    }
+    if ('+-*/'.indexOf(k) !== -1) {
+        // łańcuch działań: 2+3+4 liczy po drodze, jak w kalkulatorze systemowym
+        if (s.dzialanie !== null && !s.nowaLiczba) s.biezaca = calcWynik();
+        s.poprzednia = s.biezaca;
+        s.dzialanie = k;
+        s.nowaLiczba = true;
+        return calcPokaz();
+    }
+}
+
+/* --- GENERATOR HASEŁ --- */
+
+function generatePass() {
+    var dlugosc = parseInt((document.getElementById('passLenVal') || {}).textContent, 10) || 16;
+    var zestawy = [];
+    if (document.getElementById('passUpper').checked) zestawy.push('ABCDEFGHJKLMNPQRSTUVWXYZ');
+    if (document.getElementById('passLower').checked) zestawy.push('abcdefghijkmnopqrstuvwxyz');
+    if (document.getElementById('passNum').checked) zestawy.push('23456789');
+    if (document.getElementById('passSymbol').checked) zestawy.push('!@#$%^&*()-_=+[]{};:,.?');
+
+    var wynik = document.getElementById('passOutput');
+    if (zestawy.length === 0) {
+        wynik.textContent = T('pass_pick_set', 'Zaznacz przynajmniej jeden rodzaj znaków');
+        document.getElementById('passStrength').textContent = '';
+        return;
+    }
+
+    // losowość z crypto, nie z Math.random — to ma być hasło, nie ozdoba
+    var wszystkie = zestawy.join('');
+    var bufor = new Uint32Array(dlugosc);
+    (window.crypto || window.msCrypto).getRandomValues(bufor);
+
+    var znaki = [];
+    // po jednym znaku z każdego wybranego zestawu, żeby hasło faktycznie
+    // spełniało zaznaczone warunki, a nie tylko statystycznie
+    for (var z = 0; z < zestawy.length && z < dlugosc; z++) {
+        znaki.push(zestawy[z].charAt(bufor[z] % zestawy[z].length));
+    }
+    for (var i = znaki.length; i < dlugosc; i++) {
+        znaki.push(wszystkie.charAt(bufor[i] % wszystkie.length));
+    }
+    // przetasowanie, żeby wymuszone znaki nie siedziały zawsze na początku
+    var mieszaj = new Uint32Array(znaki.length);
+    (window.crypto || window.msCrypto).getRandomValues(mieszaj);
+    for (var j = znaki.length - 1; j > 0; j--) {
+        var m = mieszaj[j] % (j + 1);
+        var tmp = znaki[j]; znaki[j] = znaki[m]; znaki[m] = tmp;
+    }
+
+    var haslo = znaki.join('');
+    wynik.textContent = haslo;
+
+    var entropia = Math.round(dlugosc * Math.log2(wszystkie.length));
+    var moc = document.getElementById('passStrength');
+    var etykieta = entropia < 50 ? T('pass_weak', 'Słabe')
+        : entropia < 80 ? T('pass_medium', 'Dobre')
+        : T('pass_strong', 'Bardzo mocne');
+    var kolor = entropia < 50 ? '#ef4444' : entropia < 80 ? '#f59e0b' : '#10b981';
+    moc.textContent = etykieta + ' · ~' + entropia + ' bit';
+    moc.style.color = kolor;
+}
+
+function copyPass() {
+    var t = document.getElementById('passOutput').textContent;
+    if (!t || t === T('pass_click', 'Kliknij Generuj!')) return;
+    maSkopiuj(t, document.getElementById('passCopyBtn'));
+}
+
+/* --- BMI --- */
+
+function calcBMI() {
+    var wzrost = parseFloat(document.getElementById('bmiHeight').value);
+    var waga = parseFloat(document.getElementById('bmiWeight').value);
+    var pole = document.getElementById('bmiResult');
+    if (!wzrost || !waga || wzrost < 50 || waga < 10) {
+        pole.innerHTML = '<span style="color:var(--text-muted);">' +
+            T('bmi_fill', 'Podaj wzrost i wagę') + '</span>';
+        return;
+    }
+    var bmi = waga / Math.pow(wzrost / 100, 2);
+    var kategoria, kolor;
+    if (bmi < 18.5) { kategoria = T('bmi_under', 'Niedowaga'); kolor = '#3b82f6'; }
+    else if (bmi < 25) { kategoria = T('bmi_norm', 'Norma'); kolor = '#10b981'; }
+    else if (bmi < 30) { kategoria = T('bmi_over', 'Nadwaga'); kolor = '#f59e0b'; }
+    else { kategoria = T('bmi_obese', 'Otyłość'); kolor = '#ef4444'; }
+    pole.innerHTML = '<div style="font-size:2.4rem;font-weight:800;color:' + kolor + ';">' +
+        bmi.toFixed(1) + '</div><div style="font-weight:600;color:' + kolor + ';">' + kategoria + '</div>';
+}
+
+/* --- KONWERTER --- */
+
+var KONWERSJE = {
+    // wszystko przeliczamy przez jednostkę bazową danego typu
+    temp: { jednostki: ['°C', '°F', 'K'] },
+    weight: { jednostki: ['kg', 'g', 'lb', 'oz', 't'], doBazy: { kg: 1, g: 0.001, lb: 0.45359237, oz: 0.028349523, t: 1000 } },
+    length: { jednostki: ['m', 'km', 'cm', 'mm', 'mi', 'ft', 'in'], doBazy: { m: 1, km: 1000, cm: 0.01, mm: 0.001, mi: 1609.344, ft: 0.3048, in: 0.0254 } },
+    speed: { jednostki: ['km/h', 'm/s', 'mph', 'kn'], doBazy: { 'km/h': 1, 'm/s': 3.6, mph: 1.609344, kn: 1.852 } }
+};
+var convTyp = 'temp';
+
+function setConvType(typ, btn) {
+    convTyp = typ;
+    document.querySelectorAll('#convTabs .conv-tab').forEach(function (b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+
+    var jednostki = KONWERSJE[typ].jednostki;
+    ['convFromUnit', 'convToUnit'].forEach(function (id, idx) {
+        var sel = document.getElementById(id);
+        sel.innerHTML = jednostki.map(function (j) {
+            return '<option value="' + j + '">' + j + '</option>';
+        }).join('');
+        // domyślnie druga jednostka w polu docelowym, żeby od razu coś przeliczał
+        sel.selectedIndex = idx === 1 && jednostki.length > 1 ? 1 : 0;
+    });
+    doConvert();
+}
+
+function doConvert() {
+    var wart = parseFloat(document.getElementById('convFrom').value);
+    var z = document.getElementById('convFromUnit').value;
+    var na = document.getElementById('convToUnit').value;
+    var cel = document.getElementById('convTo');
+    if (isNaN(wart) || !z || !na) { cel.value = ''; return; }
+
+    var wynik;
+    if (convTyp === 'temp') {
+        // temperatura ma przesunięcie zera, więc nie da się jej liczyć mnożnikiem
+        var c = z === '°C' ? wart : z === '°F' ? (wart - 32) * 5 / 9 : wart - 273.15;
+        wynik = na === '°C' ? c : na === '°F' ? c * 9 / 5 + 32 : c + 273.15;
+    } else {
+        var mn = KONWERSJE[convTyp].doBazy;
+        wynik = (wart * mn[z]) / mn[na];
+    }
+    cel.value = Math.round(wynik * 1e6) / 1e6;
+}
+
+/* --- STOPER I MINUTNIK --- */
+
+var swOd = 0, swPrzesuniecie = 0, swInterwal = null, swOkrazenia = [];
+var cdKoniec = 0, cdInterwal = null, cdPozostalo = 0;
+
+function dwie(n) { return (n < 10 ? '0' : '') + n; }
+
+function swFormat(ms) {
+    var setne = Math.floor((ms % 1000) / 10);
+    var sek = Math.floor(ms / 1000) % 60;
+    var min = Math.floor(ms / 60000);
+    return dwie(min) + ':' + dwie(sek) + '.' + dwie(setne);
+}
+
+function switchTimerMode(tryb) {
+    var stoper = tryb === 'stopwatch';
+    document.getElementById('stopwatchMode').style.display = stoper ? '' : 'none';
+    document.getElementById('countdownMode').style.display = stoper ? 'none' : '';
+    document.getElementById('stopwatchTab').classList.toggle('active', stoper);
+    document.getElementById('countdownTab').classList.toggle('active', !stoper);
+}
+
+function swToggle() {
+    var btn = document.getElementById('swStartBtn');
+    if (swInterwal) {
+        clearInterval(swInterwal); swInterwal = null;
+        swPrzesuniecie += Date.now() - swOd;
+        btn.innerHTML = '<i class="fas fa-play"></i> ' + T('timer_start', 'Start');
+        return;
+    }
+    swOd = Date.now();
+    swInterwal = setInterval(function () {
+        document.getElementById('swDisplay').textContent = swFormat(swPrzesuniecie + (Date.now() - swOd));
+    }, 31);
+    btn.innerHTML = '<i class="fas fa-pause"></i> ' + T('timer_pause', 'Pauza');
+}
+
+function swReset() {
+    clearInterval(swInterwal); swInterwal = null;
+    swPrzesuniecie = 0; swOkrazenia = [];
+    document.getElementById('swDisplay').textContent = '00:00.00';
+    document.getElementById('swLaps').innerHTML = '';
+    document.getElementById('swStartBtn').innerHTML = '<i class="fas fa-play"></i> ' + T('timer_start', 'Start');
+}
+
+function swLap() {
+    if (!swInterwal && swPrzesuniecie === 0) return;
+    var teraz = swPrzesuniecie + (swInterwal ? Date.now() - swOd : 0);
+    var poprzednie = swOkrazenia.length ? swOkrazenia[swOkrazenia.length - 1].czas : 0;
+    swOkrazenia.push({ czas: teraz, roznica: teraz - poprzednie });
+    document.getElementById('swLaps').innerHTML = swOkrazenia.map(function (o, i) {
+        return '<div class="timer-lap-row"><span>' + T('timer_lap', 'Okrążenie') + ' ' + (i + 1) +
+            '</span><span>+' + swFormat(o.roznica) + '</span><span>' + swFormat(o.czas) + '</span></div>';
+    }).reverse().join('');
+}
+
+function cdPokaz(ms) {
+    var s = Math.max(0, Math.ceil(ms / 1000));
+    document.getElementById('cdDisplay').textContent =
+        dwie(Math.floor(s / 3600)) + ':' + dwie(Math.floor(s / 60) % 60) + ':' + dwie(s % 60);
+}
+
+function cdToggle() {
+    var btn = document.getElementById('cdStartBtn');
+    if (cdInterwal) {
+        clearInterval(cdInterwal); cdInterwal = null;
+        cdPozostalo = cdKoniec - Date.now();
+        btn.innerHTML = '<i class="fas fa-play"></i> ' + T('timer_start', 'Start');
+        return;
+    }
+    if (cdPozostalo <= 0) {
+        var h = parseInt(document.getElementById('cdH').value, 10) || 0;
+        var m = parseInt(document.getElementById('cdM').value, 10) || 0;
+        var sek = parseInt(document.getElementById('cdS').value, 10) || 0;
+        cdPozostalo = ((h * 60 + m) * 60 + sek) * 1000;
+        if (cdPozostalo <= 0) return;
+    }
+    document.getElementById('cdSet').style.display = 'none';
+    document.getElementById('cdDisplay').style.display = '';
+    cdKoniec = Date.now() + cdPozostalo;
+    cdPokaz(cdPozostalo);
+    cdInterwal = setInterval(function () {
+        var zostalo = cdKoniec - Date.now();
+        cdPokaz(zostalo);
+        if (zostalo <= 0) {
+            clearInterval(cdInterwal); cdInterwal = null; cdPozostalo = 0;
+            document.getElementById('cdDisplay').textContent = T('timer_done', 'Koniec!');
+            document.getElementById('cdStartBtn').innerHTML = '<i class="fas fa-play"></i> ' + T('timer_start', 'Start');
+            if (navigator.vibrate) { try { navigator.vibrate([200, 100, 200]); } catch (e) {} }
+        }
+    }, 200);
+    btn.innerHTML = '<i class="fas fa-pause"></i> ' + T('timer_pause', 'Pauza');
+}
+
+function cdReset() {
+    clearInterval(cdInterwal); cdInterwal = null; cdPozostalo = 0;
+    document.getElementById('cdSet').style.display = '';
+    document.getElementById('cdDisplay').style.display = 'none';
+    document.getElementById('cdStartBtn').innerHTML = '<i class="fas fa-play"></i> ' + T('timer_start', 'Start');
+}
+
+/* --- NOTATNIK --- */
+
+var NOTATKA_KLUCZ = 'beagle-notatka';
+
+function noteUpdate() {
+    var pole = document.getElementById('noteArea');
+    var licznik = document.getElementById('noteCount');
+    if (licznik) licznik.textContent = pole.value.length + ' ' + T('note_chars', 'znaków');
+    try { localStorage.setItem(NOTATKA_KLUCZ, pole.value); } catch (e) {}
+}
+
+function copyNote(ev) {
+    var t = document.getElementById('noteArea').value;
+    if (!t) return;
+    maSkopiuj(t, ev && ev.target ? ev.target.closest('button') : null);
+}
+
+function downloadNote() {
+    var t = document.getElementById('noteArea').value;
+    if (!t) return;
+    var blob = new Blob([t], { type: 'text/plain;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'notatka.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+}
+
+function clearNote() {
+    var pole = document.getElementById('noteArea');
+    if (pole.value && !confirm(T('note_confirm', 'Wyczyścić notatkę?'))) return;
+    pole.value = '';
+    noteUpdate();
+}
+
+/* --- KOLORY --- */
+
+var PALETA_MARKI = ['#2456a4', '#1a3f7a', '#4a8ed4', '#f5a623', '#06b6d4', '#0b1120', '#10b981', '#ef4444'];
+var KOLORY_KLUCZ = 'beagle-kolory';
+
+function hexNaRgb(hex) {
+    var h = hex.replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var n = parseInt(h, 16);
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+function rgbNaHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var l = (max + min) / 2, h = 0, s = 0;
+    if (max !== min) {
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        if (max === r) h = ((g - b) / d + (g < b ? 6 : 0));
+        else if (max === g) h = (b - r) / d + 2;
+        else h = (r - g) / d + 4;
+        h /= 6;
+    }
+    return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
+function updateColor(hex) {
+    if (!/^#?[0-9a-f]{3}([0-9a-f]{3})?$/i.test(hex)) return;
+    if (hex.charAt(0) !== '#') hex = '#' + hex;
+    var rgb = hexNaRgb(hex);
+    var hsl = rgbNaHsl(rgb.r, rgb.g, rgb.b);
+    document.getElementById('colorPreview').style.background = hex;
+    document.getElementById('colorHex').value = hex;
+    document.getElementById('colorRgb').value = 'rgb(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ')';
+    document.getElementById('colorHsl').value = 'hsl(' + hsl.h + ',' + hsl.s + '%,' + hsl.l + '%)';
+    var picker = document.getElementById('colorPicker');
+    if (picker.value.toLowerCase() !== hex.toLowerCase()) picker.value = hex;
+}
+
+function colorFromHex(v) {
+    // pole HEX jest edytowalne, więc reagujemy dopiero na poprawny zapis
+    if (/^#?[0-9a-f]{3}([0-9a-f]{3})?$/i.test(v.trim())) updateColor(v.trim());
+}
+
+function copyColorVal(id, ev) {
+    maSkopiuj(document.getElementById(id).value, ev && ev.target ? ev.target.closest('button') : null);
+}
+
+function wczytajKolory() {
+    try { return JSON.parse(localStorage.getItem(KOLORY_KLUCZ)) || []; } catch (e) { return []; }
+}
+
+function rysujZapisane() {
+    var zapisane = wczytajKolory();
+    var box = document.getElementById('colorSaved');
+    box.innerHTML = zapisane.length
+        ? zapisane.map(function (k) {
+            return '<button class="color-swatch" title="' + k + '" onclick="updateColor(\'' + k + '\')" style="background:' + k + '"></button>';
+        }).join('')
+        : '<span style="color:var(--text-muted);font-size:0.85rem;">' + T('color_none', 'Brak zapisanych') + '</span>';
+}
+
+function saveColor() {
+    var hex = document.getElementById('colorHex').value;
+    var zapisane = wczytajKolory();
+    if (zapisane.indexOf(hex) === -1) zapisane.unshift(hex);
+    zapisane = zapisane.slice(0, 24);
+    try { localStorage.setItem(KOLORY_KLUCZ, JSON.stringify(zapisane)); } catch (e) {}
+    rysujZapisane();
+}
+
+function clearSavedColors() {
+    try { localStorage.removeItem(KOLORY_KLUCZ); } catch (e) {}
+    rysujZapisane();
+}
+
+/* --- KOD QR --- */
+
+var qrGotowe = null;
+
+function qrZaladuj() {
+    // biblioteka doczytywana dopiero przy pierwszym użyciu — kod powstaje
+    // lokalnie w przeglądarce, więc wpisany tekst nigdzie nie wychodzi
+    if (qrGotowe) return qrGotowe;
+    qrGotowe = new Promise(function (ok, blad) {
+        if (window.QRCode) return ok();
+        var s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+        s.onload = function () { ok(); };
+        s.onerror = function () { qrGotowe = null; blad(); };
+        document.head.appendChild(s);
+    });
+    return qrGotowe;
+}
+
+function generateQR() {
+    var tekst = document.getElementById('qrInput').value.trim();
+    var podglad = document.getElementById('qrPreview');
+    if (!tekst) {
+        podglad.innerHTML = '<div style="color:var(--text-muted);text-align:center;">' +
+            '<i class="fas fa-qrcode" style="font-size:3rem;display:block;margin-bottom:12px;opacity:0.3;"></i>' +
+            T('qr_hint', 'Wpisz tekst żeby wygenerować QR') + '</div>';
+        return;
+    }
+    qrZaladuj().then(function () {
+        var rozmiar = parseInt(document.getElementById('qrSize').value, 10) || 200;
+        var kolor = '#' + document.getElementById('qrColor').value;
+        podglad.innerHTML = '';
+        var box = document.createElement('div');
+        podglad.appendChild(box);
+        new QRCode(box, {
+            text: tekst,
+            width: rozmiar,
+            height: rozmiar,
+            colorDark: kolor,
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+        });
+    }, function () {
+        podglad.innerHTML = '<div style="color:#ef4444;text-align:center;">' +
+            T('qr_offline', 'Nie udało się wczytać generatora QR (brak połączenia?)') + '</div>';
+    });
+}
+
+function downloadQR() {
+    var plotno = document.querySelector('#qrPreview canvas');
+    var obraz = document.querySelector('#qrPreview img');
+    var dane = plotno ? plotno.toDataURL('image/png') : (obraz ? obraz.src : null);
+    if (!dane) return;
+    var a = document.createElement('a');
+    a.href = dane;
+    a.download = 'qr.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+function copyQRLink(ev) {
+    var t = document.getElementById('qrInput').value.trim();
+    if (!t) return;
+    maSkopiuj(t, ev && ev.target ? ev.target.closest('button') : null);
+}
+
+/* --- start --- */
+
+(function inicjujMiniApki() {
+    function gotowe() {
+        if (document.getElementById('convFromUnit')) {
+            var pierwsza = document.querySelector('#convTabs .conv-tab');
+            setConvType('temp', pierwsza);
+        }
+        var paleta = document.getElementById('colorPalette');
+        if (paleta) {
+            paleta.innerHTML = PALETA_MARKI.map(function (k) {
+                return '<button class="color-swatch" title="' + k + '" onclick="updateColor(\'' + k + '\')" style="background:' + k + '"></button>';
+            }).join('');
+            rysujZapisane();
+            updateColor(document.getElementById('colorPicker').value);
+        }
+        var notatka = document.getElementById('noteArea');
+        if (notatka) {
+            try {
+                var zapisana = localStorage.getItem(NOTATKA_KLUCZ);
+                if (zapisana) notatka.value = zapisana;
+            } catch (e) {}
+            noteUpdate();
+        }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gotowe);
+    else gotowe();
+})();
 
 function renderMeme() {
     var canvas = document.getElementById('memeCanvas');
