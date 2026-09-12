@@ -1712,7 +1712,7 @@ img { max-width: 100%; display: block; }
                 <div class="music-player" id="musicPlayer">
                     <div class="player-header">
                         <div class="player-album" id="playerAlbum"><i class="fas fa-music"></i></div>
-                        <div class="player-title" id="playerTitle">Wybierz utwór</div>
+                        <div class="player-title" id="playerTitle" data-i18n="music_choose">Wybierz utwór</div>
                         <div class="player-artist" id="playerArtist">Beagle Apps Studio</div>
                     </div>
                     <div class="player-progress" id="playerProgress" onclick="seekMusic(event)">
@@ -1746,19 +1746,19 @@ img { max-width: 100%; display: block; }
                 <!-- Launcher mini apek — siatka kafelków jak ekran telefonu -->
                 <div class="mini-apps-launcher" id="miniAppsLauncher">
                     <button class="mini-tile" onclick="showMiniApp('meme')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">😂</span><span class="mini-tile-name">Meme Creator</span></button>
-                    <button class="mini-tile" onclick="showMiniApp('calc')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#334155,#64748b);">🔢</span><span class="mini-tile-name">Kalkulator</span></button>
-                    <button class="mini-tile" onclick="showMiniApp('pass')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">🔑</span><span class="mini-tile-name">Hasła</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('calc')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#334155,#64748b);">🔢</span><span class="mini-tile-name" data-i18n="tile_calc">Kalkulator</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('pass')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">🔑</span><span class="mini-tile-name" data-i18n="miniapp_pass_tile">Hasła</span></button>
                     <button class="mini-tile" onclick="showMiniApp('bmi')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#059669,#34d399);">⚖️</span><span class="mini-tile-name">BMI</span></button>
-                    <button class="mini-tile" onclick="showMiniApp('conv')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8);">🔄</span><span class="mini-tile-name">Konwerter</span></button>
-                    <button class="mini-tile" onclick="showMiniApp('timer')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#dc2626,#f87171);">⏱️</span><span class="mini-tile-name">Stoper</span></button>
-                    <button class="mini-tile" onclick="showMiniApp('note')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#ca8a04,#facc15);">📝</span><span class="mini-tile-name">Notatka</span></button>
-                    <button class="mini-tile" onclick="showMiniApp('color')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#db2777,#f472b6);">🎨</span><span class="mini-tile-name">Kolory</span></button>
-                    <button class="mini-tile" onclick="showMiniApp('qr')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#1d4ed8,#60a5fa);">📱</span><span class="mini-tile-name">QR Kod</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('conv')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8);">🔄</span><span class="mini-tile-name" data-i18n="tile_conv">Konwerter</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('timer')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#dc2626,#f87171);">⏱️</span><span class="mini-tile-name" data-i18n="tile_timer">Stoper</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('note')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#ca8a04,#facc15);">📝</span><span class="mini-tile-name" data-i18n="tile_note">Notatka</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('color')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#db2777,#f472b6);">🎨</span><span class="mini-tile-name" data-i18n="tile_color">Kolory</span></button>
+                    <button class="mini-tile" onclick="showMiniApp('qr')"><span class="mini-tile-icon" style="background:linear-gradient(135deg,#1d4ed8,#60a5fa);">📱</span><span class="mini-tile-name" data-i18n="tile_qr">QR Kod</span></button>
                 </div>
 
                 <!-- Pasek powrotu widoczny po otwarciu mini apki -->
                 <div class="mini-app-topbar" id="miniAppTopbar" style="display:none;">
-                    <button class="mini-back-btn" onclick="backToMiniApps()"><i class="fas fa-arrow-left"></i> Mini Apki</button>
+                    <button class="mini-back-btn" onclick="backToMiniApps()"><i class="fas fa-arrow-left"></i> <span data-i18n="tile_back">Mini Apki</span></button>
                     <span class="mini-app-title" id="miniAppTitle"></span>
                 </div>
 
@@ -1768,7 +1768,7 @@ img { max-width: 100%; display: block; }
                         <div class="meme-toolbar">
                             <div class="meme-tool-group">
                                 <label class="meme-upload-btn">
-                                    <i class="fas fa-image"></i> Wgraj zdjęcie
+                                    <i class="fas fa-image"></i> <span data-i18n="meme_upload_btn">Wgraj zdjęcie</span>
                                     <input type="file" id="memeImg" accept="image/*" onchange="loadMemeImage(this)" style="display:none;">
                                 </label>
                                 <button class="meme-sample-btn" onclick="loadMemeSample(this)" data-url="https://i.imgflip.com/1g8my4.jpg">Drake</button>
@@ -1780,20 +1780,20 @@ img { max-width: 100%; display: block; }
                         <div class="meme-workspace">
                             <div class="meme-inputs">
                                 <div class="meme-input-group">
-                                    <label>Tekst górny</label>
+                                    <label data-i18n="meme_top">Tekst górny</label>
                                     <input type="text" id="memeTop" placeholder="TEN GÓRNY TEKST..." oninput="renderMeme()" maxlength="80">
                                 </div>
                                 <div class="meme-input-group">
-                                    <label>Tekst dolny</label>
+                                    <label data-i18n="meme_bottom">Tekst dolny</label>
                                     <input type="text" id="memeBottom" placeholder="TEN DOLNY TEKST..." oninput="renderMeme()" maxlength="80">
                                 </div>
                                 <div class="meme-input-group">
-                                    <label>Rozmiar czcionki</label>
+                                    <label data-i18n="meme_size">Rozmiar czcionki</label>
                                     <input type="range" id="memeFontSize" min="20" max="80" value="40" oninput="renderMeme(); document.getElementById('memeFontVal').textContent=this.value+'px'">
                                     <span id="memeFontVal" style="font-size:0.85rem;color:var(--text-muted);">40px</span>
                                 </div>
                                 <div class="meme-input-group">
-                                    <label>Kolor tekstu</label>
+                                    <label data-i18n="meme_color">Kolor tekstu</label>
                                     <div style="display:flex;gap:8px;flex-wrap:wrap;">
                                         <button class="meme-color-btn active" data-color="#FFFFFF" onclick="setMemeColor(this,'#FFFFFF')" style="background:#fff;border:3px solid var(--secondary);"></button>
                                         <button class="meme-color-btn" data-color="#000000" onclick="setMemeColor(this,'#000000')" style="background:#000;"></button>
@@ -1804,14 +1804,14 @@ img { max-width: 100%; display: block; }
                                     </div>
                                 </div>
                                 <button class="meme-download-btn" onclick="downloadMeme()">
-                                    <i class="fas fa-download"></i> Pobierz Mema!
+                                    <i class="fas fa-download"></i> <span data-i18n="meme_download">Pobierz Mema!</span>
                                 </button>
                             </div>
                             <div class="meme-preview-wrap">
                                 <canvas id="memeCanvas" width="600" height="500"></canvas>
                                 <div id="memePlaceholder" class="meme-placeholder">
                                     <i class="fas fa-image"></i>
-                                    <span>Wgraj zdjęcie lub wybierz szablon</span>
+                                    <span data-i18n="meme_upload">Wgraj zdjęcie lub wybierz szablon</span>
                                 </div>
                             </div>
                         </div>
@@ -1850,17 +1850,17 @@ img { max-width: 100%; display: block; }
             <!-- PASSWORD GENERATOR -->
             <div class="mini-app" id="miniapp-pass">
                 <div class="ma-card ma-center">
-                    <div class="pass-output" id="passOutput">Kliknij Generuj!</div>
-                    <button class="ma-copy-btn" onclick="copyPass()" id="passCopyBtn"><i class="fas fa-copy"></i> Kopiuj</button>
-                    <div class="ma-section-title" style="margin-top:20px;">Opcje</div>
+                    <div class="pass-output" id="passOutput" data-i18n="pass_click">Kliknij Generuj!</div>
+                    <button class="ma-copy-btn" onclick="copyPass()" id="passCopyBtn"><i class="fas fa-copy"></i> <span data-i18n="pass_copy">Kopiuj</span></button>
+                    <div class="ma-section-title" style="margin-top:20px;" data-i18n="pass_options">Opcje</div>
                     <div class="pass-options">
-                        <div class="pass-opt-row"><label>Długość: <strong id="passLenVal">16</strong></label><input type="range" min="6" max="64" value="16" oninput="document.getElementById('passLenVal').textContent=this.value" id="passLen"></div>
-                        <label class="pass-check"><input type="checkbox" id="passUpper" checked> Wielkie litery (A-Z)</label>
-                        <label class="pass-check"><input type="checkbox" id="passLower" checked> Małe litery (a-z)</label>
-                        <label class="pass-check"><input type="checkbox" id="passNum" checked> Cyfry (0-9)</label>
-                        <label class="pass-check"><input type="checkbox" id="passSymbol" checked> Znaki specjalne (!@#$...)</label>
+                        <div class="pass-opt-row"><label><span data-i18n="pass_len">Długość:</span> <strong id="passLenVal">16</strong></label><input type="range" min="6" max="64" value="16" oninput="document.getElementById('passLenVal').textContent=this.value" id="passLen"></div>
+                        <label class="pass-check"><input type="checkbox" id="passUpper" checked> <span data-i18n="pass_upper">Wielkie litery (A-Z)</span></label>
+                        <label class="pass-check"><input type="checkbox" id="passLower" checked> <span data-i18n="pass_lower">Małe litery (a-z)</span></label>
+                        <label class="pass-check"><input type="checkbox" id="passNum" checked> <span data-i18n="pass_num">Cyfry (0-9)</span></label>
+                        <label class="pass-check"><input type="checkbox" id="passSymbol" checked> <span data-i18n="pass_symbol">Znaki specjalne (!@#$...)</span></label>
                     </div>
-                    <button class="ma-btn" onclick="generatePass()"><i class="fas fa-sync"></i> Generuj hasło</button>
+                    <button class="ma-btn" onclick="generatePass()"><i class="fas fa-sync"></i> <span data-i18n="pass_generate">Generuj hasło</span></button>
                     <div class="pass-strength" id="passStrength"></div>
                 </div>
             </div>
@@ -1869,16 +1869,16 @@ img { max-width: 100%; display: block; }
             <div class="mini-app" id="miniapp-bmi">
                 <div class="ma-card ma-center">
                     <div class="bmi-inputs">
-                        <div class="bmi-field"><label>Wzrost (cm)</label><input type="number" id="bmiHeight" placeholder="175" min="50" max="250" class="ma-input"></div>
-                        <div class="bmi-field"><label>Waga (kg)</label><input type="number" id="bmiWeight" placeholder="70" min="10" max="300" class="ma-input"></div>
+                        <div class="bmi-field"><label data-i18n="bmi_height">Wzrost (cm)</label><input type="number" id="bmiHeight" placeholder="175" min="50" max="250" class="ma-input"></div>
+                        <div class="bmi-field"><label data-i18n="bmi_weight">Waga (kg)</label><input type="number" id="bmiWeight" placeholder="70" min="10" max="300" class="ma-input"></div>
                     </div>
-                    <button class="ma-btn" onclick="calcBMI()"><i class="fas fa-calculator"></i> Oblicz BMI</button>
+                    <button class="ma-btn" onclick="calcBMI()"><i class="fas fa-calculator"></i> <span data-i18n="bmi_calc">Oblicz BMI</span></button>
                     <div class="bmi-result" id="bmiResult"></div>
                     <div class="bmi-scale">
-                        <div class="bmi-range" style="background:#3b82f6">Niedowaga<br>&lt;18.5</div>
-                        <div class="bmi-range" style="background:#10b981">Norma<br>18.5–25</div>
-                        <div class="bmi-range" style="background:#f59e0b">Nadwaga<br>25–30</div>
-                        <div class="bmi-range" style="background:#ef4444">Otyłość<br>&gt;30</div>
+                        <div class="bmi-range" style="background:#3b82f6"><span data-i18n="bmi_under">Niedowaga</span><br>&lt;18.5</div>
+                        <div class="bmi-range" style="background:#10b981"><span data-i18n="bmi_norm">Norma</span><br>18.5–25</div>
+                        <div class="bmi-range" style="background:#f59e0b"><span data-i18n="bmi_over">Nadwaga</span><br>25–30</div>
+                        <div class="bmi-range" style="background:#ef4444"><span data-i18n="bmi_obese">Otyłość</span><br>&gt;30</div>
                     </div>
                 </div>
             </div>
@@ -1887,15 +1887,15 @@ img { max-width: 100%; display: block; }
             <div class="mini-app" id="miniapp-conv">
                 <div class="ma-card">
                     <div class="conv-tabs" id="convTabs">
-                        <button class="conv-tab active" onclick="setConvType('temp',this)">🌡️ Temperatura</button>
-                        <button class="conv-tab" onclick="setConvType('weight',this)">⚖️ Waga</button>
-                        <button class="conv-tab" onclick="setConvType('length',this)">📏 Długość</button>
-                        <button class="conv-tab" onclick="setConvType('speed',this)">🚀 Prędkość</button>
+                        <button class="conv-tab active" onclick="setConvType('temp',this)">🌡️ <span data-i18n="conv_temp">Temperatura</span></button>
+                        <button class="conv-tab" onclick="setConvType('weight',this)">⚖️ <span data-i18n="conv_weight">Waga</span></button>
+                        <button class="conv-tab" onclick="setConvType('length',this)">📏 <span data-i18n="conv_length">Długość</span></button>
+                        <button class="conv-tab" onclick="setConvType('speed',this)">🚀 <span data-i18n="conv_speed">Prędkość</span></button>
                     </div>
                     <div class="conv-body">
-                        <div class="conv-row"><input type="number" class="ma-input" id="convFrom" placeholder="Wpisz wartość" oninput="doConvert()"><select class="ma-select" id="convFromUnit" onchange="doConvert()"></select></div>
+                        <div class="conv-row"><input type="number" class="ma-input" id="convFrom" placeholder="Wpisz wartość" data-i18n-ph="conv_value_ph" oninput="doConvert()"><select class="ma-select" id="convFromUnit" onchange="doConvert()"></select></div>
                         <div style="text-align:center;font-size:1.5rem;color:var(--secondary);">⇅</div>
-                        <div class="conv-row"><input type="number" class="ma-input" id="convTo" readonly placeholder="Wynik"><select class="ma-select" id="convToUnit" onchange="doConvert()"></select></div>
+                        <div class="conv-row"><input type="number" class="ma-input" id="convTo" readonly placeholder="Wynik" data-i18n-ph="conv_result_ph"><select class="ma-select" id="convToUnit" onchange="doConvert()"></select></div>
                     </div>
                 </div>
             </div>
@@ -1904,7 +1904,7 @@ img { max-width: 100%; display: block; }
             <div class="mini-app" id="miniapp-timer">
                 <div class="ma-card ma-center">
                     <div class="timer-tabs">
-                        <button class="timer-tab active" id="stopwatchTab" onclick="switchTimerMode('stopwatch')">Stoper</button>
+                        <button class="timer-tab active" id="stopwatchTab" onclick="switchTimerMode('stopwatch')" data-i18n="tile_timer">Stoper</button>
                         <button class="timer-tab" id="countdownTab" onclick="switchTimerMode('countdown')">Timer</button>
                     </div>
                     <div id="stopwatchMode">
@@ -1912,7 +1912,7 @@ img { max-width: 100%; display: block; }
                         <div class="timer-btns">
                             <button class="ma-btn" id="swStartBtn" onclick="swToggle()"><i class="fas fa-play"></i> Start</button>
                             <button class="ma-btn ma-btn-outline" onclick="swReset()"><i class="fas fa-redo"></i> Reset</button>
-                            <button class="ma-btn ma-btn-outline" onclick="swLap()"><i class="fas fa-flag"></i> Okrążenie</button>
+                            <button class="ma-btn ma-btn-outline" onclick="swLap()"><i class="fas fa-flag"></i> <span data-i18n="timer_lap">Okrążenie</span></button>
                         </div>
                         <div class="timer-laps" id="swLaps"></div>
                     </div>
@@ -1935,14 +1935,14 @@ img { max-width: 100%; display: block; }
             <div class="mini-app" id="miniapp-note">
                 <div class="ma-card">
                     <div class="note-toolbar">
-                        <span style="font-size:0.85rem;color:var(--text-muted);" id="noteCount">0 znaków</span>
+                        <span style="font-size:0.85rem;color:var(--text-muted);" id="noteCount">0 <span data-i18n="note_chars">znaków</span></span>
                         <div style="display:flex;gap:8px;">
-                            <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="copyNote()"><i class="fas fa-copy"></i> Kopiuj</button>
+                            <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="copyNote()"><i class="fas fa-copy"></i> <span data-i18n="pass_copy">Kopiuj</span></button>
                             <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="downloadNote()"><i class="fas fa-download"></i> TXT</button>
                             <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="clearNote()" style="color:#ef4444;border-color:#ef4444;"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
-                    <textarea class="note-area" id="noteArea" placeholder="Zacznij pisać..." oninput="noteUpdate()"></textarea>
+                    <textarea class="note-area" id="noteArea" placeholder="Zacznij pisać..." data-i18n-ph="note_ph" oninput="noteUpdate()"></textarea>
                 </div>
             </div>
 
@@ -1962,36 +1962,36 @@ img { max-width: 100%; display: block; }
                     </div>
                     <div class="color-palette-title">Paleta Beagle</div>
                     <div class="color-palette" id="colorPalette"></div>
-                    <div class="color-saved-title">Zapisane <button class="ma-btn-link" onclick="clearSavedColors()">wyczyść</button></div>
+                    <div class="color-saved-title">Zapisane <button class="ma-btn-link" onclick="clearSavedColors()"><span data-i18n="color_clear">wyczyść</span></button></div>
                     <div class="color-saved" id="colorSaved"></div>
-                    <button class="ma-btn" onclick="saveColor()" style="margin-top:12px;"><i class="fas fa-plus"></i> Zapisz kolor</button>
+                    <button class="ma-btn" onclick="saveColor()" style="margin-top:12px;"><i class="fas fa-plus"></i> <span data-i18n="color_save">Zapisz kolor</span></button>
                 </div>
             </div>
 
             <!-- QR CODE -->
             <div class="mini-app" id="miniapp-qr">
                 <div class="ma-card ma-center">
-                    <div class="ma-section-title" style="margin-bottom:12px;">Wpisz tekst lub link</div>
+                    <div class="ma-section-title" style="margin-bottom:12px;" data-i18n="qr_input_title">Wpisz tekst lub link</div>
                     <input type="text" class="ma-input" id="qrInput" placeholder="np. https://beagleapps.pl" oninput="generateQR()">
                     <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
                         <select class="ma-select" id="qrSize" onchange="generateQR()">
-                            <option value="150">Mały (150px)</option>
-                            <option value="200" selected>Średni (200px)</option>
-                            <option value="300">Duży (300px)</option>
+                            <option value="150" data-i18n="qr_small">Mały (150px)</option>
+                            <option value="200" selected data-i18n="qr_medium">Średni (200px)</option>
+                            <option value="300" data-i18n="qr_big">Duży (300px)</option>
                         </select>
                         <select class="ma-select" id="qrColor" onchange="generateQR()">
-                            <option value="000000">Czarny</option>
-                            <option value="2456a4">Niebieski</option>
-                            <option value="10b981">Zielony</option>
-                            <option value="ef4444">Czerwony</option>
+                            <option value="000000" data-i18n="qr_black">Czarny</option>
+                            <option value="2456a4" data-i18n="qr_blue">Niebieski</option>
+                            <option value="10b981" data-i18n="qr_green">Zielony</option>
+                            <option value="ef4444" data-i18n="qr_red">Czerwony</option>
                         </select>
                     </div>
                     <div id="qrPreview" style="margin:24px auto;display:flex;align-items:center;justify-content:center;min-height:220px;">
-                        <div style="color:var(--text-muted);text-align:center;"><i class="fas fa-qrcode" style="font-size:3rem;display:block;margin-bottom:12px;opacity:0.3;"></i>Wpisz tekst żeby wygenerować QR</div>
+                        <div style="color:var(--text-muted);text-align:center;"><i class="fas fa-qrcode" style="font-size:3rem;display:block;margin-bottom:12px;opacity:0.3;"></i><span data-i18n="qr_hint">Wpisz tekst żeby wygenerować QR</span></div>
                     </div>
                     <div style="display:flex;gap:8px;justify-content:center;">
-                        <button class="ma-btn" onclick="downloadQR()"><i class="fas fa-download"></i> Pobierz PNG</button>
-                        <button class="ma-copy-btn" onclick="copyQRLink()"><i class="fas fa-link"></i> Kopiuj link</button>
+                        <button class="ma-btn" onclick="downloadQR()"><i class="fas fa-download"></i> <span data-i18n="qr_png">Pobierz PNG</span></button>
+                        <button class="ma-copy-btn" onclick="copyQRLink()"><i class="fas fa-link"></i> <span data-i18n="qr_link">Kopiuj link</span></button>
                     </div>
                 </div>
             </div>
@@ -2017,19 +2017,19 @@ img { max-width: 100%; display: block; }
                     <!-- Reaction Game -->
                     <div class="game-card">
                         <div class="game-icon">⚡</div>
-                        <h3>Test Refleksu</h3>
-                        <p>Jak szybko reagujesz? Kliknij gdy zmieni się kolor!</p>
-                        <button class="game-btn" onclick="startReaction()">Graj!</button>
+                        <h3 data-i18n="game_reaction">Test Refleksu</h3>
+                        <p data-i18n="game_reaction_desc">Jak szybko reagujesz? Kliknij gdy zmieni się kolor!</p>
+                        <button class="game-btn" onclick="startReaction()" data-i18n="game_play">Graj!</button>
                         <div class="game-area" id="reactionArea">
-                            <div class="reaction-box" id="reactionBox" onclick="clickReaction()">Kliknij "Graj!" żeby zacząć</div>
+                            <div class="reaction-box" id="reactionBox" onclick="clickReaction()" data-i18n="game_click_play">Kliknij "Graj!" żeby zacząć</div>
                         </div>
                     </div>
                     <!-- Memory Game -->
                     <div class="game-card">
                         <div class="game-icon">🧠</div>
                         <h3>Memory</h3>
-                        <p>Znajdź wszystkie pary! Trenuj pamięć.</p>
-                        <button class="game-btn" onclick="startMemory()">Graj!</button>
+                        <p data-i18n="game_memory_desc">Znajdź wszystkie pary! Trenuj pamięć.</p>
+                        <button class="game-btn" onclick="startMemory()" data-i18n="game_play">Graj!</button>
                         <div class="game-area" id="memoryArea">
                             <div class="memory-grid" id="memoryGrid"></div>
                             <div class="memory-score" id="memoryScore"></div>
@@ -2040,7 +2040,7 @@ img { max-width: 100%; display: block; }
                         <div class="game-icon">👆</div>
                         <h3>Speed Click</h3>
                         <p>Ile razy klikniesz w 10 sekund?</p>
-                        <button class="game-btn" id="clickGameBtn" onclick="startClickGame()">Graj!</button>
+                        <button class="game-btn" id="clickGameBtn" onclick="startClickGame()" data-i18n="game_play">Graj!</button>
                         <div class="game-area" id="clickArea">
                             <div class="reaction-box result" id="clickBox" onclick="countClick()" style="font-size:2.5rem;font-weight:800;">0</div>
                             <div class="memory-score" id="clickScore"></div>
@@ -2050,11 +2050,11 @@ img { max-width: 100%; display: block; }
                     <div class="game-card">
                         <div class="game-icon">🐍</div>
                         <h3>Snake</h3>
-                        <p>Klasyczny wąż! Zbieraj jedzenie i rośnij.</p>
-                        <button class="game-btn" id="snakeGameBtn" onclick="startSnake()">Graj!</button>
+                        <p data-i18n="game_snake_desc">Klasyczny wąż! Zbieraj jedzenie i rośnij.</p>
+                        <button class="game-btn" id="snakeGameBtn" onclick="startSnake()" data-i18n="game_play">Graj!</button>
                         <div class="game-area" id="snakeArea">
                             <canvas class="snake-canvas" id="snakeCanvas" width="300" height="300"></canvas>
-                            <div class="snake-score" id="snakeScore">Wynik: 0</div>
+                            <div class="snake-score" id="snakeScore"><span data-i18n="game_score">Wynik</span>: 0</div>
                             <div class="snake-controls">
                                 <div></div>
                                 <button class="snake-btn" onclick="snakeDir(0,-1)"><i class="fas fa-chevron-up"></i></button>
@@ -2068,9 +2068,9 @@ img { max-width: 100%; display: block; }
                     <!-- Color Guess -->
                     <div class="game-card">
                         <div class="game-icon">🎨</div>
-                        <h3>Zgadnij Kolor</h3>
-                        <p>Który kod hex odpowiada kolorowi?</p>
-                        <button class="game-btn" id="colorGameBtn" onclick="startColorGame()">Graj!</button>
+                        <h3 data-i18n="game_color">Zgadnij Kolor</h3>
+                        <p data-i18n="game_color_desc">Który kod hex odpowiada kolorowi?</p>
+                        <button class="game-btn" id="colorGameBtn" onclick="startColorGame()" data-i18n="game_play">Graj!</button>
                         <div class="game-area" id="colorArea">
                             <div class="color-display" id="colorDisplay"></div>
                             <div class="color-options" id="colorOptions"></div>
@@ -2080,12 +2080,12 @@ img { max-width: 100%; display: block; }
                     <!-- Typing Speed -->
                     <div class="game-card">
                         <div class="game-icon">⌨️</div>
-                        <h3>Szybkie Pisanie</h3>
-                        <p>Ile słów na minutę potrafisz napisać?</p>
-                        <button class="game-btn" id="typingGameBtn" onclick="startTyping()">Graj!</button>
+                        <h3 data-i18n="game_typing">Szybkie Pisanie</h3>
+                        <p data-i18n="game_typing_desc">Ile słów na minutę potrafisz napisać?</p>
+                        <button class="game-btn" id="typingGameBtn" onclick="startTyping()" data-i18n="game_play">Graj!</button>
                         <div class="game-area" id="typingArea">
                             <div class="typing-target" id="typingTarget"></div>
-                            <input class="typing-input" id="typingInput" placeholder="Zacznij pisać..." oninput="checkTyping()">
+                            <input class="typing-input" id="typingInput" placeholder="Zacznij pisać..." data-i18n-ph="note_ph" oninput="checkTyping()">
                             <div class="memory-score" id="typingScore"></div>
                         </div>
                     </div>
@@ -2093,12 +2093,12 @@ img { max-width: 100%; display: block; }
                     <div class="game-card">
                         <div class="game-icon">🔢</div>
                         <h3>Math Sprint</h3>
-                        <p>Ile działań rozwiążesz w 30 sekund?</p>
-                        <button class="game-btn" id="mathGameBtn" onclick="startMath()">Graj!</button>
+                        <p data-i18n="game_math_desc">Ile działań rozwiążesz w 30 sekund?</p>
+                        <button class="game-btn" id="mathGameBtn" onclick="startMath()" data-i18n="game_play">Graj!</button>
                         <div class="game-area" id="mathArea">
                             <div class="math-problem" id="mathProblem"></div>
                             <div class="math-options" id="mathOptions"></div>
-                            <div class="memory-score" id="mathScore">Wynik: 0 | Czas: 30s</div>
+                            <div class="memory-score" id="mathScore"><span data-i18n="game_score">Wynik</span>: 0 | <span data-i18n="game_time">Czas</span>: 30s</div>
                         </div>
                     </div>
                 </div>
@@ -2776,6 +2776,36 @@ revealOnScroll();
 var currentLang = 'pl';
 var i18n = {
     pl: {
+        tile_calc: 'Kalkulator', tile_conv: 'Konwerter', tile_timer: 'Stoper', tile_note: 'Notatka',
+        tile_color: 'Kolory', tile_qr: 'QR Kod', tile_back: 'Mini Apki',
+        meme_upload_btn: 'Wgraj zdjęcie', bmi_calc: 'Oblicz BMI', conv_temp: 'Temperatura',
+        color_save: 'Zapisz kolor', qr_input_title: 'Wpisz tekst lub link', qr_medium: 'Średni (200px)',
+        qr_black: 'Czarny', qr_blue: 'Niebieski', qr_green: 'Zielony', qr_red: 'Czerwony',
+        game_reaction: 'Test Refleksu', game_play: 'Graj!', game_color: 'Zgadnij Kolor', game_typing: 'Szybkie Pisanie',
+        miniapp_pass_tile: 'Hasła',
+        music_choose: 'Wybierz utwór',
+        meme_top: 'Tekst górny', meme_bottom: 'Tekst dolny', meme_size: 'Rozmiar czcionki',
+        meme_color: 'Kolor tekstu', meme_download: 'Pobierz Mema!', meme_upload: 'Wgraj zdjęcie lub wybierz szablon',
+        pass_click: 'Kliknij Generuj!', pass_copy: 'Kopiuj', pass_generate: 'Generuj hasło',
+        pass_options: 'Opcje', pass_len: 'Długość:', pass_upper: 'Wielkie litery (A-Z)',
+        pass_lower: 'Małe litery (a-z)', pass_num: 'Cyfry (0-9)', pass_symbol: 'Znaki specjalne (!@#$...)',
+        bmi_height: 'Wzrost (cm)', bmi_weight: 'Waga (kg)', bmi_under: 'Niedowaga',
+        bmi_norm: 'Norma', bmi_over: 'Nadwaga', bmi_obese: 'Otyłość',
+        conv_weight: 'Waga', conv_length: 'Długość', conv_speed: 'Prędkość',
+        conv_value_ph: 'Wpisz wartość', conv_result_ph: 'Wynik',
+        timer_lap: 'Okrążenie', note_chars: 'znaków', note_copy: 'Kopiuj', note_ph: 'Zacznij pisać...',
+        color_clear: 'wyczyść',
+        qr_small: 'Mały (150px)', qr_big: 'Duży (300px)', qr_hint: 'Wpisz tekst żeby wygenerować QR',
+        qr_png: 'Pobierz PNG', qr_link: 'Kopiuj link',
+        game_score: 'Wynik', game_time: 'Czas',
+        game_reaction_desc: 'Jak szybko reagujesz? Kliknij gdy zmieni się kolor!',
+        game_memory_desc: 'Znajdź wszystkie pary! Trenuj pamięć.',
+        game_snake_desc: 'Klasyczny wąż! Zbieraj jedzenie i rośnij.',
+        game_color_desc: 'Który kod hex odpowiada kolorowi?',
+        game_typing_desc: 'Ile słów na minutę potrafisz napisać?',
+        game_math_desc: 'Ile działań rozwiążesz w 30 sekund?',
+        game_click_play: 'Kliknij "Graj!" żeby zacząć',
+        game_wait_green: 'Czekaj na zielony...', game_too_early: 'Za wcześnie! Kliknij "Graj!" ponownie.',
         filter_all: 'Wszystkie', filter_web: 'Web', filter_mobile: 'Mobile',
         fun_gallery: 'Galeria', fun_music: 'Muzyka', fun_miniapps: 'Mini Apki',
         fun_videos: 'Filmy', fun_minigames: 'Mini Gry',
@@ -2828,6 +2858,36 @@ var i18n = {
         contact_desc: 'Masz pomysł na aplikację? Napisz — zbuduję to razem z Tobą.'
     },
     en: {
+        tile_calc: 'Calculator', tile_conv: 'Converter', tile_timer: 'Stopwatch', tile_note: 'Notepad',
+        tile_color: 'Colours', tile_qr: 'QR Code', tile_back: 'Mini Apps',
+        meme_upload_btn: 'Upload image', bmi_calc: 'Calculate BMI', conv_temp: 'Temperature',
+        color_save: 'Save colour', qr_input_title: 'Enter text or a link', qr_medium: 'Medium (200px)',
+        qr_black: 'Black', qr_blue: 'Blue', qr_green: 'Green', qr_red: 'Red',
+        game_reaction: 'Reaction Test', game_play: 'Play!', game_color: 'Guess the Colour', game_typing: 'Speed Typing',
+        miniapp_pass_tile: 'Passwords',
+        music_choose: 'Pick a track',
+        meme_top: 'Top text', meme_bottom: 'Bottom text', meme_size: 'Font size',
+        meme_color: 'Text colour', meme_download: 'Download meme!', meme_upload: 'Upload a photo or pick a template',
+        pass_click: 'Hit Generate!', pass_copy: 'Copy', pass_generate: 'Generate password',
+        pass_options: 'Options', pass_len: 'Length:', pass_upper: 'Uppercase (A-Z)',
+        pass_lower: 'Lowercase (a-z)', pass_num: 'Digits (0-9)', pass_symbol: 'Symbols (!@#$...)',
+        bmi_height: 'Height (cm)', bmi_weight: 'Weight (kg)', bmi_under: 'Underweight',
+        bmi_norm: 'Normal', bmi_over: 'Overweight', bmi_obese: 'Obese',
+        conv_weight: 'Weight', conv_length: 'Length', conv_speed: 'Speed',
+        conv_value_ph: 'Enter a value', conv_result_ph: 'Result',
+        timer_lap: 'Lap', note_chars: 'characters', note_copy: 'Copy', note_ph: 'Start typing...',
+        color_clear: 'clear',
+        qr_small: 'Small (150px)', qr_big: 'Large (300px)', qr_hint: 'Type something to generate a QR code',
+        qr_png: 'Download PNG', qr_link: 'Copy link',
+        game_score: 'Score', game_time: 'Time',
+        game_reaction_desc: 'How fast are your reflexes? Click when the colour changes!',
+        game_memory_desc: 'Find all the pairs and train your memory.',
+        game_snake_desc: 'Classic snake — eat, grow, survive.',
+        game_color_desc: 'Which hex code matches the colour?',
+        game_typing_desc: 'How many words per minute can you type?',
+        game_math_desc: 'How many sums can you solve in 30 seconds?',
+        game_click_play: 'Hit "Play!" to start',
+        game_wait_green: 'Wait for green...', game_too_early: 'Too early! Hit "Play!" again.',
         filter_all: 'All', filter_web: 'Web', filter_mobile: 'Mobile',
         fun_gallery: 'Gallery', fun_music: 'Music', fun_miniapps: 'Mini Apps',
         fun_videos: 'Films', fun_minigames: 'Mini Games',
@@ -2880,6 +2940,36 @@ var i18n = {
         contact_desc: 'Got an app idea? Let me know — I\'ll build it with you.'
     },
     de: {
+        tile_calc: 'Rechner', tile_conv: 'Umrechner', tile_timer: 'Stoppuhr', tile_note: 'Notiz',
+        tile_color: 'Farben', tile_qr: 'QR-Code', tile_back: 'Mini-Apps',
+        meme_upload_btn: 'Bild hochladen', bmi_calc: 'BMI berechnen', conv_temp: 'Temperatur',
+        color_save: 'Farbe speichern', qr_input_title: 'Text oder Link eingeben', qr_medium: 'Mittel (200px)',
+        qr_black: 'Schwarz', qr_blue: 'Blau', qr_green: 'Grün', qr_red: 'Rot',
+        game_reaction: 'Reaktionstest', game_play: 'Spielen!', game_color: 'Farbe raten', game_typing: 'Schnellschreiben',
+        miniapp_pass_tile: 'Passwörter',
+        music_choose: 'Titel wählen',
+        meme_top: 'Oberer Text', meme_bottom: 'Unterer Text', meme_size: 'Schriftgröße',
+        meme_color: 'Textfarbe', meme_download: 'Meme herunterladen!', meme_upload: 'Bild hochladen oder Vorlage wählen',
+        pass_click: 'Auf Generieren tippen!', pass_copy: 'Kopieren', pass_generate: 'Passwort generieren',
+        pass_options: 'Optionen', pass_len: 'Länge:', pass_upper: 'Großbuchstaben (A-Z)',
+        pass_lower: 'Kleinbuchstaben (a-z)', pass_num: 'Ziffern (0-9)', pass_symbol: 'Sonderzeichen (!@#$...)',
+        bmi_height: 'Größe (cm)', bmi_weight: 'Gewicht (kg)', bmi_under: 'Untergewicht',
+        bmi_norm: 'Normal', bmi_over: 'Übergewicht', bmi_obese: 'Adipositas',
+        conv_weight: 'Gewicht', conv_length: 'Länge', conv_speed: 'Geschwindigkeit',
+        conv_value_ph: 'Wert eingeben', conv_result_ph: 'Ergebnis',
+        timer_lap: 'Runde', note_chars: 'Zeichen', note_copy: 'Kopieren', note_ph: 'Schreib los...',
+        color_clear: 'leeren',
+        qr_small: 'Klein (150px)', qr_big: 'Groß (300px)', qr_hint: 'Text eingeben, um einen QR-Code zu erzeugen',
+        qr_png: 'PNG herunterladen', qr_link: 'Link kopieren',
+        game_score: 'Punkte', game_time: 'Zeit',
+        game_reaction_desc: 'Wie schnell reagierst du? Klick, sobald die Farbe wechselt!',
+        game_memory_desc: 'Finde alle Paare und trainiere dein Gedächtnis.',
+        game_snake_desc: 'Die klassische Schlange — fressen, wachsen, überleben.',
+        game_color_desc: 'Welcher Hex-Code passt zur Farbe?',
+        game_typing_desc: 'Wie viele Wörter pro Minute schaffst du?',
+        game_math_desc: 'Wie viele Aufgaben löst du in 30 Sekunden?',
+        game_click_play: 'Auf "Spielen!" tippen, um zu starten',
+        game_wait_green: 'Warte auf Grün...', game_too_early: 'Zu früh! Tippe nochmal auf "Spielen!".',
         filter_all: 'Alle', filter_web: 'Web', filter_mobile: 'Mobile',
         fun_gallery: 'Galerie', fun_music: 'Musik', fun_miniapps: 'Mini-Apps',
         fun_videos: 'Filme', fun_minigames: 'Mini-Spiele',
@@ -2932,6 +3022,13 @@ var i18n = {
         contact_desc: 'Hast du eine App-Idee? Schreib mir — ich baue sie mit dir.'
     }
 };
+
+// Tlumaczenie napisow skladanych w JS (wyniki, komunikaty mini gier).
+// data-i18n dziala tylko na wartosciach poczatkowych w markupie.
+function T(klucz, zapas) {
+    var t = i18n[currentLang] || i18n.pl;
+    return t[klucz] !== undefined ? t[klucz] : zapas;
+}
 
 function switchLang(lang) {
     currentLang = lang;
@@ -3207,7 +3304,7 @@ function startReaction() {
     var box = document.getElementById('reactionBox');
     area.classList.add('active');
     box.className = 'reaction-box waiting';
-    box.textContent = 'Czekaj na zielony...';
+    box.textContent = T('game_wait_green', 'Czekaj na zielony...');
     reactionState = 'waiting';
     clearTimeout(reactionTimeout);
     reactionTimeout = setTimeout(function() {
@@ -3223,7 +3320,7 @@ function clickReaction() {
     if (reactionState === 'waiting') {
         clearTimeout(reactionTimeout);
         box.className = 'reaction-box result';
-        box.textContent = 'Za wcześnie! Kliknij "Graj!" ponownie.';
+        box.textContent = T('game_too_early', 'Za wcześnie! Kliknij "Graj!" ponownie.');
         reactionState = 'idle';
     } else if (reactionState === 'ready') {
         var time = Date.now() - reactionStart;
@@ -3338,7 +3435,7 @@ function startSnake() {
     snake = [{x:5,y:5},{x:4,y:5},{x:3,y:5}];
     snakeDx = 1; snakeDy = 0; snakeNextDx = 1; snakeNextDy = 0;
     snakeScoreVal = 0;
-    document.getElementById('snakeScore').textContent = 'Wynik: 0';
+    document.getElementById('snakeScore').textContent = T('game_score', 'Wynik') + ': 0';
     placeFood();
     clearInterval(snakeInterval);
     snakeInterval = setInterval(updateSnake, 120);
@@ -3364,7 +3461,7 @@ function updateSnake() {
     snake.unshift(head);
     if (head.x === snakeFood.x && head.y === snakeFood.y) {
         snakeScoreVal++;
-        document.getElementById('snakeScore').textContent = 'Wynik: ' + snakeScoreVal;
+        document.getElementById('snakeScore').textContent = T('game_score', 'Wynik') + ': ' + snakeScoreVal;
         placeFood();
     } else { snake.pop(); }
     drawSnake();
@@ -3463,7 +3560,7 @@ function startTyping() {
     document.getElementById('typingInput').value = '';
     document.getElementById('typingInput').disabled = false;
     document.getElementById('typingInput').focus();
-    document.getElementById('typingScore').textContent = 'Zacznij pisać...';
+    document.getElementById('typingScore').textContent = T('note_ph', 'Zacznij pisać...');
     typingStart = 0;
     typingActive = true;
 }
@@ -3514,7 +3611,7 @@ function startMath() {
     clearInterval(mathTimer);
     mathTimer = setInterval(function() {
         mathTimeLeft--;
-        document.getElementById('mathScore').textContent = 'Wynik: ' + mathScore + ' | Czas: ' + mathTimeLeft + 's';
+        document.getElementById('mathScore').textContent = T('game_score', 'Wynik') + ': ' + mathScore + ' | ' + T('game_time', 'Czas') + ': ' + mathTimeLeft + 's';
         if (mathTimeLeft <= 0) {
             clearInterval(mathTimer);
             mathActive = false;
@@ -3555,7 +3652,7 @@ function guessMath(btn, val) {
     if (val === mathCorrectAnswer) {
         mathScore++;
         btn.classList.add('correct');
-        document.getElementById('mathScore').textContent = 'Wynik: ' + mathScore + ' | Czas: ' + mathTimeLeft + 's';
+        document.getElementById('mathScore').textContent = T('game_score', 'Wynik') + ': ' + mathScore + ' | ' + T('game_time', 'Czas') + ': ' + mathTimeLeft + 's';
         setTimeout(nextMathProblem, 300);
     } else {
         btn.classList.add('wrong');
