@@ -1651,6 +1651,20 @@ img { max-width: 100%; display: block; }
 #qrPreview canvas,
 #qrPreview img { border-radius: 10px; background: #fff; padding: 10px; }
 
+/* Meme Creator jest starszy niz reszta mini apek i ma wlasne, drobne cele:
+   przyciski 31 px, kolka kolorow 28 px, suwak 16 px. Powiekszamy je tylko na
+   urzadzeniach dotykowych — na desktopie wyglad zostaje bez zmian.
+   Kolka dostaja pelne 44 px zamiast niewidocznej otoczki: przy odstepie 8 px
+   powiekszone pole trafienia zachodziloby na sasiednie kolo i wybieralo zly kolor. */
+@media (pointer: coarse) {
+    .meme-upload-btn { min-height: 44px; padding: 10px 18px; }
+    .meme-sample-btn { min-height: 44px; padding: 10px 16px; }
+    .meme-input-group input[type="text"] { min-height: 44px; }
+    .meme-input-group input[type="range"] { height: 44px; }
+    .meme-color-btn { width: 44px; height: 44px; }
+    .meme-download-btn { min-height: 48px; }
+}
+
 @media (max-width: 560px) {
     .ma-card { padding: 14px; }
     .conv-row { grid-template-columns: 1fr 104px; }
