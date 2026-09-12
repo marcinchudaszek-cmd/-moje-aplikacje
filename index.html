@@ -1657,6 +1657,13 @@ img { max-width: 100%; display: block; }
    Kolka dostaja pelne 44 px zamiast niewidocznej otoczki: przy odstepie 8 px
    powiekszone pole trafienia zachodziloby na sasiednie kolo i wybieralo zly kolor. */
 @media (pointer: coarse) {
+    /* suwaki: sciezka zostaje cienka, ale pole trafienia rosnie do 44 px */
+    .pass-opt-row input[type="range"] { height: 44px; }
+    /* przyciski ikonowe i odsylacze, ktore wyszly ponizej progu */
+    .note-toolbar .ma-btn-sm { min-width: 44px; min-height: 44px; }
+    .ma-copy-btn { min-height: 44px; }
+    .ma-btn-link { min-height: 44px; padding: 4px 10px; }
+
     .meme-upload-btn { min-height: 44px; padding: 10px 18px; }
     .meme-sample-btn { min-height: 44px; padding: 10px 16px; }
     .meme-input-group input[type="text"] { min-height: 44px; }
