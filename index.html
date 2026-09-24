@@ -42,6 +42,8 @@
     --primary: #2456a4;
     --primary-dark: #1a3f7a;
     --primary-light: #4a8ed4;
+    /* błękit jasny z brand kitu — tekst na ciemnym tle (kontrast >= 7:1) */
+    --primary-soft: #96c3ff;
     --secondary: #f5a623;
     --accent: #06b6d4;
     --bg-dark: #0b1120;
@@ -628,7 +630,7 @@ img { max-width: 100%; display: block; }
 /* margin-top:auto dociska przyciski do dołu karty — dzięki temu w jednym rzędzie
    leżą na tej samej wysokości niezależnie od liczby tagów i długości opisu */
 .card-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 16px; }
-.card-link-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 50px; font-size: 0.82rem; font-weight: 600; color: var(--primary); background: var(--bg-surface); border: 1px solid var(--border); text-decoration: none; transition: var(--transition); cursor: pointer; }
+.card-link-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 50px; font-size: 0.82rem; font-weight: 600; color: var(--primary-soft); background: var(--bg-surface); border: 1px solid var(--border); text-decoration: none; transition: var(--transition); cursor: pointer; }
 .card-link-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
 .card-link-btn.card-link-play { background: var(--primary); color: white; border-color: var(--primary); }
 .card-link-btn.card-link-play:hover { background: var(--primary-dark); }
@@ -797,6 +799,7 @@ img { max-width: 100%; display: block; }
     background-clip: text;
 }
 
+.tech-item .tech-svg { width: 2.2rem; height: 2.2rem; }
 .tech-item span { font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); }
 
 /* Contact */
@@ -840,6 +843,7 @@ img { max-width: 100%; display: block; }
 .contact-card p { font-size: 0.88rem; color: var(--text-secondary); }
 
 .social-links { display: flex; gap: 12px; margin-top: 8px; }
+.social-links[hidden], .social-link[hidden] { display: none; }
 
 .social-link {
     width: 48px; height: 48px;
@@ -986,15 +990,35 @@ img { max-width: 100%; display: block; }
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Krótko i tylko opacity/transform: przy 0.8 s i "all" sekcja długo
+   wyglądała na pustą, a karty dostawały opóźnione hovery. */
 .reveal {
     opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s cubic-bezier(0.4,0,0.2,1);
+    transform: translateY(24px);
+    transition: opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1),
+                background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
 .reveal.active {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Fokus z klawiatury — myszą i dotykiem się nie pokazuje */
+a:focus-visible, button:focus-visible, input:focus-visible,
+textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--secondary);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .reveal { opacity: 1; transform: none; }
 }
 
 /* Responsive */
@@ -1054,6 +1078,8 @@ img { max-width: 100%; display: block; }
     .about-image { display: flex; justify-content: center; }
     .about-placeholder-img { width: 280px; height: 340px; font-size: 4rem; }
     .about-highlights { justify-items: center; }
+    /* jedna kolumna na pełną szerokość dawała >140 znaków w wierszu */
+    .about-text { max-width: 68ch; margin-left: auto; margin-right: auto; }
     .contact-grid { grid-template-columns: 1fr; gap: 40px; }
 }
 
@@ -1083,7 +1109,11 @@ img { max-width: 100%; display: block; }
     .hero { padding-top: 102px; }
     .hero-title { font-size: 1.8rem; }
     .hero-buttons { flex-direction: column; }
-    .hero-stats { flex-direction: column; gap: 16px; align-items: center; }
+    /* trzy liczby w jednym rzędzie — w kolumnie hero rósł o ~250 px */
+    .hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+    .stat { align-items: center; }
+    .stat-number { font-size: 1.75rem; }
+    .stat-label { font-size: 0.78rem; }
     .filter-bar { gap: 6px; }
     .filter-btn { padding: 8px 16px; font-size: 0.82rem; }
     .contact-form { padding: 24px; }
@@ -1710,7 +1740,7 @@ img { max-width: 100%; display: block; }
                     <button onclick="switchLang('de')" id="lang-de" class="lang-btn" title="Deutsch">DE</button>
                 </li>
             </ul>
-            <button class="nav-toggle" id="navToggle">
+            <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-controls="navMenu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -1961,7 +1991,7 @@ img { max-width: 100%; display: block; }
             <div class="section-header">
                 <span class="section-tag" data-i18n="tag_games">Gry</span>
                 <h2 class="section-title" data-i18n="section_games">Moje Gry</h2>
-                <p class="section-desc games-note" data-i18n="games_note" style="font-weight:600;">🎮 Gry to nie tylko dodatek — to moja mocna strona! Tworzę gry na Androida oraz grywalne od razu w przeglądarce (pasjans, gry logiczne, przeciwnicy AI, zręcznościówki). Pobierz APK albo zagraj online. Wkrótce pojawi się ich więcej!</p>
+                <p class="section-desc games-note" data-i18n="games_note" style="font-weight:600;"><i class="fas fa-gamepad" aria-hidden="true"></i> Gry to nie tylko dodatek — to moja mocna strona! Tworzę gry na Androida oraz grywalne od razu w przeglądarce (pasjans, gry logiczne, przeciwnicy AI, zręcznościówki). Pobierz APK albo zagraj online. Wkrótce pojawi się ich więcej!</p>
             </div>
 
             <div class="apps-grid" id="gamesGrid">
@@ -2021,7 +2051,7 @@ img { max-width: 100%; display: block; }
                 <p class="section-desc" data-i18n="tech_desc">Narzędzia i technologie, z których korzystam na co dzień.</p>
             </div>
             <div class="tech-grid">
-                <div class="tech-item"><i class="fab fa-flutter"></i><span>Flutter</span></div>
+                <div class="tech-item"><!-- Font Awesome Free nie ma ikony Fluttera — logo jako SVG w gradiencie --><svg class="tech-svg" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="gradFlutter" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a8ed4"/><stop offset="1" stop-color="#f5a623"/></linearGradient></defs><path fill="url(#gradFlutter)" d="M14.314 0L2.3 12 6 15.7 21.684.013h-7.357zm.014 11.072L7.857 17.53l6.47 6.47H21.7l-6.46-6.468 6.46-6.46h-7.37z"/></svg><span>Flutter</span></div>
                 <div class="tech-item"><i class="fas fa-code"></i><span>Dart</span></div>
                 <div class="tech-item"><i class="fab fa-react"></i><span>React</span></div>
                 <div class="tech-item"><i class="fab fa-js"></i><span>JavaScript</span></div>
@@ -2488,10 +2518,10 @@ img { max-width: 100%; display: block; }
                         <div><h3 data-i18n="contact_hours">Dostępność</h3><p data-i18n="contact_hours_value">Pon-Pt, 9:00-18:00</p></div>
                     </div>
                     <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="social-link" aria-label="GitHub" hidden><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link" aria-label="LinkedIn" hidden><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link" aria-label="X (Twitter)" hidden><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link" aria-label="Discord" hidden><i class="fab fa-discord"></i></a>
                     </div>
                 </div>
                 <form class="contact-form" id="contactForm">
@@ -2529,7 +2559,7 @@ img { max-width: 100%; display: block; }
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand"><img src="img/znak-beagle.png" alt="" width="34" height="32" style="height:32px;width:auto;"><span>Beagle Apps Studio</span><span class="footer-author">— autor: Marcin Chudaszek</span></div>
-                <p class="footer-text" data-i18n="footer_rights">© 2025 Beagle Apps Studio · Marcin Chudaszek — autor wszystkich aplikacji. Wszystkie prawa zastrzeżone.</p>
+                <p class="footer-text" data-i18n="footer_rights">© 2025–2026 Beagle Apps Studio · Marcin Chudaszek — autor wszystkich aplikacji. Wszystkie prawa zastrzeżone.</p>
                 <div class="footer-links">
                     <a href="#home" data-i18n="footer_start">Start</a>
                     <a href="#apps" data-i18n="footer_apps">Aplikacje</a>
@@ -2540,7 +2570,7 @@ img { max-width: 100%; display: block; }
         </div>
     </footer>
 
-    <button class="scroll-top" id="scrollTop"><i class="fas fa-chevron-up"></i></button>
+    <button class="scroll-top" id="scrollTop" aria-label="Do góry"><i class="fas fa-chevron-up"></i></button>
 
     <script>
 function getSiteData() {
@@ -2638,11 +2668,15 @@ function applySiteData() {
         if (c.email && cp[0]) cp[0].textContent = c.email;
         if (c.location && cp[1]) cp[1].textContent = c.location;
         if (c.hours && cp[2]) cp[2].textContent = c.hours;
+        // Ikona bez adresu prowadziłaby do "#", więc pokazujemy tylko uzupełnione
         var slinks = document.querySelectorAll('.social-link');
-        if (c.github && slinks[0]) slinks[0].href = c.github;
-        if (c.linkedin && slinks[1]) slinks[1].href = c.linkedin;
-        if (c.twitter && slinks[2]) slinks[2].href = c.twitter;
-        if (c.discord && slinks[3]) slinks[3].href = c.discord;
+        [c.github, c.linkedin, c.twitter, c.discord].forEach(function(url, i) {
+            if (!slinks[i]) return;
+            if (url) { slinks[i].href = url; slinks[i].target = '_blank'; slinks[i].rel = 'noopener'; }
+            slinks[i].hidden = !url;
+        });
+        var sbox = document.querySelector('.social-links');
+        if (sbox) sbox.hidden = !(c.github || c.linkedin || c.twitter || c.discord);
     }
 
     if (data.apps && data.apps.length > 0) {
@@ -3191,7 +3225,7 @@ var i18n = {
         form_send: 'Wyślij wiadomość',
         footer_start: 'Start', footer_apps: 'Aplikacje', footer_about: 'O mnie',
         footer_contact: 'Kontakt',
-        footer_rights: '© 2025 Beagle Apps Studio · Marcin Chudaszek — autor wszystkich aplikacji. Wszystkie prawa zastrzeżone.',
+        footer_rights: '© 2025–' + new Date().getFullYear() + ' Beagle Apps Studio · Marcin Chudaszek — autor wszystkich aplikacji. Wszystkie prawa zastrzeżone.',
         nav_home: 'Start', nav_apps: 'Aplikacje', nav_games: 'Gry', nav_about: 'O mnie',
         nav_tech: 'Technologie', nav_fun: 'Rozrywka', nav_contact: 'Kontakt',
         hero_title: 'Tworzę <span class="gradient-text">praktyczne</span><br>aplikacje',
@@ -3211,7 +3245,7 @@ var i18n = {
         hl3: 'AI: Gemini, Groq, Capacitor', hl4: 'Polska & Niemcy 🐾',
         tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Rozrywka', tag_contact: 'Kontakt', tag_games: 'Gry',
         apps_desc: 'Każdy projekt to unikalne rozwiązanie. Filtruj według kategorii.',
-        games_note: '🎮 Gry to nie tylko dodatek — to moja mocna strona! Tworzę gry na Androida oraz grywalne od razu w przeglądarce (pasjans, gry logiczne, przeciwnicy AI, zręcznościówki). Pobierz APK albo zagraj online. Wkrótce pojawi się ich więcej!',
+        games_note: '<i class="fas fa-gamepad" aria-hidden="true"></i> Gry to nie tylko dodatek — to moja mocna strona! Tworzę gry na Androida oraz grywalne od razu w przeglądarce (pasjans, gry logiczne, przeciwnicy AI, zręcznościówki). Pobierz APK albo zagraj online. Wkrótce pojawi się ich więcej!',
         btn_open: 'Otwórz',
         btn_download_apk: 'Pobierz APK',
         btn_show_all: 'Pokaż wszystkie aplikacje ({n})',
@@ -3281,7 +3315,7 @@ var i18n = {
         form_send: 'Send message',
         footer_start: 'Home', footer_apps: 'Apps', footer_about: 'About',
         footer_contact: 'Contact',
-        footer_rights: '© 2025 Beagle Apps Studio · Marcin Chudaszek — author of all the apps. All rights reserved.',
+        footer_rights: '© 2025–' + new Date().getFullYear() + ' Beagle Apps Studio · Marcin Chudaszek — author of all the apps. All rights reserved.',
         nav_home: 'Home', nav_apps: 'Apps', nav_games: 'Games', nav_about: 'About',
         nav_tech: 'Technologies', nav_fun: 'Creative', nav_contact: 'Contact',
         hero_title: 'I build <span class=\"gradient-text\">practical</span><br>apps',
@@ -3301,7 +3335,7 @@ var i18n = {
         hl3: 'AI: Gemini, Groq, Capacitor', hl4: 'Poland & Germany 🐾',
         tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Creative', tag_contact: 'Contact', tag_games: 'Games',
         apps_desc: 'Every project is a unique solution. Filter by category.',
-        games_note: '🎮 Games aren\'t just a side project — they\'re one of my strengths! I build games for Android as well as ones playable right in the browser (solitaire, puzzle games, AI opponents, arcade). Download the APK or play online. More are on the way!',
+        games_note: '<i class="fas fa-gamepad" aria-hidden="true"></i> Games aren\'t just a side project — they\'re one of my strengths! I build games for Android as well as ones playable right in the browser (solitaire, puzzle games, AI opponents, arcade). Download the APK or play online. More are on the way!',
         btn_open: 'Open',
         btn_download_apk: 'Download APK',
         btn_show_all: 'Show all apps ({n})',
@@ -3371,7 +3405,7 @@ var i18n = {
         form_send: 'Nachricht senden',
         footer_start: 'Start', footer_apps: 'Apps', footer_about: 'Über mich',
         footer_contact: 'Kontakt',
-        footer_rights: '© 2025 Beagle Apps Studio · Marcin Chudaszek — Autor aller Apps. Alle Rechte vorbehalten.',
+        footer_rights: '© 2025–' + new Date().getFullYear() + ' Beagle Apps Studio · Marcin Chudaszek — Autor aller Apps. Alle Rechte vorbehalten.',
         nav_home: 'Start', nav_apps: 'Apps', nav_games: 'Spiele', nav_about: 'Über mich',
         nav_tech: 'Technologien', nav_fun: 'Kreativ', nav_contact: 'Kontakt',
         hero_title: 'Ich entwickle <span class=\"gradient-text\">praktische</span><br>Apps',
@@ -3391,7 +3425,7 @@ var i18n = {
         hl3: 'KI: Gemini, Groq, Capacitor', hl4: 'Polen & Deutschland 🐾',
         tag_portfolio: 'Portfolio', tag_stack: 'Stack', tag_fun: 'Kreativ', tag_contact: 'Kontakt', tag_games: 'Spiele',
         apps_desc: 'Jedes Projekt ist eine einzigartige Lösung. Nach Kategorie filtern.',
-        games_note: '🎮 Spiele sind nicht nur ein Nebenprojekt — sie gehören zu meinen Stärken! Ich entwickle Spiele für Android sowie welche, die direkt im Browser spielbar sind (Solitaire, Logikspiele, KI-Gegner, Arcade). Lade das APK herunter oder spiele online. Bald gibt es mehr davon!',
+        games_note: '<i class="fas fa-gamepad" aria-hidden="true"></i> Spiele sind nicht nur ein Nebenprojekt — sie gehören zu meinen Stärken! Ich entwickle Spiele für Android sowie welche, die direkt im Browser spielbar sind (Solitaire, Logikspiele, KI-Gegner, Arcade). Lade das APK herunter oder spiele online. Bald gibt es mehr davon!',
         btn_open: 'Öffnen',
         btn_download_apk: 'APK herunterladen',
         btn_show_all: 'Alle Apps anzeigen ({n})',
