@@ -2112,13 +2112,13 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
                         <span id="playerDuration">0:00</span>
                     </div>
                     <div class="player-controls">
-                        <button class="player-btn" onclick="prevTrack()"><i class="fas fa-backward"></i></button>
-                        <button class="player-btn play-btn" id="playBtn" onclick="togglePlay()"><i class="fas fa-play"></i></button>
-                        <button class="player-btn" onclick="nextTrack()"><i class="fas fa-forward"></i></button>
+                        <button class="player-btn" onclick="prevTrack()" aria-label="Poprzedni utwór" data-i18n-aria="aria_prev"><i class="fas fa-backward"></i></button>
+                        <button class="player-btn play-btn" id="playBtn" onclick="togglePlay()" aria-label="Odtwórz / pauza" data-i18n-aria="aria_play"><i class="fas fa-play"></i></button>
+                        <button class="player-btn" onclick="nextTrack()" aria-label="Następny utwór" data-i18n-aria="aria_next"><i class="fas fa-forward"></i></button>
                     </div>
                     <div class="player-volume">
                         <i class="fas fa-volume-down" style="color:var(--text-muted)"></i>
-                        <input type="range" min="0" max="100" value="80" id="volumeSlider" oninput="setVolume(this.value)">
+                        <input type="range" min="0" max="100" value="80" id="volumeSlider" aria-label="Głośność" data-i18n-aria="aria_volume" oninput="setVolume(this.value)">
                         <i class="fas fa-volume-up" style="color:var(--text-muted)"></i>
                     </div>
                     <div class="playlist">
@@ -2169,27 +2169,27 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
                         <div class="meme-workspace">
                             <div class="meme-inputs">
                                 <div class="meme-input-group">
-                                    <label data-i18n="meme_top">Tekst górny</label>
+                                    <label for="memeTop" data-i18n="meme_top">Tekst górny</label>
                                     <input type="text" id="memeTop" placeholder="TEN GÓRNY TEKST..." oninput="renderMeme()" maxlength="80">
                                 </div>
                                 <div class="meme-input-group">
-                                    <label data-i18n="meme_bottom">Tekst dolny</label>
+                                    <label for="memeBottom" data-i18n="meme_bottom">Tekst dolny</label>
                                     <input type="text" id="memeBottom" placeholder="TEN DOLNY TEKST..." oninput="renderMeme()" maxlength="80">
                                 </div>
                                 <div class="meme-input-group">
-                                    <label data-i18n="meme_size">Rozmiar czcionki</label>
+                                    <label for="memeFontSize" data-i18n="meme_size">Rozmiar czcionki</label>
                                     <input type="range" id="memeFontSize" min="20" max="80" value="40" oninput="renderMeme(); document.getElementById('memeFontVal').textContent=this.value+'px'">
                                     <span id="memeFontVal" style="font-size:0.85rem;color:var(--text-muted);">40px</span>
                                 </div>
                                 <div class="meme-input-group">
                                     <label data-i18n="meme_color">Kolor tekstu</label>
                                     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                        <button class="meme-color-btn active" data-color="#FFFFFF" onclick="setMemeColor(this,'#FFFFFF')" style="background:#fff;border:3px solid var(--secondary);"></button>
-                                        <button class="meme-color-btn" data-color="#000000" onclick="setMemeColor(this,'#000000')" style="background:#000;"></button>
-                                        <button class="meme-color-btn" data-color="#FF0000" onclick="setMemeColor(this,'#FF0000')" style="background:#f00;"></button>
-                                        <button class="meme-color-btn" data-color="#FFD700" onclick="setMemeColor(this,'#FFD700')" style="background:#ffd700;"></button>
-                                        <button class="meme-color-btn" data-color="#00FF00" onclick="setMemeColor(this,'#00FF00')" style="background:#0f0;"></button>
-                                        <button class="meme-color-btn" data-color="#00BFFF" onclick="setMemeColor(this,'#00BFFF')" style="background:#00bfff;"></button>
+                                        <button class="meme-color-btn active" data-color="#FFFFFF" onclick="setMemeColor(this,'#FFFFFF')" aria-label="Biały" data-i18n-aria="aria_col_white" style="background:#fff;border:3px solid var(--secondary);"></button>
+                                        <button class="meme-color-btn" data-color="#000000" onclick="setMemeColor(this,'#000000')" aria-label="Czarny" data-i18n-aria="aria_col_black" style="background:#000;"></button>
+                                        <button class="meme-color-btn" data-color="#FF0000" onclick="setMemeColor(this,'#FF0000')" aria-label="Czerwony" data-i18n-aria="aria_col_red" style="background:#f00;"></button>
+                                        <button class="meme-color-btn" data-color="#FFD700" onclick="setMemeColor(this,'#FFD700')" aria-label="Złoty" data-i18n-aria="aria_col_gold" style="background:#ffd700;"></button>
+                                        <button class="meme-color-btn" data-color="#00FF00" onclick="setMemeColor(this,'#00FF00')" aria-label="Zielony" data-i18n-aria="aria_col_green" style="background:#0f0;"></button>
+                                        <button class="meme-color-btn" data-color="#00BFFF" onclick="setMemeColor(this,'#00BFFF')" aria-label="Błękitny" data-i18n-aria="aria_col_blue" style="background:#00bfff;"></button>
                                     </div>
                                 </div>
                                 <button class="meme-download-btn" onclick="downloadMeme()">
@@ -2243,7 +2243,7 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
                     <button class="ma-copy-btn" onclick="copyPass()" id="passCopyBtn"><i class="fas fa-copy"></i> <span data-i18n="pass_copy">Kopiuj</span></button>
                     <div class="ma-section-title" style="margin-top:20px;" data-i18n="pass_options">Opcje</div>
                     <div class="pass-options">
-                        <div class="pass-opt-row"><label><span data-i18n="pass_len">Długość:</span> <strong id="passLenVal">16</strong></label><input type="range" min="6" max="64" value="16" oninput="document.getElementById('passLenVal').textContent=this.value" id="passLen"></div>
+                        <div class="pass-opt-row"><label for="passLen"><span data-i18n="pass_len">Długość:</span> <strong id="passLenVal">16</strong></label><input type="range" min="6" max="64" value="16" oninput="document.getElementById('passLenVal').textContent=this.value" id="passLen"></div>
                         <label class="pass-check"><input type="checkbox" id="passUpper" checked> <span data-i18n="pass_upper">Wielkie litery (A-Z)</span></label>
                         <label class="pass-check"><input type="checkbox" id="passLower" checked> <span data-i18n="pass_lower">Małe litery (a-z)</span></label>
                         <label class="pass-check"><input type="checkbox" id="passNum" checked> <span data-i18n="pass_num">Cyfry (0-9)</span></label>
@@ -2258,8 +2258,8 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
             <div class="mini-app" id="miniapp-bmi">
                 <div class="ma-card ma-center">
                     <div class="bmi-inputs">
-                        <div class="bmi-field"><label data-i18n="bmi_height">Wzrost (cm)</label><input type="number" id="bmiHeight" placeholder="175" min="50" max="250" class="ma-input"></div>
-                        <div class="bmi-field"><label data-i18n="bmi_weight">Waga (kg)</label><input type="number" id="bmiWeight" placeholder="70" min="10" max="300" class="ma-input"></div>
+                        <div class="bmi-field"><label for="bmiHeight" data-i18n="bmi_height">Wzrost (cm)</label><input type="number" id="bmiHeight" placeholder="175" min="50" max="250" class="ma-input"></div>
+                        <div class="bmi-field"><label for="bmiWeight" data-i18n="bmi_weight">Waga (kg)</label><input type="number" id="bmiWeight" placeholder="70" min="10" max="300" class="ma-input"></div>
                     </div>
                     <button class="ma-btn" onclick="calcBMI()"><i class="fas fa-calculator"></i> <span data-i18n="bmi_calc">Oblicz BMI</span></button>
                     <div class="bmi-result" id="bmiResult"></div>
@@ -2282,9 +2282,9 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
                         <button class="conv-tab" onclick="setConvType('speed',this)">🚀 <span data-i18n="conv_speed">Prędkość</span></button>
                     </div>
                     <div class="conv-body">
-                        <div class="conv-row"><input type="number" class="ma-input" id="convFrom" placeholder="Wpisz wartość" data-i18n-ph="conv_value_ph" oninput="doConvert()"><select class="ma-select" id="convFromUnit" onchange="doConvert()"></select></div>
+                        <div class="conv-row"><input type="number" class="ma-input" id="convFrom" aria-label="Wartość do przeliczenia" data-i18n-aria="aria_conv_from" placeholder="Wpisz wartość" data-i18n-ph="conv_value_ph" oninput="doConvert()"><select class="ma-select" id="convFromUnit" aria-label="Jednostka wejściowa" data-i18n-aria="aria_conv_from_unit" onchange="doConvert()"></select></div>
                         <div style="text-align:center;font-size:1.5rem;color:var(--secondary);">⇅</div>
-                        <div class="conv-row"><input type="number" class="ma-input" id="convTo" readonly placeholder="Wynik" data-i18n-ph="conv_result_ph"><select class="ma-select" id="convToUnit" onchange="doConvert()"></select></div>
+                        <div class="conv-row"><input type="number" class="ma-input" id="convTo" aria-label="Wynik" data-i18n-aria="aria_conv_to" readonly placeholder="Wynik" data-i18n-ph="conv_result_ph"><select class="ma-select" id="convToUnit" aria-label="Jednostka wynikowa" data-i18n-aria="aria_conv_to_unit" onchange="doConvert()"></select></div>
                     </div>
                 </div>
             </div>
@@ -2307,9 +2307,9 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
                     </div>
                     <div id="countdownMode" style="display:none;">
                         <div class="countdown-set" id="cdSet">
-                            <div class="cd-field"><input type="number" class="cd-input" id="cdH" value="0" min="0" max="23"><label>h</label></div>
-                            <div class="cd-field"><input type="number" class="cd-input" id="cdM" value="5" min="0" max="59"><label>min</label></div>
-                            <div class="cd-field"><input type="number" class="cd-input" id="cdS" value="0" min="0" max="59"><label>s</label></div>
+                            <div class="cd-field"><input type="number" class="cd-input" id="cdH" value="0" min="0" max="23"><label for="cdH">h</label></div>
+                            <div class="cd-field"><input type="number" class="cd-input" id="cdM" value="5" min="0" max="59"><label for="cdM">min</label></div>
+                            <div class="cd-field"><input type="number" class="cd-input" id="cdS" value="0" min="0" max="59"><label for="cdS">s</label></div>
                         </div>
                         <div class="timer-display" id="cdDisplay" style="display:none;">00:05:00</div>
                         <div class="timer-btns">
@@ -2328,10 +2328,10 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
                         <div style="display:flex;gap:8px;">
                             <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="copyNote(event)"><i class="fas fa-copy"></i> <span data-i18n="pass_copy">Kopiuj</span></button>
                             <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="downloadNote()"><i class="fas fa-download"></i> TXT</button>
-                            <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="clearNote()" style="color:#ef4444;border-color:#ef4444;"><i class="fas fa-trash"></i></button>
+                            <button class="ma-btn ma-btn-outline ma-btn-sm" onclick="clearNote()" aria-label="Wyczyść notatkę" data-i18n-aria="aria_note_clear" style="color:#ef4444;border-color:#ef4444;"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
-                    <textarea class="note-area" id="noteArea" placeholder="Zacznij pisać..." data-i18n-ph="note_ph" oninput="noteUpdate()"></textarea>
+                    <textarea class="note-area" id="noteArea" aria-label="Treść notatki" data-i18n-aria="aria_note" placeholder="Zacznij pisać..." data-i18n-ph="note_ph" oninput="noteUpdate()"></textarea>
                 </div>
             </div>
 
@@ -2340,13 +2340,13 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
                 <div class="ma-card">
                     <div class="color-picker-wrap">
                         <div class="color-main">
-                            <input type="color" id="colorPicker" value="#2456a4" oninput="updateColor(this.value)">
+                            <input type="color" id="colorPicker" aria-label="Wybierz kolor" data-i18n-aria="aria_color" value="#2456a4" oninput="updateColor(this.value)">
                             <div class="color-preview" id="colorPreview" style="background:#2456a4;"></div>
                         </div>
                         <div class="color-values">
-                            <div class="color-val-row"><label>HEX</label><input class="color-val-input" id="colorHex" value="#2456a4" oninput="colorFromHex(this.value)"><button class="ma-copy-btn" onclick="copyColorVal('colorHex', event)"><i class="fas fa-copy"></i></button></div>
-                            <div class="color-val-row"><label>RGB</label><input class="color-val-input" id="colorRgb" value="rgb(36,86,164)" readonly><button class="ma-copy-btn" onclick="copyColorVal('colorRgb', event)"><i class="fas fa-copy"></i></button></div>
-                            <div class="color-val-row"><label>HSL</label><input class="color-val-input" id="colorHsl" value="hsl(217,64%,39%)" readonly><button class="ma-copy-btn" onclick="copyColorVal('colorHsl', event)"><i class="fas fa-copy"></i></button></div>
+                            <div class="color-val-row"><label for="colorHex">HEX</label><input class="color-val-input" id="colorHex" value="#2456a4" oninput="colorFromHex(this.value)"><button class="ma-copy-btn" onclick="copyColorVal('colorHex', event)" aria-label="Kopiuj HEX" data-i18n-aria="aria_copy_hex"><i class="fas fa-copy"></i></button></div>
+                            <div class="color-val-row"><label for="colorRgb">RGB</label><input class="color-val-input" id="colorRgb" value="rgb(36,86,164)" readonly><button class="ma-copy-btn" onclick="copyColorVal('colorRgb', event)" aria-label="Kopiuj RGB" data-i18n-aria="aria_copy_rgb"><i class="fas fa-copy"></i></button></div>
+                            <div class="color-val-row"><label for="colorHsl">HSL</label><input class="color-val-input" id="colorHsl" value="hsl(217,64%,39%)" readonly><button class="ma-copy-btn" onclick="copyColorVal('colorHsl', event)" aria-label="Kopiuj HSL" data-i18n-aria="aria_copy_hsl"><i class="fas fa-copy"></i></button></div>
                         </div>
                     </div>
                     <div class="color-palette-title" data-i18n="color_palette">Paleta Beagle</div>
@@ -2360,15 +2360,15 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
             <!-- QR CODE -->
             <div class="mini-app" id="miniapp-qr">
                 <div class="ma-card ma-center">
-                    <div class="ma-section-title" style="margin-bottom:12px;" data-i18n="qr_input_title">Wpisz tekst lub link</div>
-                    <input type="text" class="ma-input" id="qrInput" placeholder="np. https://beagleapps.pl" oninput="generateQR()">
+                    <div class="ma-section-title" id="qrInputTitle" style="margin-bottom:12px;" data-i18n="qr_input_title">Wpisz tekst lub link</div>
+                    <input type="text" class="ma-input" id="qrInput" aria-labelledby="qrInputTitle" placeholder="np. https://beagleapps.pl" oninput="generateQR()">
                     <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-                        <select class="ma-select" id="qrSize" onchange="generateQR()">
+                        <select class="ma-select" id="qrSize" aria-label="Rozmiar kodu QR" data-i18n-aria="aria_qr_size" onchange="generateQR()">
                             <option value="150" data-i18n="qr_small">Mały (150px)</option>
                             <option value="200" selected data-i18n="qr_medium">Średni (200px)</option>
                             <option value="300" data-i18n="qr_big">Duży (300px)</option>
                         </select>
-                        <select class="ma-select" id="qrColor" onchange="generateQR()">
+                        <select class="ma-select" id="qrColor" aria-label="Kolor kodu QR" data-i18n-aria="aria_qr_color" onchange="generateQR()">
                             <option value="000000" data-i18n="qr_black">Czarny</option>
                             <option value="2456a4" data-i18n="qr_blue">Niebieski</option>
                             <option value="10b981" data-i18n="qr_green">Zielony</option>
@@ -2446,11 +2446,11 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
                             <div class="snake-score" id="snakeScore"><span data-i18n="game_score">Wynik</span>: 0</div>
                             <div class="snake-controls">
                                 <div></div>
-                                <button class="snake-btn" onclick="snakeDir(0,-1)"><i class="fas fa-chevron-up"></i></button>
+                                <button class="snake-btn" onclick="snakeDir(0,-1)" aria-label="W górę" data-i18n-aria="aria_up"><i class="fas fa-chevron-up"></i></button>
                                 <div></div>
-                                <button class="snake-btn" onclick="snakeDir(-1,0)"><i class="fas fa-chevron-left"></i></button>
-                                <button class="snake-btn" onclick="snakeDir(0,1)"><i class="fas fa-chevron-down"></i></button>
-                                <button class="snake-btn" onclick="snakeDir(1,0)"><i class="fas fa-chevron-right"></i></button>
+                                <button class="snake-btn" onclick="snakeDir(-1,0)" aria-label="W lewo" data-i18n-aria="aria_left"><i class="fas fa-chevron-left"></i></button>
+                                <button class="snake-btn" onclick="snakeDir(0,1)" aria-label="W dół" data-i18n-aria="aria_down"><i class="fas fa-chevron-down"></i></button>
+                                <button class="snake-btn" onclick="snakeDir(1,0)" aria-label="W prawo" data-i18n-aria="aria_right"><i class="fas fa-chevron-right"></i></button>
                             </div>
                         </div>
                     </div>
@@ -2474,7 +2474,7 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
                         <button class="game-btn" id="typingGameBtn" onclick="startTyping()" data-i18n="game_play">Graj!</button>
                         <div class="game-area" id="typingArea">
                             <div class="typing-target" id="typingTarget"></div>
-                            <input class="typing-input" id="typingInput" placeholder="Zacznij pisać..." data-i18n-ph="note_ph" oninput="checkTyping()">
+                            <input class="typing-input" id="typingInput" aria-label="Pole do przepisywania tekstu" data-i18n-aria="aria_typing" placeholder="Zacznij pisać..." data-i18n-ph="note_ph" oninput="checkTyping()">
                             <div class="memory-score" id="typingScore"></div>
                         </div>
                     </div>
@@ -3195,6 +3195,7 @@ var i18n = {
         conv_weight: 'Waga', conv_length: 'Długość', conv_speed: 'Prędkość',
         conv_value_ph: 'Wpisz wartość', conv_result_ph: 'Wynik',
         timer_lap: 'Okrążenie', note_chars: 'znaków', note_copy: 'Kopiuj', note_ph: 'Zacznij pisać...',
+        aria_volume: 'Głośność', aria_prev: 'Poprzedni utwór', aria_play: 'Odtwórz / pauza', aria_next: 'Następny utwór', aria_col_white: 'Biały', aria_col_black: 'Czarny', aria_col_red: 'Czerwony', aria_col_gold: 'Złoty', aria_col_green: 'Zielony', aria_col_blue: 'Błękitny', aria_conv_from: 'Wartość do przeliczenia', aria_conv_from_unit: 'Jednostka wejściowa', aria_conv_to: 'Wynik', aria_conv_to_unit: 'Jednostka wynikowa', aria_note: 'Treść notatki', aria_note_clear: 'Wyczyść notatkę', aria_color: 'Wybierz kolor', aria_copy_hex: 'Kopiuj HEX', aria_copy_rgb: 'Kopiuj RGB', aria_copy_hsl: 'Kopiuj HSL', aria_qr_size: 'Rozmiar kodu QR', aria_qr_color: 'Kolor kodu QR', aria_typing: 'Pole do przepisywania tekstu', aria_up: 'W górę', aria_down: 'W dół', aria_left: 'W lewo', aria_right: 'W prawo',
         color_clear: 'wyczyść',
         qr_small: 'Mały (150px)', qr_big: 'Duży (300px)', qr_hint: 'Wpisz tekst żeby wygenerować QR',
         qr_png: 'Pobierz PNG', qr_link: 'Kopiuj link',
@@ -3285,6 +3286,7 @@ var i18n = {
         conv_weight: 'Weight', conv_length: 'Length', conv_speed: 'Speed',
         conv_value_ph: 'Enter a value', conv_result_ph: 'Result',
         timer_lap: 'Lap', note_chars: 'characters', note_copy: 'Copy', note_ph: 'Start typing...',
+        aria_volume: 'Volume', aria_prev: 'Previous track', aria_play: 'Play / pause', aria_next: 'Next track', aria_col_white: 'White', aria_col_black: 'Black', aria_col_red: 'Red', aria_col_gold: 'Gold', aria_col_green: 'Green', aria_col_blue: 'Sky blue', aria_conv_from: 'Value to convert', aria_conv_from_unit: 'Input unit', aria_conv_to: 'Result', aria_conv_to_unit: 'Output unit', aria_note: 'Note text', aria_note_clear: 'Clear note', aria_color: 'Pick a colour', aria_copy_hex: 'Copy HEX', aria_copy_rgb: 'Copy RGB', aria_copy_hsl: 'Copy HSL', aria_qr_size: 'QR code size', aria_qr_color: 'QR code colour', aria_typing: 'Typing field', aria_up: 'Up', aria_down: 'Down', aria_left: 'Left', aria_right: 'Right',
         color_clear: 'clear',
         qr_small: 'Small (150px)', qr_big: 'Large (300px)', qr_hint: 'Type something to generate a QR code',
         qr_png: 'Download PNG', qr_link: 'Copy link',
@@ -3375,6 +3377,7 @@ var i18n = {
         conv_weight: 'Gewicht', conv_length: 'Länge', conv_speed: 'Geschwindigkeit',
         conv_value_ph: 'Wert eingeben', conv_result_ph: 'Ergebnis',
         timer_lap: 'Runde', note_chars: 'Zeichen', note_copy: 'Kopieren', note_ph: 'Schreib los...',
+        aria_volume: 'Lautstärke', aria_prev: 'Vorheriger Titel', aria_play: 'Abspielen / Pause', aria_next: 'Nächster Titel', aria_col_white: 'Weiß', aria_col_black: 'Schwarz', aria_col_red: 'Rot', aria_col_gold: 'Gold', aria_col_green: 'Grün', aria_col_blue: 'Himmelblau', aria_conv_from: 'Umzurechnender Wert', aria_conv_from_unit: 'Ausgangseinheit', aria_conv_to: 'Ergebnis', aria_conv_to_unit: 'Zieleinheit', aria_note: 'Notiztext', aria_note_clear: 'Notiz löschen', aria_color: 'Farbe wählen', aria_copy_hex: 'HEX kopieren', aria_copy_rgb: 'RGB kopieren', aria_copy_hsl: 'HSL kopieren', aria_qr_size: 'QR-Code-Größe', aria_qr_color: 'QR-Code-Farbe', aria_typing: 'Tippfeld', aria_up: 'Hoch', aria_down: 'Runter', aria_left: 'Links', aria_right: 'Rechts',
         color_clear: 'leeren',
         qr_small: 'Klein (150px)', qr_big: 'Groß (300px)', qr_hint: 'Text eingeben, um einen QR-Code zu erzeugen',
         qr_png: 'PNG herunterladen', qr_link: 'Link kopieren',
@@ -3464,6 +3467,12 @@ function switchLang(lang) {
     document.querySelectorAll('[data-i18n-ph]').forEach(function(el) {
         var key = el.getAttribute('data-i18n-ph');
         if (t[key] !== undefined) el.placeholder = t[key];
+    });
+
+    // Etykiety dla czytników ekranu (pola i przyciski bez widocznego tekstu)
+    document.querySelectorAll('[data-i18n-aria]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n-aria');
+        if (t[key] !== undefined) el.setAttribute('aria-label', t[key]);
     });
 
     // Etykiety statystyk pod hero. applySiteData() wpisuje tu wartości z danych
