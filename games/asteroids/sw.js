@@ -1,7 +1,7 @@
 // Service worker: the whole game is a single HTML file, so caching the shell
 // is enough to make it fully playable offline.
 // Bump CACHE when the build changes to retire the previous version.
-const CACHE = 'asteroids-v1';
+const CACHE = 'asteroids-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', event => {
