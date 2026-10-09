@@ -1,6 +1,9 @@
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const FILE = "C:/Users/marci/Desktop/Projekty/moje-aplikacje-strona/index.html";
+// Ścieżka względem skryptu — repo bywa sklonowane na różnych komputerach (różne nazwy użytkownika)
+const FILE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "index.html");
 let html = fs.readFileSync(FILE, "utf8");
 
 const re = /var embeddedSiteData = (\{.*?\});/s;
