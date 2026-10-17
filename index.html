@@ -1843,6 +1843,31 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
     .calc-btn { min-height: 52px; font-size: 1.05rem; }
 }
 
+
+/* Telefon: karty aplikacji i gier w dwóch kolumnach (pół ekranu na kartę).
+   Ikona nad nazwą, krótszy opis, bez linii technologii; główny przycisk na
+   całą szerokość karty, małe ikony (GitHub, testerzy, APK) pod nim. */
+@media (max-width: 768px) {
+    .apps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .app-card { padding: 14px 12px 12px; border-radius: 16px; }
+    .app-card:hover { transform: none; }
+    .app-head { flex-direction: column; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+    .app-icon { flex: 0 0 auto; width: 46px; height: 46px; border-radius: 12px; }
+    .app-head .app-title { font-size: 0.95rem; }
+    .app-meta { gap: 6px; }
+    .app-meta .app-category { font-size: 0.62rem; letter-spacing: 0.6px; }
+    .app-head .app-badge { font-size: 0.56rem; padding: 1px 7px; }
+    .app-rating { font-size: 0.7rem; }
+    .app-card .app-desc { font-size: 0.8rem; line-height: 1.45; -webkit-line-clamp: 4; margin-bottom: 6px; }
+    .app-card:hover .app-desc { -webkit-line-clamp: 4; }
+    .app-card .app-tech { display: none; }
+    .app-card .card-links { flex-wrap: wrap; gap: 6px; padding-top: 10px; }
+    .app-card .card-link-btn.card-link-main { flex: 1 0 100%; padding: 9px 8px; min-height: 40px; font-size: 0.78rem; }
+    .app-card .card-link-icon { flex: 0 0 38px; width: 38px; height: 38px; }
+}
+@media (max-width: 340px) {
+    .apps-grid { grid-template-columns: 1fr; }
+}
 </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
