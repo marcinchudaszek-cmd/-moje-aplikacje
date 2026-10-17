@@ -1231,6 +1231,58 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
 .gv-next { right: 22px; }
 .gv-close { position: fixed; top: 20px; right: 22px; width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: #fff; font-size: 1.05rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 2; }
 .gv-close:hover { background: rgba(239,68,68,0.5); }
+.gv-title { position: fixed; top: 22px; left: 50%; transform: translateX(-50%); max-width: calc(100% - 140px); color: #fff; font-weight: 600; font-size: 0.95rem; text-align: center; background: rgba(7,20,67,0.75); padding: 6px 18px; border-radius: 50px; }
+.gv-title:empty { display: none; }
+
+/* ===== Przygody Ezry: pięć okładek sezonów połączonych „trasą” podróży ===== */
+.ezra-blok { margin-bottom: 44px; }
+.ezra-naglowek { text-align: center; margin-bottom: 22px; }
+.ezra-naglowek h3 { font-size: 1.6rem; font-weight: 800; margin-bottom: 6px; }
+.ezra-naglowek p { color: var(--text-secondary); max-width: 620px; margin: 0 auto; font-size: 0.98rem; }
+.ezra-trasa {
+    position: relative;
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px;
+    padding-top: 34px;
+}
+/* linia trasy z przystankami nad okładkami */
+.ezra-trasa::before {
+    content: ''; position: absolute; top: 12px; left: 10%; right: 10%; height: 0;
+    border-top: 2px dashed rgba(150,195,255,0.45);
+}
+.ezra-sezon {
+    position: relative; display: block; padding: 0; border: 0; background: none; cursor: pointer;
+    font: inherit; color: inherit; text-align: left;
+}
+.ezra-sezon::before {
+    content: attr(data-miejsce);
+    position: absolute; top: -34px; left: 50%; transform: translateX(-50%);
+    white-space: nowrap; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.4px;
+    color: var(--primary-soft); background: var(--bg-dark);
+    padding: 2px 10px; border: 1px solid rgba(150,195,255,0.45); border-radius: 50px;
+}
+.ezra-sezon img {
+    width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; display: block;
+    border-radius: 16px; border: 1px solid var(--border);
+    box-shadow: 0 10px 28px rgba(2,8,40,0.5);
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+.ezra-sezon:hover img, .ezra-sezon:focus-visible img {
+    transform: translateY(-6px); border-color: var(--secondary);
+    box-shadow: 0 18px 40px rgba(2,8,40,0.6), 0 0 0 2px rgba(245,166,35,0.5);
+}
+.ezra-sezon:focus-visible { outline: none; }
+.ezra-czytaj {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    margin-top: 10px; font-size: 0.84rem; font-weight: 600; color: var(--primary-soft);
+}
+.ezra-pozostale { font-size: 1.15rem; font-weight: 700; margin: 0 0 16px; color: var(--text-secondary); }
+@media (max-width: 900px) {
+    /* na wąskim ekranie trasa przewija się w poziomie zamiast ściskać okładki */
+    .ezra-trasa { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; scrollbar-width: thin; scrollbar-color: rgba(150,195,255,0.4) transparent; margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+    .ezra-trasa::before { left: 40px; right: auto; width: calc(5 * 62vw); }
+    .ezra-sezon { flex: 0 0 62vw; max-width: 260px; scroll-snap-align: center; }
+}
+
 .gv-counter { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); color: #fff; font-weight: 600; font-size: 0.92rem; background: rgba(255,255,255,0.1); padding: 6px 18px; border-radius: 50px; }
 @media (max-width: 600px) {
     .gv-arrow { width: 42px; height: 42px; }
@@ -2173,6 +2225,14 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
 
             <!-- GALLERY TAB -->
             <div class="fun-content active" id="fun-gallery">
+                <div class="ezra-blok">
+                    <div class="ezra-naglowek">
+                        <h3 data-i18n="ezra_title">Przygody Ezry</h3>
+                        <p data-i18n="ezra_desc">Komiks o beagielce Ezrze — pięć sezonów, od weneckich kanałów po Barcelonę. Wybierz sezon i czytaj odcinek po odcinku.</p>
+                    </div>
+                    <div class="ezra-trasa" id="ezraSezony"></div>
+                </div>
+                <h3 class="ezra-pozostale" data-i18n="ezra_other">Pozostałe grafiki</h3>
                 <div class="gallery-grid" id="galleryGrid">
                     <div class="gallery-item"><div class="gallery-placeholder"><i class="fas fa-camera"></i><span>Grafika 1</span><span style="font-size:0.75rem;">Wgraj zdjęcia do folderu /img/</span></div></div>
                     <div class="gallery-item"><div class="gallery-placeholder"><i class="fas fa-palette"></i><span>Grafika 2</span></div></div>
@@ -3313,6 +3373,7 @@ var i18n = {
         game_wait_green: 'Czekaj na zielony...', game_too_early: 'Za wcześnie! Kliknij "Graj!" ponownie.',
         filter_all: 'Wszystkie', filter_web: 'Web', filter_mobile: 'Mobile',
         fun_gallery: 'Galeria', fun_music: 'Muzyka', fun_miniapps: 'Mini Apki',
+        ezra_title: 'Przygody Ezry', ezra_desc: 'Komiks o beagielce Ezrze — pięć sezonów, od weneckich kanałów po Barcelonę. Wybierz sezon i czytaj odcinek po odcinku.', ezra_other: 'Pozostałe grafiki', ezra_read: 'Czytaj sezon',
         fun_videos: 'Filmy', fun_minigames: 'Mini Gry',
         stat1_label: 'Aplikacji', stat2_label: 'Platformy', stat3_label: 'W Google Play',
         badge_new: 'Nowa', badge_popular: 'Popularna', badge_beta: 'Beta',
@@ -3404,6 +3465,7 @@ var i18n = {
         game_wait_green: 'Wait for green...', game_too_early: 'Too early! Hit "Play!" again.',
         filter_all: 'All', filter_web: 'Web', filter_mobile: 'Mobile',
         fun_gallery: 'Gallery', fun_music: 'Music', fun_miniapps: 'Mini Apps',
+        ezra_title: 'Ezra\'s Adventures', ezra_desc: 'A comic about Ezra the beagle — five seasons, from the canals of Venice to Barcelona. Pick a season and read it episode by episode (in Polish).', ezra_other: 'Other artwork', ezra_read: 'Read season',
         fun_videos: 'Films', fun_minigames: 'Mini Games',
         stat1_label: 'Apps', stat2_label: 'Platforms', stat3_label: 'On Google Play',
         badge_new: 'New', badge_popular: 'Popular', badge_beta: 'Beta',
@@ -3495,6 +3557,7 @@ var i18n = {
         game_wait_green: 'Warte auf Grün...', game_too_early: 'Zu früh! Tippe nochmal auf "Spielen!".',
         filter_all: 'Alle', filter_web: 'Web', filter_mobile: 'Mobile',
         fun_gallery: 'Galerie', fun_music: 'Musik', fun_miniapps: 'Mini-Apps',
+        ezra_title: 'Ezras Abenteuer', ezra_desc: 'Ein Comic über die Beagle-Hündin Ezra — fünf Staffeln, von den Kanälen Venedigs bis nach Barcelona. Wähle eine Staffel und lies Folge für Folge (auf Polnisch).', ezra_other: 'Weitere Grafiken', ezra_read: 'Staffel lesen',
         fun_videos: 'Filme', fun_minigames: 'Mini-Spiele',
         stat1_label: 'Apps', stat2_label: 'Plattformen', stat3_label: 'Bei Google Play',
         badge_new: 'Neu', badge_popular: 'Beliebt', badge_beta: 'Beta',
@@ -3748,6 +3811,24 @@ function renderPlaylist() {
 }
 renderPlaylist();
 
+// ===== Przygody Ezry — sezony komiksu (pliki w img/ezra/, miniatury w img/thumb/) =====
+// Trzymane poza embeddedSiteData: panel admina przy publikacji składa dane tylko
+// z kluczy, które zna, więc nowy klucz by tam przepadł.
+var przygodyEzry = [{"nr":1,"title":"Ezra w Wenecji","place":"Wenecja","episodes":6,"cover":"img/ezra/ezra-okladka-s1.webp","pages":[{"title":"Sezon 1 · Okładka sezonu","path":"img/ezra/s1/ezra-s1-00.webp"},{"title":"Sezon 1 · Odc. 1 — Taksówka wodna","path":"img/ezra/s1/ezra-s1-01.webp"},{"title":"Sezon 1 · Odc. 2 — Wyścig gondoli","path":"img/ezra/s1/ezra-s1-02.webp"},{"title":"Sezon 1 · Odc. 3 — Labirynt","path":"img/ezra/s1/ezra-s1-03.webp"},{"title":"Sezon 1 · Odc. 4 — Dachy","path":"img/ezra/s1/ezra-s1-04.webp"},{"title":"Sezon 1 · Odc. 5 — Nocna serenada","path":"img/ezra/s1/ezra-s1-05.webp"},{"title":"Sezon 1 · Odc. 6 — Arrivederci (finał)","path":"img/ezra/s1/ezra-s1-06.webp"}]},{"nr":2,"title":"Ezra nad Dunajem","place":"Dunaj → Wenecja","episodes":6,"cover":"img/ezra/ezra-okladka-s2.webp","pages":[{"title":"Sezon 2 · Okładka sezonu","path":"img/ezra/s2/ezra-s2-00.webp"},{"title":"Sezon 2 · Odc. 1 — Burza (str. 1)","path":"img/ezra/s2/ezra-s2-01.webp"},{"title":"Sezon 2 · Odc. 1 — Burza (str. 2)","path":"img/ezra/s2/ezra-s2-02.webp"},{"title":"Sezon 2 · Odc. 1 — Burza (str. 3)","path":"img/ezra/s2/ezra-s2-03.webp"},{"title":"Sezon 2 · Odc. 2 — List (str. 1)","path":"img/ezra/s2/ezra-s2-04.webp"},{"title":"Sezon 2 · Odc. 2 — List (str. 2)","path":"img/ezra/s2/ezra-s2-05.webp"},{"title":"Sezon 2 · Odc. 3 — Wiedeń i Budapeszt","path":"img/ezra/s2/ezra-s2-06.webp"},{"title":"Sezon 2 · Odc. 3 — Adriatyk","path":"img/ezra/s2/ezra-s2-07.webp"},{"title":"Sezon 2 · Odc. 4 — Karnawał cieni","path":"img/ezra/s2/ezra-s2-08.webp"},{"title":"Sezon 2 · Odc. 5 — Walka z cieniami","path":"img/ezra/s2/ezra-s2-09.webp"},{"title":"Sezon 2 · Odc. 6 — Wielki finał","path":"img/ezra/s2/ezra-s2-10.webp"}]},{"nr":3,"title":"Strażniczka Lasów Bawarii","place":"Las Bawarski","episodes":6,"cover":"img/ezra/ezra-okladka-s3.webp","pages":[{"title":"Sezon 3 · Plakat sezonu","path":"img/ezra/s3/ezra-s3-00.webp"},{"title":"Sezon 3 · Odc. 1 — Powrót do Bawarii","path":"img/ezra/s3/ezra-s3-01.webp"},{"title":"Sezon 3 · Odc. 2 — Ślady w błocie","path":"img/ezra/s3/ezra-s3-02.webp"},{"title":"Sezon 3 · Odc. 3 — Leśniczówka","path":"img/ezra/s3/ezra-s3-03.webp"},{"title":"Sezon 3 · Odc. 4 — Rada zwierząt","path":"img/ezra/s3/ezra-s3-04.webp"},{"title":"Sezon 3 · Odc. 5 — Nocna wyprawa","path":"img/ezra/s3/ezra-s3-05.webp"},{"title":"Sezon 3 · Odc. 6 — Nowa tama (finał)","path":"img/ezra/s3/ezra-s3-06.webp"},{"title":"Sezon 3 · Plakat finałowy","path":"img/ezra/s3/ezra-s3-07.webp"},{"title":"Sezon 3 · Bonus — Ezra i lisek","path":"img/ezra/s3/ezra-s3-08.webp"}]},{"nr":4,"title":"Leśny Detektyw Ezra","place":"Jesienny las","episodes":12,"cover":"img/ezra/ezra-okladka-s4.webp","pages":[{"title":"Sezon 4 · Odc. 1 — Pusta dziupla","path":"img/ezra/s4/ezra-s4-00.webp"},{"title":"Sezon 4 · Odc. 2 — Tropy","path":"img/ezra/s4/ezra-s4-01.webp"},{"title":"Sezon 4 · Odc. 3 — Fałszywy trop","path":"img/ezra/s4/ezra-s4-02.webp"},{"title":"Sezon 4 · Odc. 4 — Rada jesienna","path":"img/ezra/s4/ezra-s4-03.webp"},{"title":"Sezon 4 · Odc. 5 — Nocna zasadzka","path":"img/ezra/s4/ezra-s4-04.webp"},{"title":"Sezon 4 · Odc. 6 — Wielkie dzielenie","path":"img/ezra/s4/ezra-s4-05.webp"},{"title":"Sezon 4 · Odc. 7 — Trop borsuka","path":"img/ezra/s4/ezra-s4-06.webp"},{"title":"Sezon 4 · Odc. 8 — Gang dzików","path":"img/ezra/s4/ezra-s4-07.webp"},{"title":"Sezon 4 · Odc. 9 — Wiewiórka influencerka","path":"img/ezra/s4/ezra-s4-08.webp"},{"title":"Sezon 4 · Odc. 10 — Pułapka na złodzieja","path":"img/ezra/s4/ezra-s4-09.webp"},{"title":"Sezon 4 · Odc. 11 — Prawda wychodzi na jaw","path":"img/ezra/s4/ezra-s4-10.webp"},{"title":"Sezon 4 · Odc. 12 — Wielka uczta (finał)","path":"img/ezra/s4/ezra-s4-11.webp"},{"title":"Sezon 4 · Plakat finałowy","path":"img/ezra/s4/ezra-s4-12.webp"}]},{"nr":5,"title":"Ezra w Barcelonie","place":"Barcelona","episodes":12,"cover":"img/ezra/ezra-okladka-s5.webp","pages":[{"title":"Sezon 5 · Plakat sezonu","path":"img/ezra/s5/ezra-s5-00.webp"},{"title":"Sezon 5 · Odc. 1 — Barcelona, tapas i trop","path":"img/ezra/s5/ezra-s5-01.webp"},{"title":"Sezon 5 · Odc. 2 — Siesta i skandal","path":"img/ezra/s5/ezra-s5-02.webp"},{"title":"Sezon 5 · Odc. 3 — Tapas o północy","path":"img/ezra/s5/ezra-s5-03.webp"},{"title":"Sezon 5 · Odc. 4 — Gaudí i ghosting","path":"img/ezra/s5/ezra-s5-04.webp"},{"title":"Sezon 5 · Odc. 5 — Plaża i przemyślenia","path":"img/ezra/s5/ezra-s5-05.webp"},{"title":"Sezon 5 · Odc. 6 — Sangria Gate","path":"img/ezra/s5/ezra-s5-06.webp"},{"title":"Sezon 5 · Odc. 7 — Flamenco i fikcja","path":"img/ezra/s5/ezra-s5-07.webp"},{"title":"Sezon 5 · Odc. 8 — La Rambla i zgubiony portfel","path":"img/ezra/s5/ezra-s5-08.webp"},{"title":"Sezon 5 · Odc. 9 — Sagrada i niedokończone związki","path":"img/ezra/s5/ezra-s5-09.webp"},{"title":"Sezon 5 · Odc. 10 — Verbena i kac moralny","path":"img/ezra/s5/ezra-s5-10.webp"},{"title":"Sezon 5 · Odc. 11 — Ostatnia sangria, prawda","path":"img/ezra/s5/ezra-s5-11.webp"},{"title":"Sezon 5 · Odc. 12 — Powrót? Czy zostaje? (finał)","path":"img/ezra/s5/ezra-s5-12.webp"}]}];
+
+function renderEzra() {
+    var box = document.getElementById('ezraSezony');
+    if (!box) return;
+    var t = (i18n[currentLang] || i18n.pl);
+    box.innerHTML = przygodyEzry.map(function(sz, k) {
+        return '<button type="button" class="ezra-sezon" data-miejsce="' + sz.place + '" onclick="openGallery(0, przygodyEzry[' + k + '].pages)">' +
+            '<img src="' + sz.cover + '" alt="Sezon ' + sz.nr + ': ' + sz.title + '" loading="lazy" width="720" height="900">' +
+            '<span class="ezra-czytaj"><i class="fas fa-book-open"></i> <span data-i18n="ezra_read">' + (t.ezra_read || 'Czytaj sezon') + '</span> ' + sz.nr + '</span>' +
+        '</button>';
+    }).join('');
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderEzra); else renderEzra();
+
 // Gallery Lightbox
 // ===== Pełnoekranowa przeglądarka galerii (strzałki, licznik, klawiatura, swipe) =====
 var galleryImages = [];
@@ -3761,9 +3842,14 @@ function updateGalleryViewAllLabel() {
     btn.innerHTML = '<i class="fas fa-images"></i> ' + label;
 }
 
-function openGallery(i) {
-    if (!galleryImages.length) return;
-    gvIndex = Math.max(0, Math.min(i, galleryImages.length - 1));
+// gvLista: to, co aktualnie przegląda viewer — ogólna galeria albo jeden sezon
+// Przygód Ezry (openGallery(i, lista)).
+var gvLista = [];
+
+function openGallery(i, lista) {
+    gvLista = lista || galleryImages;
+    if (!gvLista.length) return;
+    gvIndex = Math.max(0, Math.min(i, gvLista.length - 1));
     var v = document.getElementById('galleryViewer');
     if (!v) {
         v = document.createElement('div');
@@ -3774,7 +3860,8 @@ function openGallery(i) {
             '<button class="gv-arrow gv-prev" onclick="gvStep(-1)" title="Poprzednie (←)"><i class="fas fa-chevron-left"></i></button>' +
             '<img class="gv-img" src="" alt="">' +
             '<button class="gv-arrow gv-next" onclick="gvStep(1)" title="Następne (→)"><i class="fas fa-chevron-right"></i></button>' +
-            '<div class="gv-counter"></div>';
+            '<div class="gv-counter"></div>' +
+            '<div class="gv-title"></div>';
         v.addEventListener('click', function(e) { if (e.target === v) closeGallery(); });
         var gvTouchX = null;
         v.addEventListener('touchstart', function(e) { gvTouchX = e.touches[0].clientX; }, { passive: true });
@@ -3794,19 +3881,22 @@ function openGallery(i) {
 function gvRender() {
     var v = document.getElementById('galleryViewer');
     if (!v) return;
-    var img = galleryImages[gvIndex];
+    var img = gvLista[gvIndex];
     var el = v.querySelector('.gv-img');
     el.src = img.path;
     el.alt = img.title || '';
-    v.querySelector('.gv-counter').textContent = (gvIndex + 1) + ' / ' + galleryImages.length;
+    v.querySelector('.gv-counter').textContent = (gvIndex + 1) + ' / ' + gvLista.length;
+    // tytuł tylko tam, gdzie niesie treść (odcinki Ezry), a nie ogólne „Grafika”
+    var tyt = v.querySelector('.gv-title');
+    tyt.textContent = (img.title && img.title !== 'Grafika') ? img.title : '';
     // preload sąsiadów, żeby strzałki działały płynnie
     [gvIndex - 1, gvIndex + 1].forEach(function(n) {
-        if (n >= 0 && n < galleryImages.length) { var p = new Image(); p.src = galleryImages[n].path; }
+        if (n >= 0 && n < gvLista.length) { var p = new Image(); p.src = gvLista[n].path; }
     });
 }
 
 function gvStep(d) {
-    gvIndex = (gvIndex + d + galleryImages.length) % galleryImages.length;
+    gvIndex = (gvIndex + d + gvLista.length) % gvLista.length;
     gvRender();
 }
 
