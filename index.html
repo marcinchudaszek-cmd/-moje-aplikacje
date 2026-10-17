@@ -9,7 +9,7 @@
 
     <meta name="description" content="Beagle Apps Studio — Marcin Chudaszek. Aplikacje mobilne i webowe oraz gry: darts, muzyka, rośliny, nauka języków. Portfolio, wersje webowe i linki do Google Play.">
     <meta name="author" content="Marcin Chudaszek">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#071443">
     <link rel="canonical" href="https://beagleapps.pl/">
     <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
@@ -46,16 +46,16 @@
     --primary-soft: #96c3ff;
     --secondary: #f5a623;
     --accent: #06b6d4;
-    --bg-dark: #0b1120;
+    --bg-dark: #071443;
     /* dokąd sięga zdjęcie tła: navbar + hero, dalej sam granat */
     --wys-tla: clamp(620px, 98vh, 1060px);
-    --bg-card: rgba(30, 41, 59, 0.85);
-    --bg-card-hover: rgba(51, 65, 85, 0.9);
-    --bg-surface: rgba(30, 41, 59, 0.6);
+    --bg-card: rgba(17, 36, 102, 0.78);
+    --bg-card-hover: rgba(28, 54, 140, 0.88);
+    --bg-surface: rgba(17, 36, 102, 0.55);
     --text-primary: #f1f5f9;
     --text-secondary: #cbd5e1;
     --text-muted: #94a3b8;
-    --border: rgba(148, 163, 184, 0.2);
+    --border: rgba(150, 195, 255, 0.2);
     --border-hover: rgba(245, 166, 35, 0.4);
     --gradient-1: linear-gradient(135deg, #4a8ed4, #f5a623);
     --gradient-2: linear-gradient(135deg, #f5a623, #ff8a5c);
@@ -88,8 +88,9 @@ body {
        zdjęciu psa — wcześniej portret przebijał przez każdą sekcję i zjadał
        kontrast tekstu. */
     background:
-        radial-gradient(1100px 620px at 15% -8%, #17233d 0%, rgba(23,35,61,0) 62%),
-        radial-gradient(900px 520px at 92% 8%, #16283f 0%, rgba(22,40,63,0) 58%),
+        radial-gradient(1100px 620px at 15% -8%, #1b3a9e 0%, rgba(27,58,158,0) 62%),
+        radial-gradient(900px 520px at 92% 8%, #1640a8 0%, rgba(22,64,168,0) 58%),
+        radial-gradient(1200px 800px at 50% 110%, #0f2a86 0%, rgba(15,42,134,0) 60%),
         var(--bg-dark);
     background-attachment: fixed;
     color: var(--text-primary);
@@ -122,9 +123,9 @@ body::after {
     top: 0; left: 0; right: 0;
     height: var(--wys-tla);
     background: linear-gradient(to bottom,
-        rgba(11, 17, 32, 0.74) 0%,
-        rgba(11, 17, 32, 0.86) 55%,
-        rgba(11, 17, 32, 0.97) 88%,
+        rgba(7, 20, 67, 0.74) 0%,
+        rgba(7, 20, 67, 0.86) 55%,
+        rgba(7, 20, 67, 0.97) 88%,
         var(--bg-dark) 100%);
     z-index: -1;
     pointer-events: none;
@@ -177,7 +178,7 @@ img { max-width: 100%; display: block; }
 }
 
 .navbar.scrolled {
-    background: rgba(15, 23, 42, 0.85);
+    background: rgba(7, 20, 67, 0.85);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     padding: 10px 0;
@@ -427,48 +428,79 @@ img { max-width: 100%; display: block; }
     min-height: 400px;
 }
 
-.floating-cards {
+/* Wachlarz przechylonych kart aplikacji (zamiast 4 kafelków Mobile/Web/...).
+   Każda karta ma gradient z danych aplikacji (pole color) i jej ikonę. */
+.wachlarz {
     position: relative;
-    width: 350px; height: 350px;
+    width: 560px; height: 430px;
 }
-
-.floating-card {
+.wachlarz-karta {
     position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 24px 32px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    transition: var(--transition);
+    left: 50%; bottom: 20px;
+    width: 168px; height: 244px;
+    margin-left: -84px;
+    border-radius: 22px;
+    padding: 22px 14px 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    border: 1px solid rgba(255,255,255,0.28);
+    box-shadow: 0 18px 40px rgba(2,8,40,0.55), inset 0 1px 0 rgba(255,255,255,0.35);
+    transform-origin: 50% 260%;
+    transform: rotate(var(--kat)) translateY(var(--dy, 0px));
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.35s;
+    color: #fff; text-align: center; cursor: pointer;
+    overflow: hidden;
+    animation: wachlarzWejscie 0.8s cubic-bezier(0.2,0.8,0.2,1) both;
+    animation-delay: var(--opozn, 0s);
+}
+.wachlarz-karta::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(160deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 45%);
+    pointer-events: none;
+}
+.wachlarz-karta img {
+    width: 84px; height: 84px; border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+    background: rgba(255,255,255,0.12);
+}
+.wachlarz-karta span {
+    font-size: 0.9rem; font-weight: 700; line-height: 1.25;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.45);
+}
+.wachlarz-karta:hover, .wachlarz-karta:focus-visible {
+    transform: rotate(var(--kat)) translateY(calc(var(--dy, 0px) - 26px)) scale(1.06);
+    box-shadow: 0 26px 50px rgba(2,8,40,0.65), 0 0 0 2px rgba(150,195,255,0.6);
+    z-index: 10 !important;
+    outline: none;
+}
+.wachlarz-podpis {
+    position: absolute; top: 6px; right: 0;
+    font-family: 'Great Vibes', cursive; font-size: 2.6rem; line-height: 1;
+    color: var(--primary-soft);
+    text-shadow: 0 0 18px rgba(74,142,212,0.55);
+    transform: rotate(-6deg);
+    pointer-events: none;
+}
+@keyframes wachlarzWejscie {
+    from { opacity: 0; transform: rotate(0deg) translateY(40px); }
+    to   { opacity: 1; transform: rotate(var(--kat)) translateY(var(--dy, 0px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .wachlarz-karta { animation: none; }
 }
 
-.floating-card:hover {
-    transform: scale(1.05);
-    border-color: var(--primary);
-    box-shadow: var(--shadow-glow);
-}
-
-.floating-card i { font-size: 2rem; }
-.floating-card span { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
-
-/* Rozstawienie w czterech narożnikach kontenera 350x350. Poprzednio card-2 (Web)
-   i card-4 (Backend) zachodziły na siebie, przez co napis "Web" był przycięty. */
-.card-1 { top: 0; left: 4%; animation: float 6s ease-in-out infinite; }
-.card-1 i { color: #4a90d9; }
-.card-2 { top: 8%; right: 0; animation: float 6s ease-in-out infinite 1.5s; }
-.card-2 i { color: #f5a623; }
-.card-3 { bottom: 2%; left: 0; animation: float 6s ease-in-out infinite 3s; }
-.card-3 i { color: #06b6d4; }
-.card-4 { bottom: 6%; right: 4%; animation: float 6s ease-in-out infinite 4.5s; }
-.card-4 i { color: #f59e0b; }
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+/* Ozdobna litera w tytułach sekcji — pierwsza litera ostatniego słowa
+   pisana kaligraficznie (dokłada ją skrypt na końcu strony). */
+.ozdobna {
+    font-family: 'Great Vibes', cursive;
+    font-weight: 400;
+    font-size: 1.55em;
+    line-height: 0.6;
+    color: var(--primary-soft);
+    text-shadow: 0 0 22px rgba(74,142,212,0.6);
+    margin: 0 0.02em 0 0.14em;
+    letter-spacing: 0;
+    display: inline-block;
+    transform: translateY(0.08em);
 }
 
 /* Section Styles */
@@ -704,7 +736,7 @@ img { max-width: 100%; display: block; }
 .app-link:hover { color: var(--primary); gap: 10px; }
 
 /* About */
-.about-section { padding: 100px 0; position: relative; z-index: 1; background: rgba(15, 23, 42, 0.4); }
+.about-section { padding: 100px 0; position: relative; z-index: 1; background: rgba(10, 28, 92, 0.35); }
 
 .about-grid {
     display: grid;
@@ -803,7 +835,7 @@ img { max-width: 100%; display: block; }
 .tech-item span { font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); }
 
 /* Contact */
-.contact-section { padding: 100px 0; position: relative; z-index: 1; background: rgba(15, 23, 42, 0.4); }
+.contact-section { padding: 100px 0; position: relative; z-index: 1; background: rgba(10, 28, 92, 0.35); }
 
 .contact-grid {
     display: grid;
@@ -1096,7 +1128,12 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
 
 @media (max-width: 768px) {
     .hero-title { font-size: 2.2rem; }
-    .hero-visual { display: none; }
+    .hero-visual { min-height: 0; width: 100%; margin-top: 10px; }
+    .wachlarz { width: 320px; height: 250px; margin: 0 auto; }
+    .wachlarz-karta { width: 94px; height: 140px; margin-left: -47px; padding: 14px 6px 10px; border-radius: 16px; bottom: 10px; transform-origin: 50% 220%; }
+    .wachlarz-karta img { width: 54px; height: 54px; border-radius: 13px; }
+    .wachlarz-karta span { font-size: 0.72rem; }
+    .wachlarz-podpis { font-size: 1.9rem; }
     .hero-stats { gap: 30px; }
     .apps-grid { grid-template-columns: 1fr; }
     .app-image { height: 120px; }
@@ -1710,7 +1747,7 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
 }
 
 </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -1787,23 +1824,28 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
             </div>
         </div>
         <div class="hero-visual">
-            <div class="floating-cards">
-                <div class="floating-card card-1">
-                    <i class="fas fa-mobile-alt"></i>
-                    <span>Mobile</span>
-                </div>
-                <div class="floating-card card-2">
-                    <i class="fas fa-globe"></i>
-                    <span>Web</span>
-                </div>
-                <div class="floating-card card-3">
-                    <i class="fas fa-desktop"></i>
-                    <span>Desktop</span>
-                </div>
-                <div class="floating-card card-4">
-                    <i class="fas fa-database"></i>
-                    <span>Backend</span>
-                </div>
+            <div class="wachlarz">
+                <span class="wachlarz-podpis" aria-hidden="true">Portfolio</span>
+                <a class="wachlarz-karta" href="#apps" style="--kat:-24deg;--dy:0px;--opozn:0.10s;background:linear-gradient(135deg, #14311c, #b7752f);z-index:3">
+                    <img src="img/atlas-grzybow-icon.png" alt="" width="84" height="84">
+                    <span>Atlas Grzybów</span>
+                </a>
+                <a class="wachlarz-karta" href="#apps" style="--kat:-12deg;--dy:0px;--opozn:0.18s;background:linear-gradient(135deg, #667eea, #764ba2);z-index:4">
+                    <img src="img/kolekcja-muzyki-icon.png" alt="" width="84" height="84">
+                    <span>Kolekcja Muzyki</span>
+                </a>
+                <a class="wachlarz-karta" href="#apps" style="--kat:0deg;--dy:0px;--opozn:0.26s;background:linear-gradient(135deg, #f5576c, #ff6b6b);z-index:5">
+                    <img src="img/dart-score-pro-icon.png" alt="" width="84" height="84">
+                    <span>Dart Score Pro</span>
+                </a>
+                <a class="wachlarz-karta" href="#apps" style="--kat:12deg;--dy:0px;--opozn:0.34s;background:linear-gradient(135deg, #1e3a8a, #f59e0b);z-index:4">
+                    <img src="img/volleystats-icon.png" alt="" width="84" height="84">
+                    <span>VolleyStats</span>
+                </a>
+                <a class="wachlarz-karta" href="#apps" style="--kat:24deg;--dy:0px;--opozn:0.42s;background:linear-gradient(135deg, #f6a623, #e8701a);z-index:3">
+                    <img src="img/beer-rater-icon.png" alt="" width="84" height="84">
+                    <span>Beer Rater</span>
+                </a>
             </div>
         </div>
     </section>
@@ -3149,7 +3191,7 @@ function saveInlineEdits() {
     var subtitle = document.querySelector('.hero-subtitle');
     if (subtitle) data.profile.subtitle = subtitle.textContent;
     var aboutTitle = document.querySelector('.about-content .section-title');
-    if (aboutTitle) data.profile.aboutTitle = aboutTitle.innerHTML;
+    if (aboutTitle) data.profile.aboutTitle = aboutTitle.innerHTML.replace(/<span class="ozdobna">([\s\S]*?)<\/span>/g, '$1');
     var aboutTexts = document.querySelectorAll('.about-text');
     if (aboutTexts[0]) data.profile.aboutText1 = aboutTexts[0].textContent;
     if (aboutTexts[1]) data.profile.aboutText2 = aboutTexts[1].textContent;
@@ -4778,5 +4820,47 @@ document.addEventListener('click', function(e) {
     </script>
     <!-- GoatCounter — śledzenie odwiedzin -->
     <script data-goatcounter="https://beagleapps.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+<script>
+// Ozdobna litera w tytułach sekcji: pierwsza litera ostatniego słowa w kroju
+// kaligraficznym. Obserwator dokłada ją po każdej podmianie treści (zmiana
+// języka, dane z panelu), więc teksty w i18n i embeddedSiteData zostają czyste.
+(function () {
+    function ozdob(el) {
+        if (el.isContentEditable || el.querySelector('.ozdobna')) return;
+        var wezly = [];
+        (function zbierz(n) {
+            n.childNodes.forEach(function (c) {
+                if (c.nodeType === 3) wezly.push(c);
+                else if (c.nodeType === 1 && c.tagName !== 'BR') zbierz(c);
+            });
+        })(el);
+        for (var i = wezly.length - 1; i >= 0; i--) {
+            var w = wezly[i], m = w.nodeValue.match(/(^|\s)(\p{L})\p{L}*\s*$/u);
+            if (!m) continue;
+            var reszta = w.splitText(m.index + m[1].length);
+            reszta.nodeValue = reszta.nodeValue.slice(1);
+            var span = document.createElement('span');
+            span.className = 'ozdobna';
+            span.textContent = m[2];
+            w.parentNode.insertBefore(span, reszta);
+            return;
+        }
+    }
+    function start() {
+        var obs = new MutationObserver(function (zmiany) {
+            zmiany.forEach(function (z) {
+                var el = z.target.nodeType === 1 ? z.target.closest('.section-title') : z.target.parentNode && z.target.parentNode.closest('.section-title');
+                if (el) ozdob(el);
+            });
+        });
+        document.querySelectorAll('.section-title').forEach(function (el) {
+            ozdob(el);
+            obs.observe(el, { childList: true, characterData: true, subtree: true });
+        });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>
 </body>
 </html>
