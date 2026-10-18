@@ -81,6 +81,13 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
   color:var(--accent);font-size:1.4rem;margin-left:6px;
 }
 .touch button.rot:active{background:rgba(0,229,255,.3)}
+/* podpis pod symbolem przycisku */
+.touch button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;line-height:1}
+.touch .lb{font-size:.6rem;font-weight:600;letter-spacing:.02em;color:var(--muted);white-space:nowrap}
+.touch button.rot .lb{color:var(--accent)}
+/* ściąga gestów na ekranie startowym — tylko na telefonie */
+.gesty{display:none;font-size:.74rem;color:var(--muted);line-height:1.55;max-width:290px}
+.gesty b{color:var(--text);font-weight:600}
 @media (max-width:820px){
   body{justify-content:flex-start;gap:8px;
     padding:calc(6px + var(--sa-top)) calc(6px + var(--sa-right)) calc(6px + var(--sa-bottom)) calc(6px + var(--sa-left))}
@@ -95,7 +102,15 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
   .val.sm{font-size:.95rem}
   .hintCard,.brand{display:none}
   .touch{display:flex;width:100%;max-width:430px;margin:0 auto}
-  .touch button{padding:16px 0}
+  .touch button{padding:9px 0 8px}
+  .gesty{display:block}
+  /* ekran startowy musi się zmieścić na planszy także na małym telefonie */
+  .overlay{gap:9px;padding:12px 10px;justify-content:safe center;overflow-y:auto}
+  .overlay h1{font-size:1.45rem}
+  .overlay p{font-size:.78rem;line-height:1.45}
+  .overlay .gesty{font-size:.7rem}
+  .lvl{padding:7px 12px;font-size:.78rem}
+  .btn{padding:11px 28px}
 }
 /* niskie okno na komputerze: bez ściągi klawiszy, inaczej panel boczny wystaje poza ekran */
 @media (min-width:821px) and (max-height:900px){
@@ -117,6 +132,7 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
       <p id="ovText">Ustaw klocki tak, aby wypełnić cały rząd — zniknie i dostaniesz punkty.</p>
       <div class="levels" id="levels"></div>
       <button class="btn" id="startBtn">Graj</button>
+      <p class="gesty">Na planszy: <b>dotknij</b> — obrót, <b>przesuń w bok</b> — ruch, <b>przeciągnij w dół</b> — szybciej, <b>szybko w dół</b> — zrzut.</p>
     </div>
   </div>
 
@@ -145,12 +161,12 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
 </div>
 
 <div class="touch" id="touch" style="max-width:420px;width:100%">
-  <button id="tLeft" aria-label="w lewo">◀</button>
-  <button id="tRight" aria-label="w prawo">▶</button>
-  <button id="tDown" aria-label="w dół">▼</button>
-  <button id="tHold" aria-label="trzymaj">⇄</button>
-  <button id="tDrop" aria-label="zrzut">⤓</button>
-  <button id="tRot" class="rot" aria-label="obróć">⟳</button>
+  <button id="tLeft" aria-label="w lewo"><span>◀</span><span class="lb">w lewo</span></button>
+  <button id="tRight" aria-label="w prawo"><span>▶</span><span class="lb">w prawo</span></button>
+  <button id="tDown" aria-label="w dół"><span>▼</span><span class="lb">w dół</span></button>
+  <button id="tHold" aria-label="trzymaj"><span>⇄</span><span class="lb">trzymaj</span></button>
+  <button id="tDrop" aria-label="zrzut"><span>⤓</span><span class="lb">zrzut</span></button>
+  <button id="tRot" class="rot" aria-label="obróć"><span>⟳</span><span class="lb">obróć</span></button>
 </div>
 
 <script>
