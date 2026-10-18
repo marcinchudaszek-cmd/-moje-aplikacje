@@ -1,7 +1,7 @@
 {
   "name": "Solitaire Suite",
-  "short_name": "Solitaire",
-  "description": "Klondike, FreeCell & Spider Solitaire",
+  "short_name": "Pasjanse",
+  "description": "Pasjanse Klondike, FreeCell i Pająk",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -33,5 +33,6 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "lang": "pl"
 }
