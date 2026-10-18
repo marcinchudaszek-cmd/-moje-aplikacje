@@ -69,7 +69,8 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
   cursor:pointer;font-family:inherit;font-weight:600;font-size:.82rem}
 .lvl.active{background:rgba(0,229,255,.16);border-color:var(--accent);color:var(--text)}
 /* dotykowe sterowanie */
-.touch{display:none;gap:8px;margin-top:12px}
+/* przyciski sterowania: na telefonie pod kciuki, na komputerze do myszy (z podpisem klawisza) */
+.touch{display:flex;gap:8px;width:100%;max-width:520px}
 .touch button{
   flex:1;padding:15px 0;border-radius:12px;border:1px solid var(--border);
   background:var(--panel);color:var(--text);font-size:1.15rem;font-family:inherit;cursor:pointer;
@@ -85,6 +86,8 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
 .touch button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;line-height:1}
 .touch .lb{font-size:.6rem;font-weight:600;letter-spacing:.02em;color:var(--muted);white-space:nowrap}
 .touch button.rot .lb{color:var(--accent)}
+.touch .lb::after{content:"  " attr(data-k);color:var(--text);opacity:.75}
+.touch button{padding:10px 0 9px}
 /* ściąga gestów na ekranie startowym — tylko na telefonie */
 .gesty{display:none;font-size:.74rem;color:var(--muted);line-height:1.55;max-width:290px}
 .gesty b{color:var(--text);font-weight:600}
@@ -101,7 +104,8 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
   .val{font-size:1rem}
   .val.sm{font-size:.95rem}
   .hintCard,.brand{display:none}
-  .touch{display:flex;width:100%;max-width:430px;margin:0 auto}
+  .touch{max-width:430px;margin:0 auto}
+  .touch .lb::after{content:none}
   .touch button{padding:9px 0 8px}
   .gesty{display:block}
   /* ekran startowy musi się zmieścić na planszy także na małym telefonie */
@@ -115,6 +119,10 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
 /* niskie okno na komputerze: bez ściągi klawiszy, inaczej panel boczny wystaje poza ekran */
 @media (min-width:821px) and (max-height:900px){
   .hintCard{display:none}
+}
+@media (min-width:821px) and (max-height:780px){
+  .side{gap:9px}
+  .brand{display:none}
 }
 </style>
     <link rel="manifest" href="manifest.json">
@@ -160,13 +168,13 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
   </div>
 </div>
 
-<div class="touch" id="touch" style="max-width:420px;width:100%">
-  <button id="tLeft" aria-label="w lewo"><span>◀</span><span class="lb">w lewo</span></button>
-  <button id="tRight" aria-label="w prawo"><span>▶</span><span class="lb">w prawo</span></button>
-  <button id="tDown" aria-label="w dół"><span>▼</span><span class="lb">w dół</span></button>
-  <button id="tHold" aria-label="trzymaj"><span>⇄</span><span class="lb">trzymaj</span></button>
-  <button id="tDrop" aria-label="zrzut"><span>⤓</span><span class="lb">zrzut</span></button>
-  <button id="tRot" class="rot" aria-label="obróć"><span>⟳</span><span class="lb">obróć</span></button>
+<div class="touch" id="touch">
+  <button id="tLeft" aria-label="w lewo" tabindex="-1"><span>◀</span><span class="lb" data-k="←">w lewo</span></button>
+  <button id="tRight" aria-label="w prawo" tabindex="-1"><span>▶</span><span class="lb" data-k="→">w prawo</span></button>
+  <button id="tDown" aria-label="w dół" tabindex="-1"><span>▼</span><span class="lb" data-k="↓">w dół</span></button>
+  <button id="tHold" aria-label="trzymaj" tabindex="-1"><span>⇄</span><span class="lb" data-k="C">trzymaj</span></button>
+  <button id="tDrop" aria-label="zrzut" tabindex="-1"><span>⤓</span><span class="lb" data-k="Spacja">zrzut</span></button>
+  <button id="tRot" class="rot" aria-label="obróć" tabindex="-1"><span>⟳</span><span class="lb" data-k="↑">obróć</span></button>
 </div>
 
 <script>
@@ -221,16 +229,20 @@ var holdCv  = document.getElementById('hold'),  hctx = holdCv.getContext('2d');
 var CELL = 30;
 
 var miniPoziomo = false;
+var ileNastepnych = 4;   // ile klocków w podglądzie (na telefonie i w niskim oknie mniej)
 
 function fitCanvas(){
   var mobile = window.innerWidth < 820;
   miniPoziomo = mobile;
 
   if (mobile){
+    ileNastepnych = 3;
     nextCv.width = 168; nextCv.height = 44;
     holdCv.width = 60;  holdCv.height = 44;
   } else {
-    nextCv.width = 120; nextCv.height = 250;
+    // niskie okno: 3 podglądy zamiast 4, żeby panel boczny zmieścił się nad przyciskami
+    ileNastepnych = window.innerHeight < 800 ? 3 : 4;
+    nextCv.width = 120; nextCv.height = ileNastepnych * 60 + 10;
     holdCv.width = 120; holdCv.height = 76;
   }
 
@@ -245,7 +257,8 @@ function fitCanvas(){
     // 2 × odstęp 8px (plansza–statystyki, całość–przyciski), 2px ramki, 4px zapasu
     zajete = marginesy + side.offsetHeight + touch.offsetHeight + 8 + 8 + 2 + 4;
   } else {
-    zajete = marginesy + 12;
+    // przyciski pod planszą + odstęp 10px (gap body)
+    zajete = marginesy + 12 + document.getElementById('touch').offsetHeight + 10;
   }
   var maxH = Math.min(window.innerHeight - zajete, 640);
   var maxW = mobile ? window.innerWidth - 20 : 380;
@@ -483,7 +496,7 @@ function drawMini(ctx, cv, types){
     cs.forEach(function(c){ block(ctx, ox + c[0] * s, oy + c[1] * s, s, COLORS[type]); });
   });
 }
-function drawNext(){ drawMini(nctx, nextCv, nextQueue.slice(0, miniPoziomo ? 3 : 4)); }
+function drawNext(){ drawMini(nctx, nextCv, nextQueue.slice(0, ileNastepnych)); }
 function drawHold(){ drawMini(hctx, holdCv, [holdPiece]); }
 
 // ---------- HUD ----------
@@ -618,6 +631,9 @@ function bindHold(id, fn){
 bindHold('tLeft', function(){ move(-1); });
 bindHold('tRight', function(){ move(1); });
 bindHold('tDown', softDrop);
+['tRot','tDrop','tHold'].forEach(function(id){
+  document.getElementById(id).addEventListener('mousedown', function(e){ e.preventDefault(); });
+});
 document.getElementById('tRot').addEventListener('click', function(){ if (tryRotate(1)) draw(); });
 document.getElementById('tDrop').addEventListener('click', hardDrop);
 document.getElementById('tHold').addEventListener('click', hold);
