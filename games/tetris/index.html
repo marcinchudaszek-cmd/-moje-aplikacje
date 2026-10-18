@@ -13,13 +13,22 @@
   --bg:#0b1020; --panel:rgba(255,255,255,.055); --border:rgba(255,255,255,.12);
   --text:#e9edf7; --muted:#93a0bd; --accent:#00e5ff; --accent2:#c026d3;
 }
-html,body{height:100%}
+/* Wcięcia ekranu (paski systemowe w APK). Capacitor 8 podaje --safe-area-inset-*,
+   env() jako zapas dla przeglądarki. */
+:root{
+  --sa-top:    var(--safe-area-inset-top,    env(safe-area-inset-top, 0px));
+  --sa-right:  var(--safe-area-inset-right,  env(safe-area-inset-right, 0px));
+  --sa-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --sa-left:   var(--safe-area-inset-left,   env(safe-area-inset-left, 0px));
+}
+html,body{height:100%;overscroll-behavior:none}
 body{
   font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
   background:radial-gradient(1200px 700px at 50% -10%,#17203f 0%,var(--bg) 60%);
   color:var(--text);
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
-  padding:14px; overflow:hidden; touch-action:manipulation;
+  padding:calc(14px + var(--sa-top)) calc(14px + var(--sa-right)) calc(14px + var(--sa-bottom)) calc(14px + var(--sa-left));
+  overflow:hidden; touch-action:manipulation;
 }
 .wrap{display:flex;gap:20px;align-items:flex-start;max-width:100%}
 .stage{position:relative}
@@ -73,16 +82,24 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
 }
 .touch button.rot:active{background:rgba(0,229,255,.3)}
 @media (max-width:820px){
-  body{justify-content:flex-start;padding:6px;gap:8px}
+  body{justify-content:flex-start;gap:8px;
+    padding:calc(6px + var(--sa-top)) calc(6px + var(--sa-right)) calc(6px + var(--sa-bottom)) calc(6px + var(--sa-left))}
   .wrap{flex-direction:column;gap:8px;align-items:center;width:100%}
   .side{flex-direction:row;flex-wrap:wrap;min-width:0;width:100%;gap:6px;justify-content:center}
   .side .card{flex:1;min-width:70px;padding:7px 8px}
+  /* podgląd następnych w drugim rzędzie, razem z trzymanym — w pierwszym się nie mieści */
+  .side .card.nextCard{flex:2.5 1 190px}
+  .side .card.holdCard{flex:1 1 90px}
   .side h2{font-size:.6rem;margin-bottom:3px}
   .val{font-size:1rem}
   .val.sm{font-size:.95rem}
   .hintCard,.brand{display:none}
   .touch{display:flex;width:100%;max-width:430px;margin:0 auto}
   .touch button{padding:16px 0}
+}
+/* niskie okno na komputerze: bez ściągi klawiszy, inaczej panel boczny wystaje poza ekran */
+@media (min-width:821px) and (max-height:900px){
+  .hintCard{display:none}
 }
 </style>
     <link rel="manifest" href="manifest.json">
@@ -110,8 +127,8 @@ canvas.mini{display:block;background:rgba(0,0,0,.3);border-radius:8px}
       <div class="card"><h2>Linie</h2><div class="val sm" id="lines">0</div></div>
     </div>
     <div class="card"><h2>Rekord</h2><div class="val sm" id="best">0</div></div>
-    <div class="card"><h2>Następne</h2><canvas class="mini" id="next" width="120" height="250"></canvas></div>
-    <div class="card"><h2>Trzymany</h2><canvas class="mini" id="hold" width="120" height="76"></canvas></div>
+    <div class="card nextCard"><h2>Następne</h2><canvas class="mini" id="next" width="120" height="250"></canvas></div>
+    <div class="card holdCard"><h2>Trzymany</h2><canvas class="mini" id="hold" width="120" height="76"></canvas></div>
     <div class="card hintCard">
       <h2>Sterowanie</h2>
       <div class="hint">
@@ -193,14 +210,6 @@ function fitCanvas(){
   var mobile = window.innerWidth < 820;
   miniPoziomo = mobile;
 
-  // na telefonie rezerwujemy miejsce na pasek statystyk, podglądy i przyciski
-  var zajete = mobile ? 250 : 40;
-  var maxH = Math.min(window.innerHeight - zajete, 640);
-  var maxW = mobile ? window.innerWidth - 20 : 380;
-  CELL = Math.max(12, Math.floor(Math.min(maxW / COLS, maxH / ROWS)));
-  boardCv.width = CELL * COLS;
-  boardCv.height = CELL * ROWS;
-
   if (mobile){
     nextCv.width = 168; nextCv.height = 44;
     holdCv.width = 60;  holdCv.height = 44;
@@ -208,6 +217,25 @@ function fitCanvas(){
     nextCv.width = 120; nextCv.height = 250;
     holdCv.width = 120; holdCv.height = 76;
   }
+
+  // Ile wysokości zostaje na planszę. Marginesy body zawierają wcięcia ekranu
+  // (paski systemowe w APK). Na telefonie pasek statystyk, podglądy i przyciski
+  // mierzymy, zamiast zgadywać — ich wysokość zależy od czcionki i szerokości.
+  var cs = getComputedStyle(document.body);
+  var marginesy = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+  var zajete;
+  if (mobile){
+    var side = document.querySelector('.side'), touch = document.getElementById('touch');
+    // 2 × odstęp 8px (plansza–statystyki, całość–przyciski), 2px ramki, 4px zapasu
+    zajete = marginesy + side.offsetHeight + touch.offsetHeight + 8 + 8 + 2 + 4;
+  } else {
+    zajete = marginesy + 12;
+  }
+  var maxH = Math.min(window.innerHeight - zajete, 640);
+  var maxW = mobile ? window.innerWidth - 20 : 380;
+  CELL = Math.max(12, Math.floor(Math.min(maxW / COLS, maxH / ROWS)));
+  boardCv.width = CELL * COLS;
+  boardCv.height = CELL * ROWS;
   drawNext(); drawHold(); draw();
 }
 
@@ -602,6 +630,11 @@ document.getElementById('tHold').addEventListener('click', hold);
 })();
 
 window.addEventListener('resize', fitCanvas);
+// Capacitor ustawia --safe-area-inset-* na <html> dopiero po starcie strony,
+// bez zdarzenia resize — przeliczamy planszę, gdy zmienią się wcięcia.
+if (window.MutationObserver){
+  new MutationObserver(fitCanvas).observe(document.documentElement, {attributes:true, attributeFilter:['style']});
+}
 window.addEventListener('orientationchange', function(){ setTimeout(fitCanvas, 200); });
 
 // telefon: wyjście z aplikacji / zablokowanie ekranu wstrzymuje grę zamiast ją psuć
