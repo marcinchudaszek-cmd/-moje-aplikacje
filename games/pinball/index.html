@@ -53,6 +53,7 @@ canvas#c{display:block;border-radius:18px;box-shadow:0 0 0 2px #2b1a0e,0 24px 70
   box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 40px rgba(255,150,40,.18),0 20px 50px rgba(0,0,0,.6);
 }
 #logo{display:block;width:230px;height:150px}
+#logo[hidden]{display:none}
 .overlay h1{font-size:2.1rem;font-weight:900;letter-spacing:.02em;line-height:1;margin-top:-6px;
   color:#ffd9a0;text-shadow:0 0 6px rgba(255,150,40,.9),0 0 18px rgba(255,110,20,.6),0 2px 0 #7a3a0c}
 .overlay p{color:var(--muted);font-size:.88rem;max-width:290px;line-height:1.5}
@@ -109,6 +110,7 @@ input[type=text]{user-select:text;-webkit-user-select:text;background:rgba(0,0,0
 .namebox .mini{padding:7px 12px}
 .photo{width:92px;height:92px;border-radius:50%;object-fit:cover;object-position:50% 30%;border:3px solid rgba(255,190,110,.6);box-shadow:0 0 22px rgba(255,150,40,.35)}
 .photo[hidden]{display:none}
+#ovPhoto{width:132px;height:132px}
 .note{font-size:.72rem;color:var(--muted)}
 </style>
 </head>
@@ -125,8 +127,8 @@ input[type=text]{user-select:text;-webkit-user-select:text;background:rgba(0,0,0
   <div class="overlay show" id="ov">
     <div class="glass">
       <div class="scr" id="scrMain">
-        <canvas id="logo"></canvas>
-        <img class="photo" id="ovPhoto" src="ezra.webp" alt="Ezra" hidden>
+        <canvas id="logo" hidden></canvas>
+        <img class="photo" id="ovPhoto" src="ezra.webp" alt="Ezra">
         <h1 id="ovTitle">Ezra Pinball</h1>
         <p id="ovText">Beagielka Ezra pilnuje stołu. Rzucaj jej piłkę na rampę, zbij cele E-Z-R-A i wyprowadź trzy piłki na spacer!</p>
         <div class="sc" id="ovScore"></div>
@@ -2039,7 +2041,7 @@ function renderDaily(){
 function showOverlay(mode){
   ovMode = mode;
   showScr('scrMain');
-  $('ovScore').innerHTML = ''; $('nameBox').hidden = true; $('ovPhoto').hidden = true; $('logo').hidden = false;
+  $('ovScore').innerHTML = ''; $('nameBox').hidden = true; $('ovPhoto').hidden = false; $('logo').hidden = true;
   $('btnB').hidden = mode !== 'pause';
   if (mode === 'menu'){
     $('ovTitle').textContent = 'Ezra Pinball';
@@ -2050,7 +2052,6 @@ function showOverlay(mode){
     $('ovText').textContent = 'Ezra czeka przy stole.';
     $('btnA').textContent = 'Graj dalej';
   } else {
-    $('logo').hidden = true; $('ovPhoto').hidden = false;
     $('ovTitle').textContent = 'Koniec gry';
     $('ovText').textContent = 'Ezra macha ogonem — dobra robota!';
     $('ovScore').innerHTML = fmt(game.score) + (game.newBest ? '<small>Nowy rekord!</small>' : '<small>Rekord: ' + fmt(game.best) + '</small>');
@@ -2084,7 +2085,7 @@ function saveScore(){
 function sig(o){ var t = o.name + '|' + o.score + '|' + o.dur + '|' + o.diff + '|ezra-hau'; var hsh = 0; for (var i = 0; i < t.length; i++) hsh = (hsh * 31 + t.charCodeAt(i)) >>> 0; return hsh.toString(36); }
 function submitOnline(nm, sc){
   if (!CFG.online || !window.fetch) return;
-  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.3.0'};
+  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.3.1'};
   body.k = sig(body);
   fetch(API + '/score', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
     .then(function(r){ return r.json(); })
@@ -2309,7 +2310,7 @@ function frame(now){
   }
   draw(dt);
   dmdRender();
-  if (ov.classList.contains('show')) drawLogo();
+  if (ov.classList.contains('show') && !$('logo').hidden) drawLogo();
 }
 
 // do testów w konsoli
