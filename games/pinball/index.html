@@ -95,7 +95,9 @@ canvas#c{display:block;border-radius:18px;box-shadow:0 0 0 2px #2b1a0e,0 24px 70
           <li><b>Flippery:</b> dotknij lewej lub prawej połowy ekranu (prawa strona porusza też górnym flipperem). Klawiatura: <b>Z</b> / <b>←</b> i <b>M</b> / <b>→</b>.</li>
           <li><b>Wyrzutnia:</b> gdy piłka czeka po prawej, przytrzymaj prawą stronę (albo <b>spację</b>) i puść.</li>
           <li><b>Skill shot:</b> wystrzel prosto w migającą łapkę (+5 000) albo do budy (+15 000).</li>
-          <li><b>Rampa „Aport”:</b> co trzeci wjazd Ezra przynosi coraz większą nagrodę.</li>
+          <li><b>Rampy „Aport” i „Kość”:</b> co trzeci wjazd Ezra przynosi coraz większą nagrodę. Prawa rampa podaje piłkę na górny flipper.</li>
+          <li><b>Wiewiórka:</b> biega po gałęzi pod łapkami — trafiona ucieka na drzewo.</li>
+          <li><b>Zadania Ezry:</b> buda uruchamia kolejne zadanie na czas (Pogoń, Aport, Kąpiel, Trop, Łakomczuch). Wszystkie pięć otwiera finał <b>Wielki Spacer</b> — multiball na 4 piłki, każde trafienie +50 000.</li>
           <li><b>Pętla:</b> objedź stół lewym torem; spinner liczy obroty. Rampa i pętla raz za razem to <b>kombo</b>.</li>
           <li><b>Łapki u góry:</b> zapal trzy — bonus rośnie do ×5.</li>
           <li><b>E-Z-R-A:</b> zbij cztery cele — buda się otwiera. Dwie piłki w budzie to <b>spacer</b> (multiball): jackpot na rampie, superjackpot w budzie.</li>
@@ -174,7 +176,7 @@ sling([64, 505], [64, 560], [102, 586], 1);
 sling([306, 505], [306, 560], [268, 586], -1);
 var DROPS = 'EZRA'.split('').map(function(l, i){ return {l:l, x:346, y0:300 + i * 30, y1:322 + i * 30, r:4, down:false, t:-9}; });
 var BONES = [{x:16, y0:420, y1:444, r:4, lit:false, cd:0, t:-9}, {x:16, y0:456, y1:480, r:4, lit:false, cd:0, t:-9}];
-var BUDA = {x:292, y:140, r:13};
+var BUDA = {x:120, y:282, r:16};
 var EZRA = {x:185, y:392, r:21, t:-9, blinkAt:2};
 var SPIN = {y:300, x0:12, x1:50, v:0, a:0, half:0};
 var FL = [
@@ -185,8 +187,9 @@ var FL = [
 FL.forEach(function(f){ f.a = f.rest; f.w = 0; f.held = false; });
 // rampa „Aport” — tor nad stołem (ruch piłki po krzywej)
 var RAMP_CTRL = [[81, 338], [81, 250], [82, 176], [78, 132], [62, 108], [42, 106], [29, 128], [26, 180], [26, 260], [26, 340], [27, 420], [31, 476], [42, 508], [49, 530]];
-var RAMP = (function(){
-  var pts = [], P = RAMP_CTRL;
+var RAMP2_CTRL = [[271, 338], [271, 260], [272, 190], [278, 142], [295, 114], [320, 104], [341, 116], [351, 148], [353, 186], [348, 212]];
+function makeRamp(P){
+  var pts = [];
   for (var i = 0; i < P.length - 1; i++){
     var p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)];
     for (var k = 0; k < 10; k++){
@@ -199,16 +202,29 @@ var RAMP = (function(){
   var cum = [0];
   for (var j = 1; j < pts.length; j++) cum.push(cum[j - 1] + Math.hypot(pts[j][0] - pts[j-1][0], pts[j][1] - pts[j-1][1]));
   return {pts:pts, cum:cum, len:cum[cum.length - 1]};
-})();
-function rampAt(s){
-  var c = RAMP.cum, p = RAMP.pts, lo = 0, hi = c.length - 1;
-  if (s <= 0) s = 0; if (s >= RAMP.len) s = RAMP.len - 0.001;
+}
+var RAMP = makeRamp(RAMP_CTRL), RAMP2 = makeRamp(RAMP2_CTRL);
+RAMP.mouth = {x0:62, x1:100, y0:326, y1:348}; RAMP.label = 'APORT'; RAMP.lx = 40; RAMP.ly = 112; RAMP.la = -0.4;
+RAMP2.mouth = {x0:252, x1:290, y0:326, y1:348}; RAMP2.label = 'KOŚĆ'; RAMP2.lx = 328; RAMP2.ly = 104; RAMP2.la = 0.35;
+var RAMPS = [RAMP, RAMP2];
+function rampAt(R, s){
+  var c = R.cum, p = R.pts, lo = 0, hi = c.length - 1;
+  if (s <= 0) s = 0; if (s >= R.len) s = R.len - 0.001;
   while (hi - lo > 1){ var mid = (lo + hi) >> 1; if (c[mid] <= s) lo = mid; else hi = mid; }
   var seglen = c[hi] - c[lo] || 1, t = (s - c[lo]) / seglen;
   var dx = p[hi][0] - p[lo][0], dy = p[hi][1] - p[lo][1];
   return {x:p[lo][0] + dx * t, y:p[lo][1] + dy * t, tx:dx / seglen, ty:dy / seglen};
 }
-var RAMP_MOUTH = {x0:62, x1:100, y0:326, y1:348};
+// wiewiórka biegająca po torze pod łapkami
+var SQ = {x:188, y:138, r:9, ph:0, vx:0, fled:-9, t:-9, home:{x:313, y:150}};
+// zadania Ezry
+var MISSIONS = [
+  {id:'pogon', name:'POGOŃ', desc:'Trafiaj wiewiórkę', need:2, time:50, reward:25000},
+  {id:'aport', name:'APORT', desc:'Wjeżdżaj na rampy', need:2, time:45, reward:25000},
+  {id:'kapiel', name:'KĄPIEL', desc:'Uderzaj w miski', need:10, time:35, reward:20000},
+  {id:'trop', name:'TROP', desc:'Zbijaj cele E-Z-R-A', need:4, time:45, reward:30000},
+  {id:'lakomczuch', name:'ŁAKOMCZUCH', desc:'Głaszcz Ezrę', need:3, time:45, reward:20000}
+];
 
 /* ================= LAMPY ================= */
 var LAMPS = [];
@@ -219,11 +235,14 @@ DROPS.forEach(function(d, i){ lamp({id:'ez' + i, type:'letter', x:140 + i * 30, 
 lamp({id:'ramp', type:'arrow', x:81, y:366, s:13, ang:-PI / 2, col:'#ffcf6b'});
 lamp({id:'jack', type:'pill', x:81, y:388, w:44, h:11, txt:'JACKPOT', col:'#ff5a45'});
 lamp({id:'orbit', type:'arrow', x:31, y:372, s:10, ang:-PI / 2, col:'#7fd3ff'});
-lamp({id:'buda', type:'arrow', x:264, y:184, s:12, ang:Math.atan2(140 - 184, 292 - 264), col:'#ffcf6b'});
+lamp({id:'buda', type:'arrow', x:158, y:330, s:12, ang:Math.atan2(282 - 330, 120 - 158), col:'#ffcf6b'});
+lamp({id:'ramp2', type:'arrow', x:271, y:366, s:13, ang:-PI / 2, col:'#ffcf6b'});
 lamp({id:'kick', type:'arrow', x:22, y:640, s:9, ang:-PI / 2, col:'#7dff9a'});
 for (var pi_ = 0; pi_ < 5; pi_++) lamp({id:'pat' + pi_, type:'heart', x:161 + pi_ * 12, y:449, s:4.2, col:'#ff7fa8'});
-lamp({id:'lock0', type:'circle', x:283, y:176, r:3.6, col:'#e9f1ff'});
-lamp({id:'lock1', type:'circle', x:301, y:176, r:3.6, col:'#e9f1ff'});
+lamp({id:'lock0', type:'circle', x:112, y:318, r:3.6, col:'#e9f1ff'});
+lamp({id:'lock1', type:'circle', x:128, y:318, r:3.6, col:'#e9f1ff'});
+MISSIONS.forEach(function(m, i){ lamp({id:'mis' + i, type:'pill', x:304, y:394 + i * 18, w:60, h:11, txt:m.name, col:'#8fd0ff'}); });
+lamp({id:'wiz', type:'pill', x:304, y:486, w:66, h:12, txt:'WIELKI SPACER', col:'#ff8fd0'});
 lamp({id:'save', type:'pill', x:185, y:704, w:86, h:13, txt:'EZRA PILNUJE', col:'#7dff9a'});
 lamp({id:'extra', type:'pill', x:185, y:687, w:70, h:11, txt:'JESZCZE RAZ', col:'#ffcf6b'});
 
@@ -234,13 +253,19 @@ var game = {state:'menu', score:0, best:0, ball:1, extra:0, balls:[], mult:1, bo
   saveUntil:0, saveArmed:false, ezraDone:0, gotExtra:false, skillLane:-1, skillUntil:0, phase:null, phaseT:0, pending:0,
   msg:null, lanesResetAt:0, dropsResetAt:0, bonesResetAt:0, charge:0, autoAt:0, serveQ:0, plungePrev:false,
   plungeTap:false, tapUntil:[0, 0], kickback:true, kickFlash:-9, ramps:0, aport:0, pats:0, treatLit:false,
-  comboT:-9, comboN:0, giOff:0, shake:0, flash:-9, newBest:false};
+  comboT:-9, comboN:0, giOff:0, shake:0, flash:-9, newBest:false,
+  mission:null, mNext:0, mDone:[0, 0, 0, 0, 0], wizardReady:false, wizard:false, squirrels:0};
 var pops = [], parts = [];
 var input = {keyL:false, keyR:false, keyP:false};
 var ptrs = {};
 
 function fmt(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
-function say(text, sub, dur, fx){ game.msg = {text:text, sub:sub || '', t0:T, until:T + (dur || 2), fx:fx || ''}; }
+function say(text, sub, dur, fx){
+  // ważny komunikat (z efektem) nie daje się zagłuszyć zwykłemu przez pierwszą sekundę
+  var m = game.msg;
+  if (!fx && m && m.fx && T - m.t0 < 1.0 && T < m.until) return;
+  game.msg = {text:text, sub:sub || '', t0:T, until:T + (dur || 2), fx:fx || ''};
+}
 function addScore(n, x, y){
   game.score += n;
   if (x != null) pops.push({x:x, y:y, txt:'+' + fmt(n), t:T});
@@ -253,7 +278,9 @@ function spark(x, y, n, col, sp){
   }
   if (parts.length > 260) parts.splice(0, parts.length - 260);
 }
-function buzz(ms){ try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e){} }
+// wibracja dopiero po pierwszym dotknięciu (inaczej przeglądarka ją blokuje i ostrzega)
+var touched = false;
+function buzz(ms){ if (!touched) return; try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e){} }
 
 /* ================= DŹWIĘK ================= */
 var AC = null, muted = false, noiseBuf = null;
@@ -303,6 +330,7 @@ var sfx = {
   drain: function(){ tone(420, 0.6, 'sawtooth', 0.045, 80); },
   bark: function(){ tone(560, 0.08, 'sawtooth', 0.07, 380); tone(600, 0.1, 'sawtooth', 0.07, 360, 0.13); },
   pat: function(){ tone(660, 0.07, 'triangle', 0.08, 990); },
+  squirrel: function(){ [1400, 1700, 1500, 1900].forEach(function(f, i){ tone(f, 0.05, 'square', 0.035, null, i * 0.05); }); },
   ramp: function(){ [392, 523, 659, 784].forEach(function(f, i){ tone(f, 0.1, 'square', 0.045, null, i * 0.05); }); noise(0.3, 0.12, 1200); },
   orbit: function(){ tone(300, 0.35, 'sine', 0.07, 1200); },
   tick: function(){ if (T - lastTick < 0.035) return; lastTick = T; tone(1800, 0.02, 'square', 0.03); },
@@ -435,6 +463,36 @@ function treat(){
   else if (r < 0.6 && !game.kickback){ game.kickback = true; say('SMAKOŁYK!', 'Kickback zapalony'); }
   else { var p = [5000, 10000, 15000][Math.floor(Math.random() * 3)]; addScore(p); say('SMAKOŁYK!', '+' + fmt(p)); }
 }
+function startMission(){
+  var m = MISSIONS[game.mNext];
+  game.mission = {m:m, cnt:0, end:T + m.time};
+  say('ZADANIE: ' + m.name, m.desc + ' ×' + m.need, 2.4, 'big'); sfx.fanfare();
+}
+function missionEvent(id){
+  var ms = game.mission;
+  if (!ms || ms.m.id !== id) return;
+  ms.cnt++;
+  if (ms.cnt < ms.m.need){ if (id !== 'kapiel' || ms.cnt % 3 === 0) say(ms.m.name, ms.cnt + '/' + ms.m.need, 1.0); return; }
+  var m = ms.m; game.mission = null; game.mDone[game.mNext] = 1;
+  addScore(m.reward); say('ZADANIE WYKONANE!', m.name + ' +' + fmt(m.reward), 2.4, 'big');
+  sfx.jackpot(); shake(5); game.flash = T; EZRA.t = T;
+  var n = game.mDone.indexOf(0);
+  if (n < 0){ game.wizardReady = true; say('WIELKI SPACER', 'Wszystkie zadania! Wjedź do budy', 2.8, 'run'); }
+  else game.mNext = n;
+}
+function wizardHit(x, y){
+  if (!game.wizard) return false;
+  addScore(50000, x, y); say('WIELKI SPACER', '+50 000', 1.2, 'big'); sfx.jackpot(); shake(3); game.flash = T;
+  return true;
+}
+function hitSquirrel(){
+  SQ.fled = T + 2.4; SQ.t = T; SQ.hx = SQ.x; SQ.hy = SQ.y; game.squirrels++;
+  addScore(1500, SQ.x, SQ.y - 16); game.bonus += 150; sfx.squirrel(); spark(SQ.x, SQ.y, 14, '#ffb067', 200);
+  if (wizardHit(SQ.x, SQ.y + 20)) return;
+  missionEvent('pogon');
+  if (game.squirrels % 5 === 0){ var v = Math.min(30000, 2000 * game.squirrels); addScore(v); say('WIEWIÓRKI ×' + game.squirrels, '+' + fmt(v), 1.8, 'big'); }
+  else if (!game.mission) say('WIEWIÓRKA!', 'Uciekła na drzewo', 1.1);
+}
 function startMultiball(b){
   game.locked = 0; game.lockLit = false; game.multiball = true;
   game.jackpotLit = true; game.superLit = false;
@@ -442,7 +500,8 @@ function startMultiball(b){
   b.kickAt = T + 1.4;
   var nb = newBallObj(BUDA.x, BUDA.y, 'kick'); nb.kickAt = T + 2.1; game.balls.push(nb);
   game.serveQ++;
-  addScore(10000); say('SPACER!', 'Multiball — jackpot na rampie', 3, 'run');
+  if (game.wizard){ game.serveQ++; addScore(50000); say('WIELKI SPACER!', 'Każde trafienie +50 000', 3, 'run'); }
+  else { addScore(10000); say('SPACER!', 'Multiball — jackpot na rampie', 3, 'run'); }
   sfx.jackpot(); sfx.bark(); shake(7); buzz(70); game.flash = T;
 }
 function onBuda(b){
@@ -453,6 +512,7 @@ function onBuda(b){
     addScore(15000); say('SUPER SKILL!', 'Prosto do budy +15 000', 2.2, 'big'); sfx.fanfare(); shake(4);
   }
   if (game.multiball){
+    if (wizardHit(BUDA.x, BUDA.y - 30)){ b.kickAt = T + 0.9; return; }
     if (game.superLit){
       addScore(game.superJ); say('SUPERJACKPOT!', '+' + fmt(game.superJ), 2.6, 'big'); sfx.jackpot(); sfx.bark();
       game.superJ += 10000; game.superLit = false; game.jackpotLit = true; shake(8); buzz(80); game.flash = T;
@@ -470,31 +530,39 @@ function onBuda(b){
     }
     return;
   }
+  if (game.wizardReady){ game.wizardReady = false; game.wizard = true; startMultiball(b); return; }
   addScore(1000);
   if (game.treatLit){ game.treatLit = false; game.pats = 0; treat(); }
-  else say('BUDA', 'Pogłaszcz Ezrę po smakołyk', 1.4);
+  if (!game.mission) startMission();
+  else if (game.msg && game.msg.t0 < T) say('BUDA', 'Zadanie trwa — ' + game.mission.m.name, 1.4);
 }
-function rampDone(b){
+function rampDone(b, R){
   game.ramps++; sfx.ramp(); spark(b.x, b.y, 16, '#9fe3ff', 200);
+  missionEvent('aport');
+  if (wizardHit(R.mouth.x0 + 19, 320)){ combo(); return; }
   if (game.multiball && game.jackpotLit){
     addScore(game.jackpot); say('JACKPOT!', '+' + fmt(game.jackpot) + ' — superjackpot w budzie', 2.6, 'big');
     sfx.jackpot(); shake(6); buzz(60); game.flash = T;
     game.jackpot += 5000; game.jackpotLit = false; game.superLit = true;
     combo(); return;
   }
-  addScore(2500, 81, 320);
+  addScore(2500, R.mouth.x0 + 19, 320);
   if (game.ramps % 3 === 0){
     game.aport++; var v = 10000 * game.aport; addScore(v);
     say('APORT!', 'Ezra przynosi +' + fmt(v), 2.2, 'run'); sfx.bark(); EZRA.t = T; shake(4);
-  } else say('RAMPA', 'Aport ' + (game.ramps % 3) + '/3', 1.3);
+  } else if (!game.mission) say('RAMPA ' + R.label, 'Aport ' + (game.ramps % 3) + '/3', 1.3);
   combo();
 }
 function orbitDone(){
-  addScore(2000); sfx.orbit(); say('PĘTLA', '+2 000', 1.3); combo();
+  addScore(2000); sfx.orbit();
+  if (wizardHit(31, 320)){ combo(); return; }
+  if (!game.mission) say('PĘTLA', '+2 000', 1.3);
+  combo();
 }
 function patEzra(){
   EZRA.t = T; addScore(500, EZRA.x, EZRA.y - 34); game.bonus += 50;
   spark(EZRA.x, EZRA.y - 10, 8, '#ff9ec0', 140);
+  missionEvent('lakomczuch');
   if (game.treatLit){ sfx.pat(); return; }
   game.pats++;
   if (game.pats >= 5){ game.treatLit = true; sfx.bark(); say('SMAKOŁYK GOTOWY', 'Wjedź do budy', 2); }
@@ -508,11 +576,15 @@ function onDrain(){
     return;
   }
   if (game.multiball){
-    if (alive <= 1){ game.multiball = false; game.jackpotLit = game.superLit = false; game.jackpot = 25000; say('KONIEC SPACERU', '', 1.6); }
+    if (alive <= 1){
+      game.multiball = false; game.jackpotLit = game.superLit = false; game.jackpot = 25000;
+      if (game.wizard){ game.wizard = false; game.mDone = [0, 0, 0, 0, 0]; game.mNext = 0; say('WIELKI SPACER', 'Koniec finału — zadania od nowa', 2.4, 'big'); }
+      else say('KONIEC SPACERU', '', 1.6);
+    }
     if (alive > 0) return;
   }
   if (alive > 0) return;
-  sfx.drain(); shake(4); buzz(40); game.giOff = T + 1.4;
+  sfx.drain(); shake(4); buzz(40); game.giOff = T + 1.4; game.mission = null;
   game.phase = 'bonus'; game.phaseT = T;
   game.pending = game.bonus * game.mult;
   say('BONUS', fmt(game.bonus) + ' × ' + game.mult + ' = ' + fmt(game.pending), 2.4);
@@ -570,6 +642,11 @@ function step(h){
   if (game.lanesResetAt && T >= game.lanesResetAt){ game.lanes = [0, 0, 0]; game.lanesResetAt = 0; }
   if (game.dropsResetAt && T >= game.dropsResetAt){ DROPS.forEach(function(d){ d.down = false; d.t = T; }); game.dropsResetAt = 0; }
   if (game.bonesResetAt && T >= game.bonesResetAt){ BONES.forEach(function(k){ k.lit = false; }); game.bonesResetAt = 0; }
+  // wiewiórka i czas zadania
+  var sqOn = T > SQ.fled;
+  if (sqOn) SQ.ph += h * 1.1;
+  SQ.x = 188 + 60 * Math.sin(SQ.ph); SQ.vx = sqOn ? 66 * Math.cos(SQ.ph) : 0;
+  if (game.mission && T > game.mission.end){ say('KONIEC CZASU', game.mission.m.name + ' — spróbuj znowu', 1.8); game.mission = null; }
   // spinner
   if (SPIN.v > 0.01){
     SPIN.a += SPIN.v * PI * 2 * h; SPIN.v *= Math.exp(-1.1 * h);
@@ -598,20 +675,20 @@ function step(h){
   for (var bi = 0; bi < game.balls.length; bi++){
     var b = game.balls[bi];
     if (b.mode === 'kick' && T >= b.kickAt){
-      b.mode = 'play'; b.x = BUDA.x - 4; b.y = BUDA.y + 10; b.budaCd = T + 0.6;
-      b.vx = -110 - Math.random() * 40; b.vy = 360 + Math.random() * 60; sfx.kick(); spark(BUDA.x, BUDA.y + 8, 10, '#ffd27a', 160);
+      b.mode = 'play'; b.x = BUDA.x + 2; b.y = BUDA.y + 10; b.budaCd = T + 0.6;
+      b.vx = 40 + Math.random() * 50; b.vy = 360 + Math.random() * 60; sfx.kick(); spark(BUDA.x, BUDA.y + 8, 10, '#ffd27a', 160);
     }
     if (b.mode === 'ramp'){
-      var rp = rampAt(b.rs);
+      var R = b.rp, rp = rampAt(R, b.rs);
       b.rv += G * 0.75 * rp.ty * h; b.rv -= 30 * h * Math.sign(b.rv);
       if (b.rv > 1000) b.rv = 1000;
       b.rs += b.rv * h;
       if (b.rs <= 0 && b.rv <= 0){
-        var p0 = rampAt(0); b.mode = 'play'; b.x = p0.x; b.y = p0.y + 4; b.vx = -p0.tx * Math.abs(b.rv); b.vy = Math.max(60, -p0.ty * Math.abs(b.rv));
-      } else if (b.rs >= RAMP.len){
-        var pe = rampAt(RAMP.len); b.mode = 'play'; b.x = pe.x; b.y = pe.y; b.vx = pe.tx * Math.max(b.rv, 260); b.vy = pe.ty * Math.max(b.rv, 260);
-        rampDone(b);
-      } else { var rq = rampAt(b.rs); b.x = rq.x; b.y = rq.y; }
+        var p0 = rampAt(R, 0); b.mode = 'play'; b.x = p0.x; b.y = p0.y + 4; b.vx = -p0.tx * Math.abs(b.rv); b.vy = Math.max(60, -p0.ty * Math.abs(b.rv));
+      } else if (b.rs >= R.len){
+        var pe = rampAt(R, R.len); b.mode = 'play'; b.x = pe.x; b.y = pe.y; b.vx = pe.tx * Math.max(b.rv, 260); b.vy = pe.ty * Math.max(b.rv, 260);
+        rampDone(b, R);
+      } else { var rq = rampAt(R, b.rs); b.x = rq.x; b.y = rq.y; }
       b.trail.push(b.x, b.y); if (b.trail.length > 12) b.trail.splice(0, 2);
       continue;
     }
@@ -645,8 +722,17 @@ function step(h){
       if (out < 640){ b.vx += cc.nx * (640 - out); b.vy += cc.ny * (640 - out); }
       if (p.cd <= T){
         p.cd = T + 0.08; p.flash = T;
-        addScore(game.bumperVal, p.x, p.y - 28); game.bonus += 20; sfx.bump(); game.skillUntil = 0;
+        addScore(game.bumperVal, p.x, p.y - 28); game.bonus += 20; sfx.bump(); game.skillUntil = 0; missionEvent('kapiel');
         spark(p.x + cc.nx * p.r, p.y + cc.ny * p.r, 12, '#ffe7a8', 240); shake(1.5);
+      }
+    }
+    if (sqOn){
+      var qc = hitCircle(b, SQ.x, SQ.y, SQ.r);
+      if (qc){
+        b.vx -= SQ.vx; var qvn = bounce(b, qc.nx, qc.ny, 0.5, 0.98); b.vx += SQ.vx;
+        var qo = b.vx * qc.nx + b.vy * qc.ny;
+        if (qo < 260){ b.vx += qc.nx * (260 - qo); b.vy += qc.ny * (260 - qo); }
+        if (qvn > 90){ hitSquirrel(); sqOn = false; }
       }
     }
     var ec = hitCircle(b, EZRA.x, EZRA.y, EZRA.r);
@@ -663,7 +749,7 @@ function step(h){
       if (!dc) continue;
       if (bounce(b, dc.nx, dc.ny, 0.45, 0.99) > 90 && !game.dropsResetAt){
         dr.down = true; dr.t = T;
-        addScore(750, dr.x - 26, (dr.y0 + dr.y1) / 2); game.bonus += 200; sfx.drop(); game.skillUntil = 0;
+        addScore(750, dr.x - 26, (dr.y0 + dr.y1) / 2); game.bonus += 200; sfx.drop(); game.skillUntil = 0; missionEvent('trop');
         spark(dr.x - 4, (dr.y0 + dr.y1) / 2, 10, '#ffc964', 170);
         checkEzra();
       }
@@ -697,10 +783,15 @@ function step(h){
       continue;
     }
     // wjazd na rampę
-    if (b.x > RAMP_MOUTH.x0 && b.x < RAMP_MOUTH.x1 && b.y > RAMP_MOUTH.y0 && b.y < RAMP_MOUTH.y1 && b.vy < -300){
-      b.mode = 'ramp'; b.rs = 2; b.rv = Math.min(1500, Math.hypot(b.vx, b.vy)) * 0.9; game.skillUntil = 0;
-      continue;
+    var entered = false;
+    for (var ri = 0; ri < RAMPS.length; ri++){
+      var M = RAMPS[ri].mouth;
+      if (b.x > M.x0 && b.x < M.x1 && b.y > M.y0 && b.y < M.y1 && b.vy < -300){
+        b.mode = 'ramp'; b.rp = RAMPS[ri]; b.rs = 2; b.rv = Math.min(1500, Math.hypot(b.vx, b.vy)) * 0.9; game.skillUntil = 0;
+        entered = true; break;
+      }
     }
+    if (entered) continue;
     // lewa pętla: spinner i czujniki
     if (b.x < 52 && ((py - SPIN.y) * (b.y - SPIN.y) <= 0) && py !== b.y){
       SPIN.v = Math.min(9, SPIN.v + Math.abs(b.vy) * 0.006);
@@ -718,7 +809,7 @@ function step(h){
       if (ldx * ldx + ldy * ldy < 15 * 15 && b.laneCd[li] <= T){ b.laneCd[li] = T + 0.6; hitLane(li); }
     }
     var bdx = b.x - BUDA.x, bdy = b.y - BUDA.y;
-    if (bdx * bdx + bdy * bdy < BUDA.r * BUDA.r && b.vx * b.vx + b.vy * b.vy < 1000 * 1000 && !(b.budaCd > T)){
+    if (bdx * bdx + bdy * bdy < BUDA.r * BUDA.r && b.vx * b.vx + b.vy * b.vy < 1300 * 1300 && !(b.budaCd > T)){
       b.mode = 'kick'; b.x = BUDA.x; b.y = BUDA.y; b.vx = b.vy = 0;
       onBuda(b);
       continue;
@@ -791,6 +882,27 @@ function drawBone(c, x, y, len, th, ang, color){
   [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(function(q){
     c.beginPath(); c.arc(q[0] * (hl - th * 0.36), q[1] * th * 0.3, th * 0.36, 0, PI * 2); c.fill();
   });
+  c.restore();
+}
+function drawSquirrel(c, x, y, dir, run){
+  c.save(); c.translate(x, y); c.scale(dir, 1);
+  var tg = c.createLinearGradient(-14, -18, -4, 6);
+  tg.addColorStop(0, '#f0a050'); tg.addColorStop(1, '#9a4c16');
+  c.fillStyle = tg;
+  c.beginPath(); c.moveTo(-3, 4); c.bezierCurveTo(-19, 6, -21, -15, -9, -19); c.bezierCurveTo(-1, -22, 3, -12, -4, -9);
+  c.bezierCurveTo(-8, -6, -6, 0, -3, 4); c.fill();
+  c.strokeStyle = 'rgba(255,220,170,.5)'; c.lineWidth = 0.8;
+  c.beginPath(); c.moveTo(-6, 1); c.bezierCurveTo(-15, 1, -16, -12, -9, -15); c.stroke();
+  c.fillStyle = '#c9652a'; ell(c, 1, 2, 7, 5.5);
+  c.fillStyle = '#f6dcb6'; ell(c, 3.5, 4, 3.5, 3);
+  c.fillStyle = '#d06e2e'; ell(c, 7, -3, 4.6, 4.1);
+  c.fillStyle = '#b5561f'; ell(c, 5.6, -7.6, 1.5, 2.4, -0.2);
+  c.fillStyle = '#f6dcb6'; ell(c, 9.2, -1.6, 2, 1.6);
+  c.fillStyle = '#1d1410'; ell(c, 8.4, -4, 1.1, 1.2);
+  c.fillStyle = '#fff'; ell(c, 8.7, -4.4, 0.35, 0.35);
+  c.fillStyle = '#3a1f10'; ell(c, 11.3, -2.3, 0.9, 0.8);
+  var k = run ? Math.sin(run) * 1.6 : 0;
+  c.fillStyle = '#8f4414'; ell(c, -1 + k, 7.2, 1.9, 1.2); ell(c, 4.5 - k, 7.6, 1.9, 1.2);
   c.restore();
 }
 // Ezra: o.blink — zamknięte oczy, o.bark — szczeka (otwarty pysk, uszy w górze)
@@ -1031,6 +1143,23 @@ function buildBg(){
     for (var pt = 0; pt < 5; pt++){ var aa = pt * 1.2566; ell(g, fx + Math.cos(aa) * 2.2, fy + Math.sin(aa) * 2.2, 1.5, 1.5); }
     g.fillStyle = '#f2c14e'; ell(g, fx, fy, 1.1, 1.1); g.globalAlpha = 1;
   }
+  // drzewo z dziuplą i gałąź, po której biega wiewiórka
+  var hx = SQ.home.x, hy = SQ.home.y;
+  g.fillStyle = 'rgba(0,0,0,.25)'; ell(g, hx + 5, hy + 8, 30, 28);
+  var tr = g.createLinearGradient(hx - 7, 0, hx + 7, 0);
+  tr.addColorStop(0, '#7a4a24'); tr.addColorStop(1, '#4a2a12');
+  g.fillStyle = tr; g.fillRect(hx - 7, hy, 14, 34);
+  [[0, -4, 26, '#1f5a2a'], [-14, 4, 16, '#2a6e34'], [13, 6, 15, '#2a6e34'], [-4, -14, 15, '#357d3d'], [9, -10, 13, '#3d8a45']].forEach(function(q){
+    var cg = g.createRadialGradient(hx + q[0] - q[2] * 0.3, hy + q[1] - q[2] * 0.4, 1, hx + q[0], hy + q[1], q[2]);
+    cg.addColorStop(0, mix(q[3], 0.25)); cg.addColorStop(1, q[3]);
+    g.fillStyle = cg; ell(g, hx + q[0], hy + q[1], q[2], q[2] * 0.9);
+  });
+  g.fillStyle = '#1a0d05'; ell(g, hx, hy + 2, 5, 6);
+  g.strokeStyle = '#5a3418'; g.lineWidth = 3.4;
+  g.beginPath(); g.moveTo(hx - 8, hy + 4); g.bezierCurveTo(250, SQ.y + 6, 190, SQ.y + 10, 122, SQ.y + 8); g.stroke();
+  g.strokeStyle = 'rgba(255,220,170,.25)'; g.lineWidth = 1;
+  g.beginPath(); g.moveTo(hx - 8, hy + 3); g.bezierCurveTo(250, SQ.y + 5, 190, SQ.y + 9, 122, SQ.y + 7); g.stroke();
+  [[150, 1], [200, -1], [245, 1]].forEach(function(q){ g.fillStyle = '#3d8a45'; ell(g, q[0], SQ.y + 8 + q[1] * 4, 4, 2, q[1] * 0.6); });
   // tor pętli, tor wylotowy i wyrzutnia — zagłębienia
   g.fillStyle = 'rgba(0,0,0,.28)';
   g.fillRect(10, 236, 42, 164); g.fillRect(10, 520, 24, 200); g.fillRect(360, 150, 30, 570);
@@ -1129,6 +1258,10 @@ function buildRamp(){
   var c = document.createElement('canvas'); c.width = cv.width; c.height = cv.height;
   var g = c.getContext('2d'); g.setTransform(scale, 0, 0, scale, 0, 0);
   g.lineCap = 'round'; g.lineJoin = 'round';
+  RAMPS.forEach(function(R){ drawRampBand(g, R); });
+  rampCanvas = c;
+}
+function drawRampBand(g, RAMP){
   function path(off){
     g.beginPath();
     RAMP.pts.forEach(function(p, i){ if (i) g.lineTo(p[0] + off, p[1] + off); else g.moveTo(p[0] + off, p[1] + off); });
@@ -1154,16 +1287,15 @@ function buildRamp(){
   // połysk
   g.strokeStyle = 'rgba(255,255,255,.35)'; g.lineWidth = 2; path(-4); g.stroke();
   // wjazd: klapka
-  var m = RAMP_MOUTH;
+  var m = RAMP.mouth;
   var mg = g.createLinearGradient(0, m.y0 - 6, 0, m.y1);
   mg.addColorStop(0, 'rgba(210,235,255,.55)'); mg.addColorStop(1, 'rgba(210,235,255,.1)');
   g.fillStyle = mg; rrect(g, m.x0 - 3, m.y0 - 8, m.x1 - m.x0 + 6, 14, 4); g.fill();
   g.strokeStyle = 'rgba(255,255,255,.7)'; g.lineWidth = 1.2; g.stroke();
   // znaczek na rampie
-  g.save(); g.translate(40, 112); g.rotate(-0.4);
+  g.save(); g.translate(RAMP.lx, RAMP.ly); g.rotate(RAMP.la);
   g.fillStyle = 'rgba(255,255,255,.75)'; g.font = '900 9px ' + FONT; g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.fillText('APORT', 0, 0); g.restore();
-  rampCanvas = c;
+  g.fillText(RAMP.label, 0, 0); g.restore();
 }
 
 /* ================= RYSOWANIE — KLATKA ================= */
@@ -1182,7 +1314,10 @@ function lampOn(L){
   if (id === 'ramp') return game.multiball ? (game.jackpotLit && blink(6)) : (T - game.comboT < 3.5 ? blink(8) : blink(1.2));
   if (id === 'jack') return game.multiball && game.jackpotLit && blink(5);
   if (id === 'orbit') return T - game.comboT < 3.5 ? blink(8) : blink(1);
-  if (id === 'buda') return (game.lockLit && blink(3)) || (game.superLit && blink(7)) || (game.treatLit && blink(2));
+  if (id === 'buda') return (game.lockLit && blink(3)) || (game.superLit && blink(7)) || (game.treatLit && blink(2)) || (game.wizardReady && blink(5)) || (!game.mission && !game.multiball && blink(0.8));
+  if (id === 'ramp2') return game.multiball ? (game.jackpotLit && blink(6)) : (T - game.comboT < 3.5 ? blink(8) : (game.mission && game.mission.m.id === 'aport' ? blink(4) : blink(1.2)));
+  if (id.indexOf('mis') === 0){ var mi = +id[3]; return game.mDone[mi] ? true : (game.mission && game.mNext === mi ? blink(4) : false); }
+  if (id === 'wiz') return game.wizard ? blink(6) : game.wizardReady && blink(2);
   if (id === 'kick') return game.kickback ? true : (T - game.kickFlash < 1 && blink(10));
   if (id.indexOf('pat') === 0) return game.treatLit ? blink(3) : game.pats > +id[3];
   if (id === 'lock0') return game.locked >= 1;
@@ -1192,8 +1327,8 @@ function lampOn(L){
   return false;
 }
 function lampColor(L){
-  if (L.id === 'buda') return game.superLit ? '#ff5a45' : game.treatLit && !game.lockLit ? '#7dff9a' : L.col;
-  if (L.id === 'ramp' && game.multiball) return '#ff5a45';
+  if (L.id === 'buda') return game.superLit ? '#ff5a45' : game.lockLit ? L.col : game.wizardReady ? '#ff8fd0' : game.treatLit ? '#7dff9a' : '#8fd0ff';
+  if ((L.id === 'ramp' || L.id === 'ramp2') && game.multiball) return '#ff5a45';
   return L.col;
 }
 function drawLamp(L, skill){
@@ -1316,6 +1451,17 @@ function draw(dt){
     var k = hot ? 0.93 + Math.max(0, age) * 0.6 : 1;
     if (spr) ctx.drawImage(spr.c, p.x - spr.w / 2 * k, p.y - spr.h / 2 * k, spr.w * k, spr.h * k);
   });
+  // wiewiórka
+  var sqAge = now - SQ.t;
+  if (now > SQ.fled){
+    var back = Math.max(0, 1 - (now - SQ.fled) / 0.5);
+    var qx = SQ.x + (SQ.home.x - SQ.x) * back, qy = SQ.y + (SQ.home.y - SQ.y) * back;
+    ctx.fillStyle = 'rgba(0,0,0,.3)'; ell(ctx, qx + 2, qy + 9, 9, 2.5);
+    drawSquirrel(ctx, qx, qy, back > 0 ? -1 : (SQ.vx >= 0 ? 1 : -1), now * 22);
+  } else if (sqAge < 0.5){
+    var u = sqAge / 0.5, hx2 = SQ.hx + (SQ.home.x - SQ.hx) * u, hy2 = SQ.hy + (SQ.home.y - SQ.hy) * u - Math.sin(u * PI) * 22;
+    drawSquirrel(ctx, hx2, hy2, SQ.home.x > SQ.hx ? 1 : -1, now * 40);
+  }
   // flippery
   FL.forEach(function(f, i){
     var spr = SPR['flip' + i], shd = SPR['flipS' + i]; if (!spr || !shd) return;
@@ -1504,9 +1650,10 @@ function dmdRender(){
   } else {
     var sc = fmt(game.score).replace(/ /g, ' ');
     dCenter(sc, 2, 2, 3);
-    var left = 'PIŁKA ' + Math.min(game.ball, 3) + (game.extra ? '+' : '');
-    dText(left, 1, 23, 1, 2);
-    var right = game.multiball ? (Math.floor(T * 2) % 2 ? 'SPACER' : '') : '×' + game.mult;
+    var ms = game.mission;
+    var left = ms ? ms.m.name + ' ' + ms.cnt + '/' + ms.m.need : 'PIŁKA ' + Math.min(game.ball, 3) + (game.extra ? '+' : '');
+    dText(left, 1, 23, 1, ms ? 3 : 2);
+    var right = ms ? String(Math.max(0, Math.ceil(ms.end - T))) : game.multiball ? (Math.floor(T * 2) % 2 ? (game.wizard ? 'FINAŁ' : 'SPACER') : '') : '×' + game.mult;
     dText(right, DW - dTextW(right, 1) - 1, 23, 1, 2);
   }
   // rysowanie kropek
@@ -1610,6 +1757,7 @@ function newGame(){
   game.phase = null; game.pending = 0; game.serveQ = 0; game.lanesResetAt = game.dropsResetAt = game.bonesResetAt = 0;
   game.kickback = true; game.ramps = 0; game.aport = 0; game.pats = 0; game.treatLit = false; game.comboN = 0; game.comboT = -9;
   game.giOff = 0; game.msg = null; pops.length = 0; parts.length = 0;
+  game.mission = null; game.mNext = 0; game.mDone = [0, 0, 0, 0, 0]; game.wizardReady = game.wizard = false; game.squirrels = 0; SQ.fled = -9;
   DROPS.forEach(function(d){ d.down = false; }); BONES.forEach(function(k){ k.lit = false; });
   serveBall(false, true);
   game.state = 'play'; hideOverlay();
@@ -1635,6 +1783,7 @@ $('btnSound').addEventListener('click', function(e){
 
 /* ================= STEROWANIE ================= */
 function onDown(e){
+  touched = true;
   if (game.state !== 'play') return;
   if (e.target.closest && e.target.closest('button,.overlay,.top')) return;
   e.preventDefault();
@@ -1722,7 +1871,7 @@ function frame(now){
 }
 
 // do testów w konsoli
-window.__pinball = {game:game, step:step, FL:FL, DROPS:DROPS, BONES:BONES, BUMPERS:BUMPERS, EZRA:EZRA, SPIN:SPIN, RAMP:RAMP, newGame:newGame, serveBall:serveBall, newBallObj:newBallObj};
+window.__pinball = {game:game, step:step, FL:FL, DROPS:DROPS, BONES:BONES, BUMPERS:BUMPERS, EZRA:EZRA, SPIN:SPIN, RAMP:RAMP, RAMP2:RAMP2, SQ:SQ, MISSIONS:MISSIONS, newGame:newGame, serveBall:serveBall, newBallObj:newBallObj};
 
 loadBest(); soundIcon(); fitCanvas();
 requestAnimationFrame(frame);
