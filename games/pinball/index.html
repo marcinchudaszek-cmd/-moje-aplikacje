@@ -54,6 +54,10 @@ canvas#c{display:block;border-radius:18px;box-shadow:0 0 0 2px #2b1a0e,0 24px 70
 }
 #logo{display:block;width:230px;height:150px}
 #logo[hidden]{display:none}
+.seg button:disabled{opacity:.4}
+.bar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#ffb04a,#e5533d)}
+#btnTime[hidden]{display:none}
 .overlay h1{font-size:2.1rem;font-weight:900;letter-spacing:.02em;line-height:1;margin-top:-6px;
   color:#ffd9a0;text-shadow:0 0 6px rgba(255,150,40,.9),0 0 18px rgba(255,110,20,.6),0 2px 0 #7a3a0c}
 .overlay p{color:var(--muted);font-size:.88rem;max-width:290px;line-height:1.5}
@@ -137,6 +141,7 @@ input[type=text]{user-select:text;-webkit-user-select:text;background:rgba(0,0,0
           <div><input type="text" id="nameIn" maxlength="10" autocomplete="off" spellcheck="false"><button class="mini" id="nameOk">Zapisz</button></div>
         </div>
         <button class="btn" id="btnA">Graj</button>
+        <button class="btn ghost" id="btnTime">⏱ Na czas (3 min)</button>
         <button class="btn ghost" id="btnB" hidden>Nowa gra</button>
         <div class="menu-row">
           <button class="mini" data-scr="scrTop">🏆 Rekordy</button>
@@ -149,13 +154,15 @@ input[type=text]{user-select:text;-webkit-user-select:text;background:rgba(0,0,0
       </div>
       <div class="scr" id="scrTop" hidden>
         <h2>🏆 Rekordy</h2>
-        <div class="tabs"><button data-t="me" class="on">Moje</button><button data-t="world">Świat</button></div>
+        <div class="tabs" id="modeTabs"><button data-m="classic" class="on">Klasyczna</button><button data-m="time">Na czas</button></div>
+        <div class="tabs" id="whoTabs"><button data-t="me" class="on">Moje</button><button data-t="world">Świat</button></div>
         <ol class="toplist" id="topList"></ol>
         <div class="note" id="topNote"></div>
         <button class="btn ghost back">Wróć</button>
       </div>
       <div class="scr" id="scrBadge" hidden>
         <h2>🏅 Odznaki</h2>
+        <div class="daily" id="rankBox"></div>
         <div class="badges" id="badgeGrid"></div>
         <h3>Statystyki</h3>
         <div class="stats" id="statsBox"></div>
@@ -171,6 +178,10 @@ input[type=text]{user-select:text;-webkit-user-select:text;background:rgba(0,0,0
           <div>Poziom trudności
             <div class="seg" id="setDiff" style="margin-top:6px"><button data-d="easy">Łatwy</button><button data-d="normal">Normalny</button><button data-d="hard">Trudny</button></div>
             <small id="diffInfo"></small>
+          </div>
+          <div>Motyw stołu
+            <div class="seg" id="setTheme" style="margin-top:6px;flex-wrap:wrap"></div>
+            <small id="themeInfo"></small>
           </div>
           <label>Imię w rankingu <input type="text" id="setName" maxlength="10" autocomplete="off" spellcheck="false"></label>
           <label>Wysyłaj wyniki do rankingu świata <input type="checkbox" id="setOnline"></label>
@@ -197,6 +208,13 @@ input[type=text]{user-select:text;-webkit-user-select:text;background:rgba(0,0,0
             <li><b>E-Z-R-A:</b> zbij cztery cele — buda się otwiera. Dwie piłki w budzie to <b>spacer</b> (multiball): jackpot na rampie, superjackpot w budzie.</li>
             <li><b>Ezra:</b> pogłaszcz ją piłką 5 razy, a w budzie czeka smakołyk.</li>
             <li><b>Kości:</b> zapalają kickback w lewym torze — Ezra odbija piłkę z powrotem.</li>
+            <li><b>Magnes:</b> co jakiś czas nad Ezrą włącza się magnes — łapie piłkę i rzuca ją w losowy cel.</li>
+            <li><b>Medalion z Ezrą</b> jeździ na boki — trafienie warte 1 000.</li>
+            <li><b>Ogon:</b> mały flipper przy lewym torze wylotowym czasem sam odbija piłkę.</li>
+            <li><b>Dziupla:</b> otwór w drzewie po prawej to tunel prosto do budy (+3 000).</li>
+            <li><b>Zadania detektywa:</b> po finale wracają trudniejsze zadania za większe nagrody.</li>
+            <li><b>Na czas:</b> 3 minuty, strata piłki zabiera 10 s. Osobna tabela i ranking.</li>
+            <li><b>Rangi Ezry:</b> gry, zadania, spacery i odznaki dają doświadczenie — kolejne rangi odblokowują motywy stołu z przygód Ezry.</li>
             <li><b>Wyzwanie dnia:</b> codziennie inne zadanie za +50 000; kilka dni z rzędu to seria.</li>
             <li>Na początku każdej piłki Ezra łapie piłkę, która wpadnie (czas zależy od poziomu). <b>P</b> — pauza.</li>
           </ul>
@@ -278,7 +296,8 @@ var SPIN = {y:300, x0:12, x1:50, v:0, a:0, half:0};
 var FL = [
   {px:118, py:642, len:58, r1:9, r2:5.5, rest:0.49, up:-0.52, side:0},
   {px:252, py:642, len:58, r1:9, r2:5.5, rest:PI - 0.49, up:PI + 0.52, side:1},
-  {px:346, py:250, len:42, r1:8, r2:5, rest:PI - 0.42, up:PI + 0.62, side:1}
+  {px:346, py:250, len:42, r1:8, r2:5, rest:PI - 0.42, up:PI + 0.62, side:1},
+  {px:34, py:524, len:19, r1:3, r2:2.5, rest:PI / 2, up:PI + 0.35, side:2}
 ];
 FL.forEach(function(f){ f.a = f.rest; f.w = 0; f.held = false; });
 // rampa „Aport” — tor nad stołem (ruch piłki po krzywej)
@@ -324,7 +343,10 @@ var MISSIONS = [
 
 // piłeczka Ezry: druga piłka zamknięta w korytarzu
 var CAP = {x:255, y:463, vy:0, top:431, bottom:463, hits:0, t:-9};
-seg(243, 422, 243, 474, {r:2}); seg(267, 422, 267, 474, {r:2}); seg(243, 420, 267, 420, {r:2, kind:'captop'});
+seg(243, 422, 243, 474, {r:2}); seg(267, 422, 267, 474, {r:2}); seg(243, 421, 255, 413, {r:2, kind:'captop'}); seg(255, 413, 267, 421, {r:2, kind:'captop'});
+var MAG = {x:185, y:330, r:55};
+var DZ = {x:313, y:152, r:11};
+var MAG_TARGETS = [function(){ return [BUDA.x, BUDA.y]; }, function(){ return [SQ.x, SQ.y]; }, function(){ return [140, 84]; }, function(){ return [DZ.x, DZ.y]; }, function(){ return [336, 345]; }];
 
 /* ================= LAMPY ================= */
 var LAMPS = [];
@@ -355,7 +377,7 @@ var game = {state:'menu', score:0, best:0, ball:1, extra:0, balls:[], mult:1, bo
   plungeTap:false, tapUntil:[0, 0], kickback:true, kickFlash:-9, ramps:0, aport:0, pats:0, treatLit:false,
   comboT:-9, comboN:0, giOff:0, shake:0, flash:-9, newBest:false,
   mission:null, mNext:0, mDone:[0, 0, 0, 0, 0], wizardReady:false, wizard:false, squirrels:0,
-  tilt:false, tiltLvl:0, nudgeCd:0, mini:null, budaCount:0, st:{ramps:0, sq:0, comboMax:1, missions:0, caps:0, mb:0, start:0}, dailyT:0};
+  tilt:false, tiltLvl:0, nudgeCd:0, mini:null, mode:'classic', timeEnd:0, mRound:0, magOn:false, magUntil:0, magNext:25, ogonUntil:0, ogonCd:0, showUntil:0, dzT:-9, budaCount:0, st:{ramps:0, sq:0, comboMax:1, missions:0, caps:0, mb:0, start:0}, dailyT:0};
 var pops = [], parts = [];
 var input = {keyL:false, keyR:false, keyP:false};
 var ptrs = {};
@@ -365,6 +387,7 @@ function say(text, sub, dur, fx){
   // ważny komunikat (z efektem) nie daje się zagłuszyć zwykłemu przez pierwszą sekundę
   var m = game.msg;
   if (!fx && m && m.fx && T - m.t0 < 1.0 && T < m.until) return;
+  if (fx) game.showUntil = Math.max(game.showUntil || 0, T + (fx === 'run' ? 3 : 1.2));
   game.msg = {text:text, sub:sub || '', t0:T, until:T + (dur || 2), fx:fx || ''};
 }
 function addScore(n, x, y){
@@ -385,7 +408,7 @@ var touched = false;
 function buzz(ms){ if (!touched || !CFG.vib) return; try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e){} }
 
 /* ================= USTAWIENIA ================= */
-var CFG = {music:0.35, sfx:0.9, vib:true, shake:true, diff:'normal', name:'', online:true};
+var CFG = {music:0.35, sfx:0.9, vib:true, shake:true, diff:'normal', name:'', online:true, theme:'park'};
 function load(key, def){ try { var v = JSON.parse(localStorage.getItem(key)); return v == null ? def : v; } catch(e){ return def; } }
 function save(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){} }
 (function(){ var sv = load('pinball_cfg', {}); for (var k in sv) if (k in CFG) CFG[k] = sv[k]; })();
@@ -603,18 +626,19 @@ function treat(){
   else { var p = [5000, 10000, 15000][Math.floor(Math.random() * 3)]; addScore(p); say('SMAKOŁYK!', '+' + fmt(p)); }
 }
 function startMission(){
-  var m = MISSIONS[game.mNext];
-  game.mission = {m:m, cnt:0, end:T + m.time};
-  say('ZADANIE: ' + m.name, m.desc + ' ×' + m.need, 2.4, 'big'); sfx.fanfare();
+  var m = MISSIONS[game.mNext], rd = game.mRound || 0;
+  var need = m.need + rd * Math.ceil(m.need / 2), rew = m.reward * (1 + rd);
+  game.mission = {m:m, cnt:0, need:need, reward:rew, end:T + m.time};
+  say((rd ? 'DETEKTYW: ' : 'ZADANIE: ') + m.name, m.desc + ' ×' + need, 2.4, 'big'); sfx.fanfare();
 }
 function missionEvent(id){
   var ms = game.mission;
   if (!ms || ms.m.id !== id) return;
   ms.cnt++;
-  if (ms.cnt < ms.m.need){ if (id !== 'kapiel' || ms.cnt % 3 === 0) say(ms.m.name, ms.cnt + '/' + ms.m.need, 1.0); return; }
+  if (ms.cnt < ms.need){ if (id !== 'kapiel' || ms.cnt % 3 === 0) say(ms.m.name, ms.cnt + '/' + ms.need, 1.0); return; }
   var m = ms.m; game.mission = null; game.mDone[game.mNext] = 1; game.st.missions++;
   if (stats.missions + game.st.missions >= 5) badge('pracus');
-  addScore(m.reward); say('ZADANIE WYKONANE!', m.name + ' +' + fmt(m.reward), 2.4, 'big');
+  addScore(ms.reward); say('ZADANIE WYKONANE!', m.name + ' +' + fmt(ms.reward), 2.4, 'big');
   sfx.jackpot(); shake(5); game.flash = T; EZRA.t = T;
   var n = game.mDone.indexOf(0);
   if (n < 0){ game.wizardReady = true; say('WIELKI SPACER', 'Wszystkie zadania! Wjedź do budy', 2.8, 'run'); }
@@ -724,6 +748,31 @@ function badge(id){
     sfx.fanfare();
   }
 }
+var RANKS = [['Szczeniak', 0], ['Tropiciel', 8], ['Detektyw', 20], ['Strażnik Parku', 40], ['Mistrz Spacerów', 70], ['Legenda', 110]];
+var THEMES = [
+  {id:'park', n:'Park', rank:0},
+  {id:'barcelona', n:'Barcelona', rank:1, tint:'#2a1408'},
+  {id:'wenecja', n:'Wenecja', rank:2, tint:'#08202e'},
+  {id:'bawaria', n:'Bawaria', rank:3, tint:'#0c2414'},
+  {id:'dunaj', n:'Dunaj', rank:4, tint:'#0e1c2c'},
+  {id:'las', n:'Jesienny las', rank:5, tint:'#2a1806'}
+];
+function xp(){ return stats.games + stats.missions * 3 + stats.mb * 2 + Object.keys(badges).length * 2 + Math.floor(stats.score / 250000); }
+function rankIdx(){ var x = xp(), r = 0; for (var i = 0; i < RANKS.length; i++) if (x >= RANKS[i][1]) r = i; return r; }
+function themeOf(id){ for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === id) return THEMES[i]; return THEMES[0]; }
+var themeImg = null;
+function loadTheme(){
+  var th = themeOf(CFG.theme);
+  if (th.id === 'park' || rankIdx() < th.rank){ themeImg = null; if (cv.width > 1) buildBg(); return; }
+  themeImg = new Image();
+  themeImg.onload = function(){ if (cv.width > 1) buildBg(); };
+  themeImg.src = 'theme-' + th.id + '.webp';
+}
+function rankText(){
+  var r = rankIdx(), x = xp(), nx = RANKS[r + 1];
+  return 'Ranga: <b>' + RANKS[r][0] + '</b>' + (nx ? ' · ' + x + ' / ' + nx[1] + ' XP do rangi ' + nx[0] : ' · ' + x + ' XP — najwyższa ranga') +
+    '<div class="bar"><i style="width:' + (nx ? Math.round(100 * (x - RANKS[r][1]) / (nx[1] - RANKS[r][1])) : 100) + '%"></i></div>';
+}
 var DAILY = [
   {t:'Wjedź 6 razy na rampy w jednej grze', ok:function(){ return game.st.ramps >= 6; }},
   {t:'Trafiaj wiewiórkę 4 razy w jednej grze', ok:function(){ return game.st.sq >= 4; }},
@@ -753,7 +802,7 @@ function startMultiball(b){
   b.kickAt = T + 1.4;
   var nb = newBallObj(BUDA.x, BUDA.y, 'kick'); nb.kickAt = T + 2.1; game.balls.push(nb);
   game.serveQ++;
-  if (game.wizard){ game.serveQ++; addScore(50000); say('WIELKI SPACER!', 'Każde trafienie +50 000', 3, 'run'); }
+  if (game.wizard){ game.serveQ++; setTimeout(musicUpdate, 0); addScore(50000); say('WIELKI SPACER!', 'Każde trafienie +50 000', 3, 'run'); }
   else { addScore(10000); say('SPACER!', 'Multiball — jackpot na rampie', 3, 'run'); }
   sfx.jackpot(); sfx.bark(); shake(7); buzz(70); game.flash = T;
 }
@@ -819,7 +868,7 @@ function orbitDone(){
   combo();
 }
 function patEzra(){
-  EZRA.t = T; addScore(500, EZRA.x, EZRA.y - 34); game.bonus += 50;
+  EZRA.t = T; addScore(1000, EZRA.x, EZRA.y - 34); game.bonus += 50;
   spark(EZRA.x, EZRA.y - 10, 8, '#ff9ec0', 140);
   missionEvent('lakomczuch');
   if (game.treatLit){ sfx.pat(); return; }
@@ -837,12 +886,17 @@ function onDrain(){
   if (game.multiball){
     if (alive <= 1){
       game.multiball = false; game.jackpotLit = game.superLit = false; game.jackpot = 25000;
-      if (game.wizard){ game.wizard = false; game.mDone = [0, 0, 0, 0, 0]; game.mNext = 0; say('WIELKI SPACER', 'Koniec finału — zadania od nowa', 2.4, 'big'); }
+      if (game.wizard){ game.wizard = false; game.mDone = [0, 0, 0, 0, 0]; game.mNext = 0; game.mRound = (game.mRound || 0) + 1; say('WIELKI SPACER', 'Teraz zadania detektywa!', 2.4, 'big'); setTimeout(musicUpdate, 0); }
       else say('KONIEC SPACERU', '', 1.6);
     }
     if (alive > 0) return;
   }
   if (alive > 0) return;
+  if (game.mode === 'time'){
+    game.timeEnd -= 10; game.serveQ++; game.tilt = false; game.tiltLvl = 0;
+    sfx.drain(); shake(3); say('−10 S', 'Nowa piłka — czas leci', 1.6, 'big');
+    return;
+  }
   sfx.drain(); shake(4); buzz(40); game.giOff = T + 1.4; game.mission = null;
   game.phase = 'bonus'; game.phaseT = T;
   if (game.tilt){ game.pending = 0; say('TILT', 'Bez bonusu', 2.4); }
@@ -887,7 +941,7 @@ function flipperPressed(side){
 
 function step(h){
   T += h;
-  var heldSide = [game.state === 'play' && flipperHeld(0), game.state === 'play' && flipperHeld(1)];
+  var heldSide = [game.state === 'play' && flipperHeld(0), game.state === 'play' && flipperHeld(1), game.state === 'play' && T < game.ogonUntil && !game.tilt];
   for (var i = 0; i < FL.length; i++){
     var f = FL[i], held = heldSide[f.side];
     if (held && !f.held && i < 2) flipperPressed(f.side);
@@ -911,6 +965,18 @@ function step(h){
   if (CAP.y < CAP.top){ CAP.y = CAP.top; if (CAP.vy < -150) capHit(); CAP.vy = -CAP.vy * 0.4; }
   game.dailyT += h;
   if (game.dailyT > 0.5){ game.dailyT = 0; dailyCheck(); if (game.score >= 1000000) badge('milioner'); }
+  // ruchomy medalion z Ezrą
+  EZRA.x = 185 + 18 * Math.sin(T * 0.7); EZRA.vx = 12.6 * Math.cos(T * 0.7);
+  // magnes nad Ezrą
+  if (!game.magOn && T > game.magNext && !game.multiball && !game.tilt && !game.mini && game.balls.some(function(q){ return q.mode === 'play' && !q.lane; })){
+    game.magOn = true; game.magUntil = T + 8; say('MAGNES!', 'Ezra łapie piłkę', 1.4); sfx.orbit();
+  }
+  if (game.magOn && T > game.magUntil){ game.magOn = false; game.magNext = T + 25 + Math.random() * 15; }
+  // tryb na czas
+  if (game.mode === 'time' && T > game.timeEnd && game.state === 'play' && !game.over2){
+    game.over2 = true; addScore(game.bonus * game.mult); say('KONIEC CZASU', fmt(game.score), 2, 'big'); sfx.drain();
+    setTimeout(function(){ if (game.state === 'play' && game.mode === 'time') gameOver(); }, 50);
+  }
   // wiewiórka i czas zadania
   var sqOn = T > SQ.fled;
   if (sqOn) SQ.ph += h * 1.1;
@@ -946,6 +1012,13 @@ function step(h){
     if (b.mode === 'kick' && T >= b.kickAt){
       b.mode = 'play'; b.x = BUDA.x + 2; b.y = BUDA.y + 10; b.budaCd = T + 0.6;
       b.vx = 40 + Math.random() * 50; b.vy = 360 + Math.random() * 60; sfx.kick(); spark(BUDA.x, BUDA.y + 8, 10, '#ffd27a', 160);
+    }
+    if (b.mode === 'mag'){
+      if (T < b.magAt) continue;
+      var tg = MAG_TARGETS[Math.floor(Math.random() * MAG_TARGETS.length)]();
+      var mdx0 = tg[0] - b.x, mdy0 = tg[1] - b.y, tt = Math.max(0.15, Math.hypot(mdx0, mdy0) / 1050);
+      b.mode = 'play'; b.vx = mdx0 / tt; b.vy = mdy0 / tt - 0.5 * G * tt; b.budaCd = 0;
+      sfx.kick(); spark(b.x, b.y, 14, '#9fe3ff', 220); shake(2);
     }
     if (b.mode === 'ramp'){
       var R = b.rp, rp = rampAt(R, b.rs);
@@ -1006,7 +1079,7 @@ function step(h){
     }
     var ec = hitCircle(b, EZRA.x, EZRA.y, EZRA.r);
     if (ec){
-      var evn = bounce(b, ec.nx, ec.ny, 0.45, 0.98);
+      b.vx -= EZRA.vx; var evn = bounce(b, ec.nx, ec.ny, 0.45, 0.98); b.vx += EZRA.vx;
       var eo = b.vx * ec.nx + b.vy * ec.ny;
       if (eo < 220){ b.vx += ec.nx * (220 - eo); b.vy += ec.ny * (220 - eo); }
       if (evn > 120 && T - EZRA.t > 0.25) patEzra();
@@ -1067,6 +1140,25 @@ function step(h){
     }
     if (b.x < 52 && py >= 380 && b.y < 380 && b.vy < 0) b.orbA = T;
     if (b.x > 318 && b.y < 105 && b.vx > 0 && T - b.orbA < 2.5){ b.orbA = -9; orbitDone(); }
+    // magnes
+    if (game.magOn){
+      var mdx = MAG.x - b.x, mdy = MAG.y - b.y, md = Math.sqrt(mdx * mdx + mdy * mdy);
+      if (md < MAG.r && md > 0.01){
+        if (md < 14 && b.vx * b.vx + b.vy * b.vy < 1000 * 1000){
+          b.mode = 'mag'; b.magAt = T + 0.9; b.x = MAG.x; b.y = MAG.y; b.vx = b.vy = 0;
+          game.magOn = false; game.magNext = T + 30 + Math.random() * 15;
+          addScore(2000, MAG.x, MAG.y - 22); say('EZRA ŁAPIE!', 'Rzut w cel…', 1.2); sfx.cap(); EZRA.t = T;
+          continue;
+        }
+        var mf = 3200 * (1 - md / MAG.r) * h, damp = 1 - 2.5 * h * (1 - md / MAG.r);
+        b.vx = b.vx * damp + mdx / md * mf; b.vy = b.vy * damp + mdy / md * mf - G * h * 0.6 * (1 - md / MAG.r);
+      }
+    }
+    // ogon: mały flipper przy lewym torze wylotowym
+    if (b.x < 36 && b.y > 490 && b.y < 535 && b.vy > 0 && T > game.ogonCd && !game.tilt){
+      game.ogonCd = T + 1.2;
+      if (Math.random() < 0.4){ game.ogonUntil = T + 0.16; say('OGON!', 'Ezra macha ogonem', 1); sfx.flip(); }
+    }
     // kickback
     if (b.x < 34 && b.y > 600 && b.y < 650 && game.kickback && !game.tilt){
       game.kickback = false; game.kickFlash = T; badge('obronca');
@@ -1076,6 +1168,13 @@ function step(h){
     for (var li = 0; li < 3; li++){
       var L = LANES[li], ldx = b.x - L.x, ldy = b.y - L.y;
       if (ldx * ldx + ldy * ldy < 15 * 15 && b.laneCd[li] <= T){ b.laneCd[li] = T + 0.6; hitLane(li); }
+    }
+    var zdx = b.x - DZ.x, zdy = b.y - DZ.y;
+    if (zdx * zdx + zdy * zdy < DZ.r * DZ.r && b.vx * b.vx + b.vy * b.vy < 1000 * 1000 && !(b.budaCd > T)){
+      b.mode = 'kick'; b.x = BUDA.x; b.y = BUDA.y; b.vx = b.vy = 0; b.kickAt = T + 1.6; game.dzT = T;
+      sfx.kick(); spark(DZ.x, DZ.y, 14, '#ffb067', 180);
+      if (!wizardHit(DZ.x, DZ.y - 20)){ addScore(3000, DZ.x, DZ.y - 20); say('DZIUPLA!', 'Tunel do budy', 1.6); }
+      continue;
     }
     var bdx = b.x - BUDA.x, bdy = b.y - BUDA.y;
     if (bdx * bdx + bdy * bdy < BUDA.r * BUDA.r && b.vx * b.vx + b.vy * b.vy < 1300 * 1300 && !(b.budaCd > T)){
@@ -1358,6 +1457,16 @@ function buildSprites(){
   SPR.flipS2 = sprite(f2.len + f2.r1 + f2.r2 + 6, f2.r1 * 2 + 6, function(g){
     g.translate(f2.r1 + 3, f2.r1 + 3); flipperPath(g, f2, f2.len); g.fillStyle = '#000'; g.fill();
   });
+  var f3 = FL[3];
+  SPR.flip3 = sprite(f3.len + f3.r1 + f3.r2 + 6, f3.r1 * 2 + 6, function(g){
+    g.translate(f3.r1 + 3, f3.r1 + 3); flipperPath(g, f3, f3.len);
+    var gr = g.createLinearGradient(0, -f3.r1, 0, f3.r1);
+    gr.addColorStop(0, '#e19a55'); gr.addColorStop(1, '#8f5323');
+    g.fillStyle = gr; g.fill(); g.strokeStyle = '#f9f4ea'; g.lineWidth = 1.6; g.stroke();
+  });
+  SPR.flipS3 = sprite(f3.len + f3.r1 + f3.r2 + 6, f3.r1 * 2 + 6, function(g){
+    g.translate(f3.r1 + 3, f3.r1 + 3); flipperPath(g, f3, f3.len); g.fillStyle = '#000'; g.fill();
+  });
 }
 function flipperPath(g, f, L){
   g.beginPath();
@@ -1424,6 +1533,16 @@ function buildBg(){
   var gr = g.createLinearGradient(0, 0, 0, H);
   gr.addColorStop(0, '#3f8f4b'); gr.addColorStop(0.5, '#2d6c39'); gr.addColorStop(1, '#17401f');
   g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  // motyw z przygód Ezry: grafika sezonu pod przyciemnieniem
+  var TH = themeOf(CFG.theme), themed = !!(themeImg && themeImg.complete && themeImg.naturalWidth && TH.id !== 'park');
+  if (themed){
+    g.fillStyle = TH.tint; g.fillRect(0, 0, W, H);
+    g.globalAlpha = 0.62; g.drawImage(themeImg, 0, 0, W, H); g.globalAlpha = 1;
+    var tgr = g.createLinearGradient(0, 0, 0, H);
+    tgr.addColorStop(0, rgba(TH.tint, 0.25)); tgr.addColorStop(0.6, rgba(TH.tint, 0.5)); tgr.addColorStop(1, rgba(TH.tint, 0.82));
+    g.fillStyle = tgr; g.fillRect(0, 0, W, H);
+  }
+  if (!themed){
   g.fillStyle = 'rgba(255,255,255,.04)';
   for (var s = -12; s < 22; s += 2){ g.beginPath(); g.moveTo(s * 30, 0); g.lineTo(s * 30 + 30, 0); g.lineTo(s * 30 - 230, H); g.lineTo(s * 30 - 260, H); g.fill(); }
   // źdźbła trawy
@@ -1444,6 +1563,7 @@ function buildBg(){
     for (var pt = 0; pt < 5; pt++){ var aa = pt * 1.2566; ell(g, fx + Math.cos(aa) * 2.2, fy + Math.sin(aa) * 2.2, 1.5, 1.5); }
     g.fillStyle = '#f2c14e'; ell(g, fx, fy, 1.1, 1.1); g.globalAlpha = 1;
   }
+  }
   // drzewo z dziuplą i gałąź, po której biega wiewiórka
   var hx = SQ.home.x, hy = SQ.home.y;
   g.fillStyle = 'rgba(0,0,0,.25)'; ell(g, hx + 5, hy + 8, 30, 28);
@@ -1461,6 +1581,12 @@ function buildBg(){
   g.strokeStyle = 'rgba(255,220,170,.25)'; g.lineWidth = 1;
   g.beginPath(); g.moveTo(hx - 8, hy + 3); g.bezierCurveTo(250, SQ.y + 5, 190, SQ.y + 9, 122, SQ.y + 7); g.stroke();
   [[150, 1], [200, -1], [245, 1]].forEach(function(q){ g.fillStyle = '#3d8a45'; ell(g, q[0], SQ.y + 8 + q[1] * 4, 4, 2, q[1] * 0.6); });
+  // cewka magnesu
+  var mgr = g.createRadialGradient(MAG.x - 2, MAG.y - 2, 1, MAG.x, MAG.y, 9);
+  mgr.addColorStop(0, '#dfe6ee'); mgr.addColorStop(1, '#3a4048');
+  g.fillStyle = 'rgba(0,0,0,.3)'; ell(g, MAG.x + 1.5, MAG.y + 2, 9, 9);
+  g.fillStyle = mgr; ell(g, MAG.x, MAG.y, 8, 8);
+  g.strokeStyle = 'rgba(180,120,40,.8)'; g.lineWidth = 1.2; g.beginPath(); g.arc(MAG.x, MAG.y, 5, 0, PI * 2); g.stroke();
   // tor pętli, tor wylotowy i wyrzutnia — zagłębienia
   g.fillStyle = 'rgba(0,0,0,.28)';
   g.fillRect(10, 236, 42, 164); g.fillRect(10, 520, 24, 200); g.fillRect(360, 150, 30, 570);
@@ -1609,6 +1735,7 @@ function lampOn(L){
     return ((idx * 3 + ph) % 11) < 3 || (Math.floor(t * 0.5) % 2 === 0 && L.id.indexOf('ez') === 0);
   }
   if (game.tilt) return false;
+  if (game.state === 'play' && (T < game.showUntil || game.wizard)){ var ix = LAMPS.indexOf(L), ph2 = Math.floor(T * 12); if (((ix * 2 + ph2) % 7) < 3) return true; }
   var id = L.id;
   if (id.indexOf('lane') === 0){ var li = +id[4]; return !!game.lanes[li] && !(game.lanesResetAt && blink(8)); }
   if (id.indexOf('mult') === 0) return game.mult >= +id.slice(4);
@@ -1706,6 +1833,16 @@ function draw(dt){
     ctx.fillStyle = '#5a2d0a'; ctx.fillText(d.l, d.x + 0.5, cy + 0.5);
   });
   // Ezra (cel na środku)
+  if (game.magOn || now - game.dzT < 0.6){
+    if (game.magOn){
+      var mp = 0.6 + 0.4 * Math.sin(now * 10);
+      glow(ctx, MAG.x, MAG.y, 34 + mp * 10, '#7fd3ff', 0.8);
+      ctx.strokeStyle = 'rgba(160,225,255,' + (0.5 + 0.4 * mp) + ')'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(MAG.x, MAG.y, 14 + (now * 30) % 30, 0, PI * 2); ctx.stroke();
+      ctx.font = '900 8px ' + FONT; ctx.fillStyle = '#dff4ff'; ctx.fillText('MAGNES', MAG.x, MAG.y - 20);
+    }
+    if (now - game.dzT < 0.6) glow(ctx, DZ.x, DZ.y, 30, '#ffb067', 1 - (now - game.dzT) / 0.6);
+  }
   var eAge = now - EZRA.t;
   if (now > EZRA.blinkAt + 0.14) EZRA.blinkAt = now + 2.5 + Math.random() * 3;
   var es = SPR.ezraPhoto || (eAge < 0.35 ? SPR.ezraBark : (now > EZRA.blinkAt ? SPR.ezraBlink : SPR.ezra));
@@ -1774,7 +1911,7 @@ function draw(dt){
   // flippery
   FL.forEach(function(f, i){
     var spr = SPR['flip' + i], shd = SPR['flipS' + i]; if (!spr || !shd) return;
-    var right = i > 0;
+    var right = i === 1 || i === 2;
     [1, 0].forEach(function(pass){
       var im = pass ? shd : spr;
       ctx.save();
@@ -1927,6 +2064,7 @@ function dCenter(str, y, sc, lv){
   }
   dText(str, Math.floor((DW - w) / 2), y, sc, lv);
 }
+function clock(sec){ sec = Math.max(0, Math.ceil(sec)); var mm = Math.floor(sec / 60), ss = sec % 60; return mm + ':' + (ss < 10 ? '0' : '') + ss; }
 function dSprite(x, y, sc){
   for (var r = 0; r < EZ_SPR.length; r++) for (var c = 0; c < EZ_SPR[r].length; c++){
     var ch = EZ_SPR[r][c]; if (ch >= '1' && ch <= '3') dPx(x + c * sc, y + r * sc, sc, +ch);
@@ -1979,7 +2117,7 @@ function dmdRender(){
     var sc = fmt(game.score).replace(/ /g, ' ');
     dCenter(sc, 2, 2, 3);
     var ms = game.mission;
-    var left = ms ? ms.m.name + ' ' + ms.cnt + '/' + ms.m.need : 'PIŁKA ' + Math.min(game.ball, 3) + (game.extra ? '+' : '');
+    var left = ms ? ms.m.name + ' ' + ms.cnt + '/' + ms.need : game.mode === 'time' ? 'CZAS ' + clock(game.timeEnd - T) : 'PIŁKA ' + Math.min(game.ball, 3) + (game.extra ? '+' : '');
     dText(left, 1, 23, 1, ms ? 3 : 2);
     var right = ms ? String(Math.max(0, Math.ceil(ms.end - T))) : game.multiball ? (Math.floor(T * 2) % 2 ? (game.wizard ? 'FINAŁ' : 'SPACER') : '') : '×' + game.mult;
     dText(right, DW - dTextW(right, 1) - 1, 23, 1, 2);
@@ -2058,13 +2196,13 @@ function showScr(id){
 function renderDaily(){
   var d = DAILY[dayIdx()], done = daily.date === dayStr(new Date()) && daily.done;
   $('daily').innerHTML = '<b>Wyzwanie dnia:</b> ' + d.t + (done ? ' — <b>✓ wykonane</b>' : ' (+50 000)') +
-    (daily.streak > 1 && done ? '<br>Seria: <b>' + daily.streak + ' dni</b>' : '');
+    (daily.streak > 1 && done ? '<br>Seria: <b>' + daily.streak + ' dni</b>' : '') + '<br>' + rankText();
 }
 function showOverlay(mode){
   ovMode = mode;
   showScr('scrMain');
   $('ovScore').innerHTML = ''; $('nameBox').hidden = true; $('ovPhoto').hidden = false; $('logo').hidden = true;
-  $('btnB').hidden = mode !== 'pause';
+  $('btnB').hidden = mode !== 'pause'; $('btnTime').hidden = mode === 'pause';
   if (mode === 'menu'){
     $('ovTitle').textContent = 'Ezra Pinball';
     $('ovText').textContent = 'Beagielka Ezra pilnuje stołu. Rzucaj jej piłkę na rampę, zbij cele E-Z-R-A i wyprowadź trzy piłki na spacer!';
@@ -2090,15 +2228,19 @@ function showOverlay(mode){
 }
 function hideOverlay(){ ov.classList.remove('show'); }
 function loadBest(){ try { game.best = parseInt(localStorage.getItem('pinball_best') || '0', 10) || 0; } catch(e){} }
-function qualifies(sc){ return sc > 0 && (top10.length < 10 || sc > top10[top10.length - 1].s); }
+var topTime = load('pinball_top_time', []);
+function topList(mode){ return mode === 'time' ? topTime : top10; }
+function qualifies(sc){ var L = topList(game.mode); return sc > 0 && (L.length < 10 || sc > L[L.length - 1].s); }
 function cleanName(v){ return String(v || '').toUpperCase().replace(/[^A-Z0-9ĄĆĘŁŃÓŚŹŻ .\-]/g, '').trim().slice(0, 10); }
 var lastSaved = null;
 function saveScore(){
   var nm = cleanName($('nameIn').value) || 'EZRA';
   CFG.name = nm; saveCfg();
   if (qualifies(game.score)){
-    top10.push({n:nm, s:game.score, d:dayStr(new Date()), df:CFG.diff});
-    top10.sort(function(x, y){ return y.s - x.s; }); top10 = top10.slice(0, 10); save('pinball_top', top10);
+    var L = topList(game.mode);
+    L.push({n:nm, s:game.score, d:dayStr(new Date()), df:CFG.diff});
+    L.sort(function(x, y){ return y.s - x.s; }); L = L.slice(0, 10);
+    if (game.mode === 'time'){ topTime = L; save('pinball_top_time', L); } else { top10 = L; save('pinball_top', L); }
     lastSaved = game.score;
   }
   $('nameOk').disabled = true; $('nameOk').textContent = 'Zapisano';
@@ -2107,14 +2249,14 @@ function saveScore(){
 function sig(o){ var t = o.name + '|' + o.score + '|' + o.dur + '|' + o.diff + '|ezra-hau'; var hsh = 0; for (var i = 0; i < t.length; i++) hsh = (hsh * 31 + t.charCodeAt(i)) >>> 0; return hsh.toString(36); }
 function submitOnline(nm, sc){
   if (!CFG.online || !window.fetch) return;
-  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.3.3'};
+  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.4.0', mode:game.mode};
   body.k = sig(body);
   fetch(API + '/score', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
     .then(function(r){ return r.json(); })
     .then(function(j){ if (j && j.rank) $('nameTxt').textContent = 'Miejsce w rankingu świata: ' + j.rank; })
     .catch(function(){ $('nameTxt').textContent = 'Zapisano lokalnie (brak połączenia z rankingiem)'; });
 }
-var topTab = 'me';
+var topTab = 'me', topMode = 'classic';
 function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;'}[c]; }); }
 function topRows(list, meScore){
   if (!list.length) return '<li class="empty">Jeszcze nikt tu nie zagrał</li>';
@@ -2126,21 +2268,23 @@ function topRows(list, meScore){
 }
 function renderTop(tab){
   topTab = tab;
-  document.querySelectorAll('#scrTop .tabs button').forEach(function(bt){ bt.classList.toggle('on', bt.getAttribute('data-t') === tab); });
+  document.querySelectorAll('#whoTabs button').forEach(function(bt){ bt.classList.toggle('on', bt.getAttribute('data-t') === tab); });
+  document.querySelectorAll('#modeTabs button').forEach(function(bt){ bt.classList.toggle('on', bt.getAttribute('data-m') === topMode); });
   if (tab === 'me'){
-    $('topList').innerHTML = topRows(top10, lastSaved);
+    $('topList').innerHTML = topRows(topList(topMode), lastSaved);
     $('topNote').textContent = 'Najlepsze wyniki na tym urządzeniu. Poziom: Ł — łatwy, N — normalny, T — trudny.';
     return;
   }
   $('topList').innerHTML = '<li class="empty">Wczytuję…</li>'; $('topNote').textContent = '';
   if (!window.fetch){ $('topList').innerHTML = '<li class="empty">Brak połączenia</li>'; return; }
-  fetch(API + '/top').then(function(r){ return r.json(); }).then(function(list){
+  fetch(API + '/top' + (topMode === 'time' ? '?mode=time' : '')).then(function(r){ return r.json(); }).then(function(list){
     if (topTab !== 'world') return;
     $('topList').innerHTML = topRows((list || []).map(function(e){ return {n:e.n, s:e.s, df:e.df}; }), null);
     $('topNote').textContent = 'Ranking świata — 20 najlepszych wyników wszystkich graczy.';
   }).catch(function(){ if (topTab === 'world') $('topList').innerHTML = '<li class="empty">Brak połączenia z rankingiem</li>'; });
 }
 function renderBadges(){
+  $('rankBox').innerHTML = rankText();
   $('badgeGrid').innerHTML = BADGES.map(function(b){
     return '<div class="badge' + (badges[b.id] ? ' on' : '') + '"><i>' + b.ico + '</i><b>' + b.n + '</b>' + b.d + '</div>';
   }).join('');
@@ -2155,6 +2299,14 @@ function renderSettings(){
   $('setVib').checked = CFG.vib; $('setShake').checked = CFG.shake; $('setOnline').checked = CFG.online; $('setName').value = CFG.name;
   document.querySelectorAll('#setDiff button').forEach(function(bt){ bt.classList.toggle('on', bt.getAttribute('data-d') === CFG.diff); });
   $('diffInfo').textContent = D().info + (game.state === 'pause' ? ' Zmiana zadziała od następnej gry.' : '');
+  var rk = rankIdx();
+  $('setTheme').innerHTML = THEMES.map(function(t){
+    var locked = rk < t.rank;
+    return '<button data-th="' + t.id + '"' + (CFG.theme === t.id ? ' class="on"' : '') + (locked ? ' disabled' : '') + '>' + (locked ? '🔒 ' : '') + t.n + '</button>';
+  }).join('');
+  var nextLocked = THEMES.filter(function(t){ return rk < t.rank; })[0];
+  $('themeInfo').textContent = nextLocked ? 'Następny motyw (' + nextLocked.n + ') od rangi ' + RANKS[nextLocked.rank][0] + '.' : 'Wszystkie motywy odblokowane.';
+  document.querySelectorAll('#setTheme button').forEach(function(bt){ bt.addEventListener('click', function(){ CFG.theme = bt.getAttribute('data-th'); saveCfg(); loadTheme(); renderSettings(); }); });
 }
 $('setMusic').addEventListener('input', function(e){ CFG.music = e.target.value / 100; saveCfg(); musicUpdate(); });
 $('setSfx').addEventListener('input', function(e){ CFG.sfx = e.target.value / 100; saveCfg(); if (master) master.gain.value = CFG.sfx; });
@@ -2164,20 +2316,23 @@ $('setShake').addEventListener('change', function(e){ CFG.shake = e.target.check
 $('setOnline').addEventListener('change', function(e){ CFG.online = e.target.checked; saveCfg(); });
 $('setName').addEventListener('change', function(e){ CFG.name = cleanName(e.target.value); e.target.value = CFG.name; saveCfg(); });
 document.querySelectorAll('#setDiff button').forEach(function(bt){ bt.addEventListener('click', function(){ CFG.diff = bt.getAttribute('data-d'); saveCfg(); renderSettings(); }); });
-document.querySelectorAll('#scrTop .tabs button').forEach(function(bt){ bt.addEventListener('click', function(){ renderTop(bt.getAttribute('data-t')); }); });
+document.querySelectorAll('#whoTabs button').forEach(function(bt){ bt.addEventListener('click', function(){ renderTop(bt.getAttribute('data-t')); }); });
+document.querySelectorAll('#modeTabs button').forEach(function(bt){ bt.addEventListener('click', function(){ topMode = bt.getAttribute('data-m'); renderTop(topTab); }); });
 document.querySelectorAll('[data-scr]').forEach(function(bt){ bt.addEventListener('click', function(){ showScr(bt.getAttribute('data-scr')); }); });
 document.querySelectorAll('.back').forEach(function(bt){ bt.addEventListener('click', function(){ showScr('scrMain'); }); });
 $('nameOk').addEventListener('click', saveScore);
 $('nameIn').addEventListener('keydown', function(e){ if (e.key === 'Enter') saveScore(); });
 
 // muzyka w tle: „Beagle w Bawarii”
-var music = null;
+var tracks = {};
+function track(name){ if (!tracks[name]){ tracks[name] = new Audio(name); tracks[name].loop = true; } return tracks[name]; }
 function musicUpdate(){
   var want = !muted && CFG.music > 0.01 && game.state === 'play' && !document.hidden;
-  if (!music){ if (!want) return; music = new Audio('music.mp3'); music.loop = true; }
-  music.volume = Math.max(0, Math.min(1, CFG.music));
-  if (want && music.paused){ var pr = music.play(); if (pr && pr.catch) pr.catch(function(){}); }
-  else if (!want && !music.paused) music.pause();
+  var cur = game.wizard ? 'music2.mp3' : 'music.mp3';   // finał: „BEAGLE NOIR”
+  Object.keys(tracks).forEach(function(k){ if ((k !== cur || !want) && !tracks[k].paused) tracks[k].pause(); });
+  if (!want) return;
+  var m = track(cur); m.volume = Math.max(0, Math.min(1, CFG.music));
+  if (m.paused){ var pr = m.play(); if (pr && pr.catch) pr.catch(function(){}); }
 }
 function gameOver(){
   game.state = 'over'; game.newBest = false;
@@ -2186,14 +2341,23 @@ function gameOver(){
     game.best = game.score; game.newBest = true;
     try { localStorage.setItem('pinball_best', String(game.score)); } catch(e){}
   }
+  var r0 = rankIdx();
   stats.games++; stats.score += game.score; stats.ramps += game.st.ramps; stats.squirrels += game.st.sq;
   stats.missions += game.st.missions; stats.mb += game.st.mb; stats.caps += game.st.caps; stats.time += game.st.dur;
   save('pinball_stats', stats);
   badge('pierwsza');
   game.balls = [];
   showOverlay('over');
+  var r1 = rankIdx();
+  if (r1 > r0){
+    var un = THEMES.filter(function(t){ return t.rank > r0 && t.rank <= r1; }).map(function(t){ return t.n; });
+    $('ovText').textContent = 'Awans na rangę: ' + RANKS[r1][0] + '!' + (un.length ? ' Nowy motyw stołu: ' + un.join(', ') + ' (Ustawienia).' : '');
+    sfx.fanfare();
+  }
 }
-function newGame(){
+function newGame(mode){
+  game.mode = mode === 'time' ? 'time' : 'classic'; game.over2 = false; game.timeEnd = T + 180; game.mRound = 0;
+  game.magOn = false; game.magNext = T + 25; game.ogonUntil = 0; game.showUntil = 0;
   game.score = 0; game.ball = 1; game.extra = 0; game.balls = []; game.mult = 1; game.bonus = 0;
   game.lanes = [0, 0, 0]; game.bumperVal = 100; game.lockLit = false; game.locked = 0; game.multiball = false;
   game.jackpot = 25000; game.superJ = 50000; game.jackpotLit = game.superLit = false;
@@ -2207,14 +2371,15 @@ function newGame(){
   DROPS.forEach(function(d){ d.down = false; }); BONES.forEach(function(k){ k.lit = false; });
   serveBall(false, true);
   game.state = 'play'; hideOverlay();
-  say('PIŁKA 1', 'Przytrzymaj prawą stronę i puść', 2.6);
+  if (game.mode === 'time') say('NA CZAS', '3 minuty — strata piłki to −10 s', 2.6); else say('PIŁKA 1', 'Przytrzymaj prawą stronę i puść', 2.6);
   audio(); musicUpdate();
 }
 function pause(){ if (game.state !== 'play') return; game.state = 'pause'; ptrs = {}; input.keyL = input.keyR = input.keyP = false; showOverlay('pause'); }
 function resume(){ if (game.state !== 'pause') return; game.state = 'play'; hideOverlay(); last = performance.now(); acc = 0; musicUpdate(); }
 
-$('btnA').addEventListener('click', function(){ if (ovMode === 'pause') resume(); else newGame(); });
-$('btnB').addEventListener('click', function(){ newGame(); });
+$('btnA').addEventListener('click', function(){ if (ovMode === 'pause') resume(); else newGame('classic'); });
+$('btnTime').addEventListener('click', function(){ newGame('time'); });
+$('btnB').addEventListener('click', function(){ newGame(game.mode); });
 $('btnPause').addEventListener('click', function(e){ e.currentTarget.blur(); if (game.state === 'play') pause(); else if (game.state === 'pause') resume(); });
 function soundIcon(){ $('btnSound').textContent = muted ? '🔇' : '🔊'; }
 $('btnSound').addEventListener('click', function(e){
@@ -2336,9 +2501,9 @@ function frame(now){
 }
 
 // do testów w konsoli
-window.__pinball = {game:game, step:step, FL:FL, DROPS:DROPS, BONES:BONES, BUMPERS:BUMPERS, EZRA:EZRA, SPIN:SPIN, RAMP:RAMP, RAMP2:RAMP2, SQ:SQ, MISSIONS:MISSIONS, CAP:CAP, nudge:nudge, startMini:startMini, CFG:CFG, newGame:newGame, serveBall:serveBall, newBallObj:newBallObj};
+window.__pinball = {game:game, step:step, FL:FL, DROPS:DROPS, BONES:BONES, BUMPERS:BUMPERS, EZRA:EZRA, SPIN:SPIN, RAMP:RAMP, RAMP2:RAMP2, SQ:SQ, MISSIONS:MISSIONS, CAP:CAP, MAG:MAG, DZ:DZ, nudge:nudge, loadTheme:loadTheme, startMini:startMini, CFG:CFG, newGame:newGame, serveBall:serveBall, newBallObj:newBallObj};
 
-loadBest(); soundIcon(); fitCanvas(); renderDaily();
+loadBest(); soundIcon(); fitCanvas(); loadTheme(); renderDaily();
 requestAnimationFrame(frame);
 })();
 </script>
