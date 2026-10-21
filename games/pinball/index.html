@@ -287,14 +287,17 @@ var LANES = [{x:140, y:84}, {x:185, y:84}, {x:230, y:84}];
 var BUMPERS = [
   {x:150, y:190, r:20, c1:'#e2503f', c2:'#8e2117'},
   {x:232, y:190, r:20, c1:'#3d84d6', c2:'#173f78'},
-  {x:191, y:254, r:20, c1:'#f39a3a', c2:'#9a5210'}
+  {x:191, y:254, r:20, c1:'#f39a3a', c2:'#9a5210'},
+  // małe miski u góry — piłka dłużej odbija się w górnej części stołu
+  {x:95, y:212, r:14, c1:'#8a63d8', c2:'#3d2a8a'},
+  {x:285, y:215, r:14, c1:'#3fae6a', c2:'#1d6a35'}
 ];
 BUMPERS.forEach(function(b){ b.flash = -9; b.cd = 0; });
 var TABLES = {
-  park:{n:'Park', bump:[[150, 190, '#e2503f', '#8e2117'], [232, 190, '#3d84d6', '#173f78'], [191, 254, '#f39a3a', '#9a5210']], drops:'EZRA',
+  park:{n:'Park', bump:[[150, 190, '#e2503f', '#8e2117'], [232, 190, '#3d84d6', '#173f78'], [191, 254, '#f39a3a', '#9a5210'], [95, 212, '#8a63d8', '#3d2a8a'], [285, 215, '#3fae6a', '#1d6a35']], drops:'EZRA',
     ramps:['APORT', 'KOŚĆ'], buda:'BUDA', critter:'squirrel', crName:'WIEWIÓRKA', crMany:'WIEWIÓRKI', crHide:'Uciekła na drzewo', sling:['#ffb067', '#d4551f'], theme:null,
     mis:['POGOŃ', 'APORT', 'KĄPIEL', 'TROP', 'ŁAKOMCZUCH'], misd:['Trafiaj wiewiórkę', 'Wjeżdżaj na rampy', 'Uderzaj w miski', 'Zbijaj cele E-Z-R-A', 'Głaszcz Ezrę']},
-  bcn:{n:'Barcelona', bump:[[146, 186, '#2f9fd8', '#15507a'], [236, 186, '#f2c33a', '#9a6d10'], [191, 246, '#e24f7a', '#8e1f42']], drops:'TAPA',
+  bcn:{n:'Barcelona', bump:[[146, 186, '#2f9fd8', '#15507a'], [236, 186, '#f2c33a', '#9a6d10'], [191, 246, '#e24f7a', '#8e1f42'], [95, 212, '#3fae6a', '#1d6a35'], [285, 215, '#f08a3a', '#9a4a10']], drops:'TAPA',
     ramps:['SAGRADA', 'GÜELL'], buda:'TAPAS', critter:'gecko', crName:'JASZCZURKA', crMany:'JASZCZURKI', crHide:'Schowała się w palmie', sling:['#5fc0e8', '#1d6fa5'], theme:'barcelona',
     mis:['GEKON', 'SAGRADA', 'FONTANNA', 'TAPAS', 'SIESTA'], misd:['Trafiaj jaszczurkę', 'Wjeżdżaj na rampy', 'Uderzaj w mozaiki', 'Zbijaj cele T-A-P-A', 'Głaszcz Ezrę']}
 };
@@ -357,7 +360,7 @@ var SQ = {x:188, y:138, r:9, ph:0, vx:0, fled:-9, t:-9, home:{x:313, y:150}};
 var MISSIONS = [
   {id:'pogon', name:'POGOŃ', desc:'Trafiaj wiewiórkę', need:2, time:50, reward:25000},
   {id:'aport', name:'APORT', desc:'Wjeżdżaj na rampy', need:2, time:45, reward:25000},
-  {id:'kapiel', name:'KĄPIEL', desc:'Uderzaj w miski', need:10, time:35, reward:20000},
+  {id:'kapiel', name:'KĄPIEL', desc:'Uderzaj w miski', need:14, time:35, reward:20000},
   {id:'trop', name:'TROP', desc:'Zbijaj cele E-Z-R-A', need:4, time:45, reward:30000},
   {id:'lakomczuch', name:'ŁAKOMCZUCH', desc:'Głaszcz Ezrę', need:3, time:45, reward:20000}
 ];
@@ -570,6 +573,9 @@ function collideFlipper(b, f){
     b.vx = rvx + vsx; b.vy = rvy + vsy;
   }
 }
+// górna część stołu jest łagodniej nachylona — piłka dłużej się tam odbija
+var GTOP = 0.62, KBIAS = 0.6;
+function gmul(y){ return y >= 420 ? 1 : GTOP + (1 - GTOP) * Math.max(0, y) / 420; }
 function capSpeed(b){
   var s2 = b.vx * b.vx + b.vy * b.vy;
   if (s2 > MAXV * MAXV){ var k = MAXV / Math.sqrt(s2); b.vx *= k; b.vy *= k; }
@@ -1142,7 +1148,7 @@ function step(h){
     if (b.mode !== 'play') continue;
     act.push(b);
     var py = b.y;
-    b.vy += G * h; b.x += b.vx * h; b.y += b.vy * h;
+    b.vy += G * gmul(b.y) * h; b.x += b.vx * h; b.y += b.vy * h;
 
     for (var wi = 0; wi < walls.length; wi++){
       var s = walls[wi];
@@ -1157,7 +1163,9 @@ function step(h){
           b.vx += c.nx * 520; b.vy += c.ny * 520;
           addScore(50); sfx.sling(); game.skillUntil = 0; spark(b.x - c.nx * BR, b.y - c.ny * BR, 8, '#fff3c4', 180);
         }
-      } else if (s.kind === 'post' || s.kind === 'slingside'){
+      } else if (s.kind === 'post'){
+        bounce(b, c.nx, c.ny, 0.72, 0.99);
+      } else if (s.kind === 'slingside'){
         bounce(b, c.nx, c.ny, 0.55, 0.99);
       } else bounce(b, c.nx, c.ny, s.e, 0.995);
     }
@@ -1166,7 +1174,10 @@ function step(h){
       if (!cc) continue;
       bounce(b, cc.nx, cc.ny, 0.6, 1);
       var out = b.vx * cc.nx + b.vy * cc.ny;
-      if (out < 640 && !game.tilt){ b.vx += cc.nx * (640 - out); b.vy += cc.ny * (640 - out); }
+      var kick = p.r < 18 ? 600 : 720;
+      if (out < kick && !game.tilt){ b.vx += cc.nx * (kick - out); b.vy += cc.ny * (kick - out); }
+      // miski u góry stołu nie wybijają piłki prosto w dół — dłużej krąży między nimi
+      if (!game.tilt && b.vy > 0 && p.y < 300){ b.vy *= KBIAS; b.vx *= 1.08; }
       if (p.cd <= T){
         p.cd = T + 0.08; p.flash = T;
         addScore(game.bumperVal * ev('bump'), p.x, p.y - 28); game.bonus += 20; sfx.bump(); game.skillUntil = 0; missionEvent('kapiel');
@@ -2418,7 +2429,7 @@ function saveScore(){
 function sig(o){ var t = o.name + '|' + o.score + '|' + o.dur + '|' + o.diff + '|ezra-hau'; var hsh = 0; for (var i = 0; i < t.length; i++) hsh = (hsh * 31 + t.charCodeAt(i)) >>> 0; return hsh.toString(36); }
 function submitOnline(nm, sc){
   if (!CFG.online || !window.fetch) return;
-  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.5.0', mode:game.mode, table:CFG.table};
+  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.5.1', mode:game.mode, table:CFG.table};
   body.k = sig(body);
   fetch(API + '/score', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
     .then(function(r){ return r.json(); })
@@ -2683,7 +2694,7 @@ function frame(now){
 }
 
 // do testów w konsoli
-window.__pinball = {game:game, step:step, FL:FL, DROPS:DROPS, BONES:BONES, BUMPERS:BUMPERS, EZRA:EZRA, SPIN:SPIN, RAMP:RAMP, RAMP2:RAMP2, SQ:SQ, MISSIONS:MISSIONS, CAP:CAP, MAG:MAG, DZ:DZ, switchTable:switchTable, weekEv:weekEv, nudge:nudge, loadTheme:loadTheme, startMini:startMini, CFG:CFG, newGame:newGame, serveBall:serveBall, newBallObj:newBallObj};
+window.__pinball = {game:game, step:step, FL:FL, DROPS:DROPS, BONES:BONES, BUMPERS:BUMPERS, EZRA:EZRA, SPIN:SPIN, RAMP:RAMP, RAMP2:RAMP2, SQ:SQ, MISSIONS:MISSIONS, CAP:CAP, MAG:MAG, DZ:DZ, setGtop:function(v){ GTOP = v; }, setKbias:function(v){ KBIAS = v; }, switchTable:switchTable, weekEv:weekEv, nudge:nudge, loadTheme:loadTheme, startMini:startMini, CFG:CFG, newGame:newGame, serveBall:serveBall, newBallObj:newBallObj};
 
 applyTable(); loadBest(); soundIcon(); fitCanvas(); loadTheme(); renderDaily();
 requestAnimationFrame(frame);
