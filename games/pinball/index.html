@@ -574,7 +574,7 @@ function collideFlipper(b, f){
   }
 }
 // górna część stołu jest łagodniej nachylona — piłka dłużej się tam odbija
-var GTOP = 0.62, KBIAS = 0.6;
+var GTOP = 0.48, KBIAS = 0.42;
 function gmul(y){ return y >= 420 ? 1 : GTOP + (1 - GTOP) * Math.max(0, y) / 420; }
 function capSpeed(b){
   var s2 = b.vx * b.vx + b.vy * b.vy;
@@ -1177,7 +1177,7 @@ function step(h){
       var kick = p.r < 18 ? 600 : 720;
       if (out < kick && !game.tilt){ b.vx += cc.nx * (kick - out); b.vy += cc.ny * (kick - out); }
       // miski u góry stołu nie wybijają piłki prosto w dół — dłużej krąży między nimi
-      if (!game.tilt && b.vy > 0 && p.y < 300){ b.vy *= KBIAS; b.vx *= 1.08; }
+      if (!game.tilt && b.vy > 0 && p.y < 300){ b.vy *= KBIAS; b.vx *= 1.14; }
       if (p.cd <= T){
         p.cd = T + 0.08; p.flash = T;
         addScore(game.bumperVal * ev('bump'), p.x, p.y - 28); game.bonus += 20; sfx.bump(); game.skillUntil = 0; missionEvent('kapiel');
@@ -2429,7 +2429,7 @@ function saveScore(){
 function sig(o){ var t = o.name + '|' + o.score + '|' + o.dur + '|' + o.diff + '|ezra-hau'; var hsh = 0; for (var i = 0; i < t.length; i++) hsh = (hsh * 31 + t.charCodeAt(i)) >>> 0; return hsh.toString(36); }
 function submitOnline(nm, sc){
   if (!CFG.online || !window.fetch) return;
-  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.5.1', mode:game.mode, table:CFG.table};
+  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.5.2', mode:game.mode, table:CFG.table};
   body.k = sig(body);
   fetch(API + '/score', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
     .then(function(r){ return r.json(); })
