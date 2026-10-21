@@ -58,6 +58,9 @@ canvas#c{display:block;border-radius:18px;box-shadow:0 0 0 2px #2b1a0e,0 24px 70
 .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);margin-top:5px;overflow:hidden}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,#ffb04a,#e5533d)}
 #btnTime[hidden]{display:none}
+#tableSel{justify-content:center;flex-wrap:wrap}
+#tableSel[hidden]{display:none}
+.tabs[hidden]{display:none}
 .overlay h1{font-size:2.1rem;font-weight:900;letter-spacing:.02em;line-height:1;margin-top:-6px;
   color:#ffd9a0;text-shadow:0 0 6px rgba(255,150,40,.9),0 0 18px rgba(255,110,20,.6),0 2px 0 #7a3a0c}
 .overlay p{color:var(--muted);font-size:.88rem;max-width:290px;line-height:1.5}
@@ -134,6 +137,7 @@ input[type=text]{user-select:text;-webkit-user-select:text;background:rgba(0,0,0
         <canvas id="logo" hidden></canvas>
         <img class="photo" id="ovPhoto" src="ezra.webp" alt="Ezra">
         <h1 id="ovTitle">Ezra Pinball</h1>
+        <div class="seg" id="tableSel"><button data-tb="park">🌳 Stół: Park</button><button data-tb="bcn">🦎 Stół: Barcelona</button></div>
         <p id="ovText">Beagielka Ezra pilnuje stołu. Rzucaj jej piłkę na rampę, zbij cele E-Z-R-A i wyprowadź trzy piłki na spacer!</p>
         <div class="sc" id="ovScore"></div>
         <div class="namebox" id="nameBox" hidden>
@@ -155,7 +159,8 @@ input[type=text]{user-select:text;-webkit-user-select:text;background:rgba(0,0,0
       <div class="scr" id="scrTop" hidden>
         <h2>🏆 Rekordy</h2>
         <div class="tabs" id="modeTabs"><button data-m="classic" class="on">Klasyczna</button><button data-m="time">Na czas</button></div>
-        <div class="tabs" id="whoTabs"><button data-t="me" class="on">Moje</button><button data-t="world">Świat</button></div>
+        <div class="tabs" id="tableTabs"><button data-tb="park" class="on">Park</button><button data-tb="bcn">Barcelona</button></div>
+        <div class="tabs" id="whoTabs"><button data-t="me" class="on">Moje</button><button data-t="world">Świat</button><button data-t="week">Tydzień</button></div>
         <ol class="toplist" id="topList"></ol>
         <div class="note" id="topNote"></div>
         <button class="btn ghost back">Wróć</button>
@@ -182,6 +187,10 @@ input[type=text]{user-select:text;-webkit-user-select:text;background:rgba(0,0,0
           <div>Motyw stołu
             <div class="seg" id="setTheme" style="margin-top:6px;flex-wrap:wrap"></div>
             <small id="themeInfo"></small>
+          </div>
+          <div>Strój Ezry na medalionie
+            <div class="seg" id="setOutfit" style="margin-top:6px;flex-wrap:wrap"></div>
+            <small id="outfitInfo"></small>
           </div>
           <label>Imię w rankingu <input type="text" id="setName" maxlength="10" autocomplete="off" spellcheck="false"></label>
           <label>Wysyłaj wyniki do rankingu świata <input type="checkbox" id="setOnline"></label>
@@ -215,6 +224,9 @@ input[type=text]{user-select:text;-webkit-user-select:text;background:rgba(0,0,0
             <li><b>Zadania detektywa:</b> po finale wracają trudniejsze zadania za większe nagrody.</li>
             <li><b>Na czas:</b> 3 minuty, strata piłki zabiera 10 s. Osobna tabela i ranking.</li>
             <li><b>Rangi Ezry:</b> gry, zadania, spacery i odznaki dają doświadczenie — kolejne rangi odblokowują motywy stołu z przygód Ezry.</li>
+            <li><b>Stół Barcelona:</b> mozaikowe miski Gaudiego, jaszczurka zamiast wiewiórki, bar tapas zamiast budy, cele T-A-P-A, rampy Sagrada i Güell oraz własne zadania. Osobne rekordy.</li>
+            <li><b>Stroje Ezry:</b> kolejne rangi odblokowują stroje na medalionie (Ustawienia).</li>
+            <li><b>Wydarzenie tygodnia:</b> co tydzień inny element płaci podwójnie lub potrójnie; najlepsi z tygodnia trafiają do rankingu tygodnia.</li>
             <li><b>Wyzwanie dnia:</b> codziennie inne zadanie za +50 000; kilka dni z rzędu to seria.</li>
             <li>Na początku każdej piłki Ezra łapie piłkę, która wpadnie (czas zależy od poziomu). <b>P</b> — pauza.</li>
           </ul>
@@ -278,6 +290,15 @@ var BUMPERS = [
   {x:191, y:254, r:20, c1:'#f39a3a', c2:'#9a5210'}
 ];
 BUMPERS.forEach(function(b){ b.flash = -9; b.cd = 0; });
+var TABLES = {
+  park:{n:'Park', bump:[[150, 190, '#e2503f', '#8e2117'], [232, 190, '#3d84d6', '#173f78'], [191, 254, '#f39a3a', '#9a5210']], drops:'EZRA',
+    ramps:['APORT', 'KOŚĆ'], buda:'BUDA', critter:'squirrel', crName:'WIEWIÓRKA', crMany:'WIEWIÓRKI', crHide:'Uciekła na drzewo', sling:['#ffb067', '#d4551f'], theme:null,
+    mis:['POGOŃ', 'APORT', 'KĄPIEL', 'TROP', 'ŁAKOMCZUCH'], misd:['Trafiaj wiewiórkę', 'Wjeżdżaj na rampy', 'Uderzaj w miski', 'Zbijaj cele E-Z-R-A', 'Głaszcz Ezrę']},
+  bcn:{n:'Barcelona', bump:[[146, 186, '#2f9fd8', '#15507a'], [236, 186, '#f2c33a', '#9a6d10'], [191, 246, '#e24f7a', '#8e1f42']], drops:'TAPA',
+    ramps:['SAGRADA', 'GÜELL'], buda:'TAPAS', critter:'gecko', crName:'JASZCZURKA', crMany:'JASZCZURKI', crHide:'Schowała się w palmie', sling:['#5fc0e8', '#1d6fa5'], theme:'barcelona',
+    mis:['GEKON', 'SAGRADA', 'FONTANNA', 'TAPAS', 'SIESTA'], misd:['Trafiaj jaszczurkę', 'Wjeżdżaj na rampy', 'Uderzaj w mozaiki', 'Zbijaj cele T-A-P-A', 'Głaszcz Ezrę']}
+};
+var TB = TABLES.park;
 var SLINGS = [];
 function sling(A, B, C, dir){
   var s = {A:A, B:B, C:C, flash:-9, cd:0, dir:dir};
@@ -408,7 +429,7 @@ var touched = false;
 function buzz(ms){ if (!touched || !CFG.vib) return; try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e){} }
 
 /* ================= USTAWIENIA ================= */
-var CFG = {music:0.35, sfx:0.9, vib:true, shake:true, diff:'normal', name:'', online:true, theme:'park'};
+var CFG = {music:0.35, sfx:0.9, vib:true, shake:true, diff:'normal', name:'', online:true, theme:'park', table:'park', outfit:'none'};
 function load(key, def){ try { var v = JSON.parse(localStorage.getItem(key)); return v == null ? def : v; } catch(e){ return def; } }
 function save(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){} }
 (function(){ var sv = load('pinball_cfg', {}); for (var k in sv) if (k in CFG) CFG[k] = sv[k]; })();
@@ -627,7 +648,7 @@ function treat(){
 }
 function startMission(){
   var m = MISSIONS[game.mNext], rd = game.mRound || 0;
-  var need = m.need + rd * Math.ceil(m.need / 2), rew = m.reward * (1 + rd);
+  var need = m.need + rd * Math.ceil(m.need / 2), rew = m.reward * (1 + rd) * ev('mis');
   game.mission = {m:m, cnt:0, need:need, reward:rew, end:T + m.time};
   say((rd ? 'DETEKTYW: ' : 'ZADANIE: ') + m.name, m.desc + ' ×' + need, 2.4, 'big'); sfx.fanfare();
 }
@@ -652,20 +673,20 @@ function wizardHit(x, y){
 function hitSquirrel(){
   SQ.fled = T + 2.4; SQ.t = T; SQ.hx = SQ.x; SQ.hy = SQ.y; game.squirrels++; game.st.sq++;
   if (game.st.sq >= 5) badge('lowca');
-  addScore(1500, SQ.x, SQ.y - 16); game.bonus += 150; sfx.squirrel(); spark(SQ.x, SQ.y, 14, '#ffb067', 200);
+  addScore(1500 * ev('sq'), SQ.x, SQ.y - 16); game.bonus += 150; sfx.squirrel(); spark(SQ.x, SQ.y, 14, '#ffb067', 200);
   if (wizardHit(SQ.x, SQ.y + 20)) return;
   missionEvent('pogon');
-  if (game.squirrels % 5 === 0){ var v = Math.min(30000, 2000 * game.squirrels); addScore(v); say('WIEWIÓRKI ×' + game.squirrels, '+' + fmt(v), 1.8, 'big'); }
-  else if (!game.mission) say('WIEWIÓRKA!', 'Uciekła na drzewo', 1.1);
+  if (game.squirrels % 5 === 0){ var v = Math.min(30000, 2000 * game.squirrels); addScore(v); say(TB.crMany + ' ×' + game.squirrels, '+' + fmt(v), 1.8, 'big'); }
+  else if (!game.mission) say(TB.crName + '!', TB.crHide, 1.1);
 }
 function capHit(){
   CAP.hits++; CAP.t = T; game.st.caps++; sfx.cap(); spark(255, 424, 12, '#fff1b8', 180);
   if (wizardHit(255, 410)) return;
   missionEvent('pileczka');
   if (CAP.hits % 3 === 0){
-    if (game.mult < 5){ game.mult++; addScore(5000, 255, 405); say('PIŁECZKA EZRY!', 'Bonus ×' + game.mult, 1.8, 'big'); }
-    else { addScore(10000, 255, 405); say('PIŁECZKA EZRY!', '+10 000', 1.6, 'big'); }
-  } else { addScore(2500, 255, 405); say('PIŁECZKA', (CAP.hits % 3) + '/3', 1.0); }
+    if (game.mult < 5){ game.mult++; addScore(5000 * ev('cap'), 255, 405); say('PIŁECZKA EZRY!', 'Bonus ×' + game.mult, 1.8, 'big'); }
+    else { addScore(10000 * ev('cap'), 255, 405); say('PIŁECZKA EZRY!', '+' + fmt(10000 * ev('cap')), 1.6, 'big'); }
+  } else { addScore(2500 * ev('cap'), 255, 405); say('PIŁECZKA', (CAP.hits % 3) + '/3', 1.0); }
   if (stats.caps + game.st.caps >= 10) badge('pileczka');
 }
 function nudge(dx){
@@ -685,6 +706,89 @@ function startMini(b){
   b.kickAt = T + 14;
   if (game.mission) game.mission.end += 14;
   say('MINI-GRA', 'Patrz na wyświetlacz!', 1.2, 'big'); sfx.fanfare();
+}
+function applyTable(){
+  TB = TABLES[CFG.table] || TABLES.park;
+  TB.bump.forEach(function(q, i){ var b = BUMPERS[i]; b.x = q[0]; b.y = q[1]; b.c1 = q[2]; b.c2 = q[3]; });
+  DROPS.forEach(function(d, i){ d.l = TB.drops[i]; });
+  LAMPS.forEach(function(L){
+    if (L.id.indexOf('ez') === 0) L.txt = TB.drops[+L.id[2]];
+    if (L.id.indexOf('mis') === 0) L.txt = TB.mis[+L.id[3]];
+  });
+  MISSIONS.forEach(function(m, i){ m.name = TB.mis[i]; m.desc = TB.misd[i]; });
+  RAMP.label = TB.ramps[0]; RAMP2.label = TB.ramps[1];
+  document.querySelectorAll('#tableSel button').forEach(function(bt){ bt.classList.toggle('on', bt.getAttribute('data-tb') === CFG.table); });
+}
+function switchTable(id){
+  CFG.table = id; saveCfg(); applyTable(); loadTheme();
+  if (cv.width > 1){ buildBg(); buildRamp(); buildSprites(); }
+}
+// wydarzenie tygodnia
+var WEEKLY = [
+  {id:'sq', n:'Tydzień pogoni', d:'wiewiórka i jaszczurka ×3'},
+  {id:'ramp', n:'Tydzień ramp', d:'rampy ×2'},
+  {id:'bump', n:'Tydzień misek', d:'miski ×3'},
+  {id:'mis', n:'Tydzień zadań', d:'nagrody za zadania ×2'},
+  {id:'cap', n:'Tydzień piłeczki', d:'piłeczka Ezry ×3'}
+];
+function weekId(){
+  var d = new Date(), t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  var day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day);
+  var y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)), w = Math.ceil(((t - y0) / 864e5 + 1) / 7);
+  return t.getUTCFullYear() + '-W' + (w < 10 ? '0' : '') + w;
+}
+function weekEv(){ var w = weekId(); return WEEKLY[(parseInt(w.slice(-2), 10) + parseInt(w.slice(0, 4), 10)) % WEEKLY.length]; }
+function ev(id){ return weekEv().id === id ? (id === 'ramp' || id === 'mis' ? 2 : 3) : 1; }
+// stroje Ezry
+var OUTFITS = [
+  {id:'none', n:'Bez stroju', rank:0}, {id:'kapelusz', n:'Kapelusz z Wenecji', rank:1}, {id:'detektyw', n:'Czapka detektywa', rank:2},
+  {id:'wianek', n:'Wianek z Bawarii', rank:3}, {id:'beret', n:'Beret', rank:4}, {id:'korona', n:'Korona Legendy', rank:5}
+];
+function drawOutfit(g, c, MR, id){
+  var top = c - MR;
+  if (id === 'kapelusz'){
+    g.fillStyle = '#b8924a'; ell(g, c, top + 9, MR + 2, 7.5);
+    g.fillStyle = '#e9c987'; ell(g, c, top + 7.5, MR, 6.5);
+    var kg = g.createLinearGradient(0, top - 14, 0, top + 8);
+    kg.addColorStop(0, '#f3dba0'); kg.addColorStop(1, '#c9a35a');
+    g.fillStyle = kg; rrect(g, c - 17, top - 13, 34, 21, 6); g.fill();
+    g.fillStyle = '#2a8f8f'; g.fillRect(c - 17, top + 1, 34, 5);
+    g.strokeStyle = 'rgba(120,80,30,.4)'; g.lineWidth = 0.6;
+    for (var i = -14; i <= 14; i += 4){ g.beginPath(); g.moveTo(c + i, top - 12); g.lineTo(c + i, top + 1); g.stroke(); }
+  } else if (id === 'detektyw'){
+    var dg = g.createRadialGradient(c - 6, top - 6, 2, c, top, 26);
+    dg.addColorStop(0, '#b08a5c'); dg.addColorStop(1, '#6e5030');
+    g.fillStyle = dg; ell(g, c, top + 2, 25, 15);
+    g.strokeStyle = 'rgba(60,40,20,.55)'; g.lineWidth = 0.8;
+    for (var j = -20; j <= 20; j += 6){ g.beginPath(); g.moveTo(c + j, top - 11); g.lineTo(c + j, top + 15); g.stroke(); }
+    for (var k = -9; k <= 13; k += 6){ g.beginPath(); g.moveTo(c - 24, top + k); g.lineTo(c + 24, top + k); g.stroke(); }
+    g.fillStyle = '#5a3e22'; ell(g, c, top + 15, 19, 5);
+    g.fillStyle = '#4a321a'; ell(g, c, top - 12, 3, 3);
+  } else if (id === 'wianek'){
+    for (var a = 0; a <= 12; a++){
+      var an = PI + 0.15 + a * (PI - 0.3) / 12, fx = c + Math.cos(an) * (MR + 1), fy = c + Math.sin(an) * (MR + 1);
+      g.fillStyle = '#3d8a45'; ell(g, fx, fy + 2, 4.5, 2.5, an);
+      g.fillStyle = ['#ff8fb1', '#ffffff', '#ffd23f', '#9fc9f0'][a % 4];
+      for (var pt = 0; pt < 5; pt++){ var pa = pt * 1.2566; ell(g, fx + Math.cos(pa) * 2.6, fy + Math.sin(pa) * 2.6, 2, 2); }
+      g.fillStyle = '#f2a51a'; ell(g, fx, fy, 1.4, 1.4);
+    }
+  } else if (id === 'beret'){
+    g.save(); g.translate(c - 4, top + 3); g.rotate(-0.22);
+    var bg = g.createRadialGradient(-6, -6, 2, 0, 0, 28);
+    bg.addColorStop(0, '#ef5a4c'); bg.addColorStop(1, '#8e1f17');
+    g.fillStyle = bg; ell(g, 0, 0, 27, 11);
+    g.fillStyle = '#6e1610'; ell(g, 0, 7, 22, 3);
+    g.fillStyle = '#8e1f17'; g.fillRect(-1.2, -15, 2.4, 5);
+    g.restore();
+  } else if (id === 'korona'){
+    var cr = g.createLinearGradient(0, top - 18, 0, top + 6);
+    cr.addColorStop(0, '#fff2b8'); cr.addColorStop(0.5, '#f2c14e'); cr.addColorStop(1, '#a8740c');
+    g.fillStyle = cr;
+    g.beginPath(); g.moveTo(c - 20, top + 6); g.lineTo(c - 22, top - 12); g.lineTo(c - 11, top - 2); g.lineTo(c, top - 18);
+    g.lineTo(c + 11, top - 2); g.lineTo(c + 22, top - 12); g.lineTo(c + 20, top + 6); g.closePath(); g.fill();
+    g.strokeStyle = '#7a520a'; g.lineWidth = 1; g.stroke();
+    [['#e2503f', -12], ['#3d84d6', 0], ['#7dff9a', 12]].forEach(function(q){ g.fillStyle = q[0]; ell(g, c + q[1], top + 1, 2.6, 2.6); });
+  }
 }
 function rawHeld(side){
   if (side === 0 ? input.keyL : input.keyR) return true;
@@ -762,8 +866,8 @@ function rankIdx(){ var x = xp(), r = 0; for (var i = 0; i < RANKS.length; i++) 
 function themeOf(id){ for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === id) return THEMES[i]; return THEMES[0]; }
 var themeImg = null;
 function loadTheme(){
-  var th = themeOf(CFG.theme);
-  if (th.id === 'park' || rankIdx() < th.rank){ themeImg = null; if (cv.width > 1) buildBg(); return; }
+  var th = themeOf(TB.theme || CFG.theme);
+  if (th.id === 'park' || (!TB.theme && rankIdx() < th.rank)){ themeImg = null; if (cv.width > 1) buildBg(); return; }
   themeImg = new Image();
   themeImg.onload = function(){ if (cv.width > 1) buildBg(); };
   themeImg.src = 'theme-' + th.id + '.webp';
@@ -854,7 +958,7 @@ function rampDone(b, R){
     game.jackpot += 5000; game.jackpotLit = false; game.superLit = true;
     combo(); return;
   }
-  addScore(2500, R.mouth.x0 + 19, 320);
+  addScore(2500 * ev('ramp'), R.mouth.x0 + 19, 320);
   if (game.ramps % 3 === 0){
     game.aport++; var v = 10000 * game.aport; addScore(v);
     say('APORT!', 'Ezra przynosi +' + fmt(v), 2.2, 'run'); sfx.bark(); EZRA.t = T; shake(4);
@@ -981,6 +1085,7 @@ function step(h){
   var sqOn = T > SQ.fled;
   if (sqOn) SQ.ph += h * 1.1;
   SQ.x = 188 + 60 * Math.sin(SQ.ph); SQ.vx = sqOn ? 66 * Math.cos(SQ.ph) : 0;
+  SQ.y = TB.critter === 'gecko' ? 138 + 9 * Math.sin(SQ.ph * 2) : 138;
   if (game.mission && T > game.mission.end){ say('KONIEC CZASU', game.mission.m.name + ' — spróbuj znowu', 1.8); game.mission = null; }
   // spinner
   if (SPIN.v > 0.01){
@@ -1064,7 +1169,7 @@ function step(h){
       if (out < 640 && !game.tilt){ b.vx += cc.nx * (640 - out); b.vy += cc.ny * (640 - out); }
       if (p.cd <= T){
         p.cd = T + 0.08; p.flash = T;
-        addScore(game.bumperVal, p.x, p.y - 28); game.bonus += 20; sfx.bump(); game.skillUntil = 0; missionEvent('kapiel');
+        addScore(game.bumperVal * ev('bump'), p.x, p.y - 28); game.bonus += 20; sfx.bump(); game.skillUntil = 0; missionEvent('kapiel');
         spark(p.x + cc.nx * p.r, p.y + cc.ny * p.r, 12, '#ffe7a8', 240); shake(1.5);
       }
     }
@@ -1263,6 +1368,23 @@ function drawBone(c, x, y, len, th, ang, color){
   });
   c.restore();
 }
+function drawGecko(c, x, y, dir, run){
+  c.save(); c.translate(x, y); c.scale(dir, 1);
+  var k = run ? Math.sin(run) * 0.35 : 0;
+  c.strokeStyle = '#2b7fb8'; c.lineWidth = 3; c.lineCap = 'round';
+  c.beginPath(); c.moveTo(-6, 0); c.bezierCurveTo(-13, 2 + k * 6, -17, -6, -12, -8); c.stroke();
+  c.strokeStyle = '#2b7fb8'; c.lineWidth = 2;
+  [[3, -4, 7, -8 - k * 4], [3, 4, 7, 8 + k * 4], [-4, -4, -8, -8 + k * 4], [-4, 4, -8, 8 - k * 4]].forEach(function(l){ c.beginPath(); c.moveTo(l[0], l[1] * 0.4); c.lineTo(l[2], l[3]); c.stroke(); });
+  var gb = c.createLinearGradient(-8, -4, 10, 4);
+  gb.addColorStop(0, '#3fae6a'); gb.addColorStop(0.5, '#2f9fd8'); gb.addColorStop(1, '#f2c33a');
+  c.fillStyle = gb; ell(c, 0, 0, 9, 4.5);
+  c.fillStyle = '#2f9fd8'; ell(c, 9.5, 0, 4.5, 3.6);
+  c.fillStyle = '#f2c33a'; ell(c, -3, -1, 1.6, 1.2); ell(c, 2, 1.4, 1.5, 1.1);
+  c.fillStyle = '#e24f7a'; ell(c, -6, 0.6, 1.3, 1);
+  c.fillStyle = '#111'; ell(c, 11, -1.8, 0.9, 0.9); ell(c, 11, 1.8, 0.9, 0.9);
+  c.restore();
+}
+function drawCritter(c, x, y, dir, run){ if (TB.critter === 'gecko') drawGecko(c, x, y, dir, run); else drawSquirrel(c, x, y, dir, run); }
 function drawSquirrel(c, x, y, dir, run){
   c.save(); c.translate(x, y); c.scale(dir, 1);
   var tg = c.createLinearGradient(-14, -18, -4, 6);
@@ -1375,6 +1497,17 @@ function drawBowl(g, cx, cy, r, c1, c2, lit){
   var rim = g.createRadialGradient(cx - r * 0.35, cy - r * 0.45, 1, cx, cy, r);
   rim.addColorStop(0, lit ? '#ffffff' : mix(c1, 0.45)); rim.addColorStop(0.65, lit ? mix(c1, 0.4) : c1); rim.addColorStop(1, c2);
   g.fillStyle = rim; ell(g, cx, cy, r, r);
+  if (TB.critter === 'gecko'){
+    // trencadís: kolorowe kafelki na rancie
+    var tiles = ['#2f9fd8', '#f2c33a', '#e24f7a', '#3fae6a', '#ffffff', '#f08a3a'], sd = Math.round(cx * 7 + cy);
+    for (var ti = 0; ti < 16; ti++){
+      sd = (sd * 9301 + 49297) % 233280;
+      var a0 = ti * PI / 8 + 0.05, a1 = a0 + PI / 8 - 0.12, r0 = r * 0.72, r1 = r * 0.97;
+      g.fillStyle = lit ? '#ffffff' : tiles[sd % tiles.length];
+      g.beginPath(); g.moveTo(cx + Math.cos(a0) * r0, cy + Math.sin(a0) * r0); g.lineTo(cx + Math.cos(a0) * r1, cy + Math.sin(a0) * r1);
+      g.lineTo(cx + Math.cos(a1) * r1, cy + Math.sin(a1) * r1); g.lineTo(cx + Math.cos(a1) * r0, cy + Math.sin(a1) * r0); g.closePath(); g.fill();
+    }
+  }
   var inner = g.createRadialGradient(cx + r * 0.25, cy + r * 0.3, 1, cx, cy, r * 0.68);
   inner.addColorStop(0, '#f2f5f8'); inner.addColorStop(1, '#79828c');
   g.fillStyle = inner; ell(g, cx, cy, r * 0.68, r * 0.68);
@@ -1396,7 +1529,7 @@ function buildSprites(){
   SPR.ezraBark = sprite(ES, ES, function(g){ drawEzra(g, ES / 2, ES / 2 - 2, 40, {bark:true}); });
   // medalion ze zdjęciem Ezry (cel na środku stołu)
   if (EZRA_IMG.complete && EZRA_IMG.naturalWidth){
-    var MR = 30, MS = MR * 2 + 16;
+    var MR = 30, MS = MR * 2 + 44;
     SPR.ezraPhoto = sprite(MS, MS, function(g){
       var c = MS / 2;
       g.fillStyle = 'rgba(0,0,0,.45)'; ell(g, c + 3, c + 5, MR + 5, MR + 5);
@@ -1410,6 +1543,8 @@ function buildSprites(){
       gl.addColorStop(0, 'rgba(255,255,255,.28)'); gl.addColorStop(0.45, 'rgba(255,255,255,0)'); gl.addColorStop(1, 'rgba(0,0,0,.18)');
       g.fillStyle = gl; g.fillRect(c - MR, c - MR, MR * 2, MR * 2);
       g.restore();
+      var of = CFG.outfit || 'none';
+      for (var oi = 0; oi < OUTFITS.length; oi++) if (OUTFITS[oi].id === of && rankIdx() >= OUTFITS[oi].rank) drawOutfit(g, c, MR, of);
     });
   }
   SPR.ball = sprite(BR * 2 + 2, BR * 2 + 2, function(g){
@@ -1534,7 +1669,7 @@ function buildBg(){
   gr.addColorStop(0, '#3f8f4b'); gr.addColorStop(0.5, '#2d6c39'); gr.addColorStop(1, '#17401f');
   g.fillStyle = gr; g.fillRect(0, 0, W, H);
   // motyw z przygód Ezry: grafika sezonu pod przyciemnieniem
-  var TH = themeOf(CFG.theme), themed = !!(themeImg && themeImg.complete && themeImg.naturalWidth && TH.id !== 'park');
+  var TH = themeOf(TB.theme || CFG.theme), themed = !!(themeImg && themeImg.complete && themeImg.naturalWidth && TH.id !== 'park');
   if (themed){
     g.fillStyle = TH.tint; g.fillRect(0, 0, W, H);
     g.globalAlpha = 0.62; g.drawImage(themeImg, 0, 0, W, H); g.globalAlpha = 1;
@@ -1564,8 +1699,24 @@ function buildBg(){
     g.fillStyle = '#f2c14e'; ell(g, fx, fy, 1.1, 1.1); g.globalAlpha = 1;
   }
   }
-  // drzewo z dziuplą i gałąź, po której biega wiewiórka
+  // drzewo z dziuplą i gałąź, po której biega wiewiórka (na stole Barcelona: palma i mozaikowa ścieżka jaszczurki)
   var hx = SQ.home.x, hy = SQ.home.y;
+  if (TB.critter === 'gecko'){
+    var tl = ['#2f9fd8', '#f2c33a', '#e24f7a', '#3fae6a', '#ffffff'];
+    for (var gp = 0; gp < 64; gp++){
+      var ga = gp / 64 * PI * 2, gx2 = 188 + 60 * Math.sin(ga), gy2 = 138 + 9 * Math.sin(ga * 2) + 8;
+      g.fillStyle = tl[gp % tl.length]; g.globalAlpha = 0.55; g.fillRect(gx2 - 1.6, gy2 - 1.6, 3.2, 3.2); g.globalAlpha = 1;
+    }
+    g.fillStyle = 'rgba(0,0,0,.25)'; ell(g, hx + 6, hy + 10, 26, 20);
+    g.strokeStyle = '#8a6236'; g.lineWidth = 7;
+    g.beginPath(); g.moveTo(hx + 4, hy + 36); g.quadraticCurveTo(hx + 8, hy + 14, hx, hy - 4); g.stroke();
+    for (var fr = 0; fr < 7; fr++){
+      var fa = -PI / 2 + (fr - 3) * 0.55;
+      g.strokeStyle = fr % 2 ? '#2f8a3e' : '#3fae6a'; g.lineWidth = 5;
+      g.beginPath(); g.moveTo(hx, hy - 4); g.quadraticCurveTo(hx + Math.cos(fa) * 18, hy - 4 + Math.sin(fa) * 18 - 6, hx + Math.cos(fa) * 30, hy - 4 + Math.sin(fa) * 30 + 6); g.stroke();
+    }
+    g.fillStyle = '#1a0d05'; ell(g, hx, hy + 2, 5, 6);
+  } else {
   g.fillStyle = 'rgba(0,0,0,.25)'; ell(g, hx + 5, hy + 8, 30, 28);
   var tr = g.createLinearGradient(hx - 7, 0, hx + 7, 0);
   tr.addColorStop(0, '#7a4a24'); tr.addColorStop(1, '#4a2a12');
@@ -1581,6 +1732,7 @@ function buildBg(){
   g.strokeStyle = 'rgba(255,220,170,.25)'; g.lineWidth = 1;
   g.beginPath(); g.moveTo(hx - 8, hy + 3); g.bezierCurveTo(250, SQ.y + 5, 190, SQ.y + 9, 122, SQ.y + 7); g.stroke();
   [[150, 1], [200, -1], [245, 1]].forEach(function(q){ g.fillStyle = '#3d8a45'; ell(g, q[0], SQ.y + 8 + q[1] * 4, 4, 2, q[1] * 0.6); });
+  }
   // cewka magnesu
   var mgr = g.createRadialGradient(MAG.x - 2, MAG.y - 2, 1, MAG.x, MAG.y, 9);
   mgr.addColorStop(0, '#dfe6ee'); mgr.addColorStop(1, '#3a4048');
@@ -1608,7 +1760,7 @@ function buildBg(){
   g.translate(31, 320); g.rotate(-PI / 2); g.fillText('PĘTLA', 0, 0); g.restore();
   g.save(); g.fillStyle = 'rgba(255,240,210,.32)'; g.font = '900 7px ' + FONT;
   g.translate(22, 590); g.rotate(-PI / 2); g.fillText('KICKBACK', 0, 0); g.restore();
-  g.fillStyle = 'rgba(255,240,210,.4)'; g.font = '900 8px ' + FONT; g.fillText('APORT', 81, 404);
+  g.fillStyle = 'rgba(255,240,210,.4)'; g.font = '900 8px ' + FONT; g.font = '900 ' + (RAMP.label.length > 6 ? 6.5 : 8) + 'px ' + FONT; g.fillText(RAMP.label, 81, 404); g.font = '900 8px ' + FONT;
   g.fillText('KOŚCI', 42, 492);
   // wkładki lamp (wygaszone)
   LAMPS.forEach(function(L){
@@ -1659,6 +1811,22 @@ function buildBg(){
 }
 function drawHouse(g){
   var x = BUDA.x, y = BUDA.y;
+  if (TB.critter === 'gecko'){
+    // bar tapas: ściana, pasiasta markiza, szyld
+    g.save(); g.shadowColor = 'rgba(0,0,0,.6)'; g.shadowBlur = 6 * scale; g.shadowOffsetX = 3 * scale; g.shadowOffsetY = 4 * scale;
+    g.fillStyle = '#e8c79a'; g.fillRect(x - 24, y - 14, 48, 42); g.restore();
+    for (var st = 0; st < 6; st++){
+      g.fillStyle = st % 2 ? '#ffffff' : '#d8433a';
+      g.beginPath(); g.moveTo(x - 30 + st * 10, y - 14); g.lineTo(x - 20 + st * 10, y - 14); g.lineTo(x - 22 + st * 10, y - 26); g.lineTo(x - 30 + st * 10, y - 26); g.fill();
+      g.beginPath(); g.arc(x - 25 + st * 10, y - 14, 5, 0, PI); g.fill();
+    }
+    g.fillStyle = '#2f9fd8'; rrect(g, x - 22, y - 44, 44, 15, 4); g.fill();
+    g.fillStyle = '#fff6dc'; g.font = '900 8px ' + FONT; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(TB.buda, x, y - 36.5);
+    var dg2 = g.createRadialGradient(x, y - 2, 2, x, y + 4, 16);
+    dg2.addColorStop(0, '#000000'); dg2.addColorStop(1, '#2a160a');
+    g.fillStyle = dg2; g.beginPath(); g.moveTo(x - 14, y + 28); g.lineTo(x - 14, y + 1); g.arc(x, y + 1, 14, PI, 0); g.lineTo(x + 14, y + 28); g.closePath(); g.fill();
+    return;
+  }
   g.save();
   g.shadowColor = 'rgba(0,0,0,.6)'; g.shadowBlur = 6 * scale; g.shadowOffsetX = 3 * scale; g.shadowOffsetY = 4 * scale;
   var wg = g.createLinearGradient(x - 24, 0, x + 24, 0);
@@ -1679,7 +1847,7 @@ function drawHouse(g){
   g.fillStyle = dg;
   g.beginPath(); g.moveTo(x - 14, y + 28); g.lineTo(x - 14, y + 1); g.arc(x, y + 1, 14, PI, 0); g.lineTo(x + 14, y + 28); g.closePath(); g.fill();
   g.fillStyle = '#fff1d6'; g.font = '900 8px ' + FONT; g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.fillText('BUDA', x, y - 22);
+  g.fillText(TB.buda, x, y - 22);
 }
 function buildRamp(){
   var c = document.createElement('canvas'); c.width = cv.width; c.height = cv.height;
@@ -1865,7 +2033,7 @@ function draw(dt){
     ctx.beginPath(); ctx.moveTo(s.A[0] + 3, s.A[1] + 4); ctx.lineTo(s.B[0] + 3, s.B[1] + 4); ctx.lineTo(s.C[0] + 3, s.C[1] + 4); ctx.closePath(); ctx.fill(); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(s.A[0], s.A[1]); ctx.lineTo(s.B[0], s.B[1]); ctx.lineTo(s.C[0], s.C[1]); ctx.closePath();
     var pg = ctx.createLinearGradient(s.A[0], s.A[1], s.C[0], s.C[1]);
-    pg.addColorStop(0, hot ? '#fff1c8' : '#ffb067'); pg.addColorStop(1, hot ? '#ffd27a' : '#d4551f');
+    pg.addColorStop(0, hot ? '#fff1c8' : TB.sling[0]); pg.addColorStop(1, hot ? '#ffd27a' : TB.sling[1]);
     ctx.fillStyle = pg; ctx.fill();
     var cx = (s.A[0] + s.B[0] + s.C[0]) / 3, cy = (s.A[1] + s.B[1] + s.C[1]) / 3;
     drawPaw(ctx, cx - s.dir * 2, cy + 3, 6, 'rgba(110,40,10,.4)');
@@ -1903,10 +2071,10 @@ function draw(dt){
     var back = Math.max(0, 1 - (now - SQ.fled) / 0.5);
     var qx = SQ.x + (SQ.home.x - SQ.x) * back, qy = SQ.y + (SQ.home.y - SQ.y) * back;
     ctx.fillStyle = 'rgba(0,0,0,.3)'; ell(ctx, qx + 2, qy + 9, 9, 2.5);
-    drawSquirrel(ctx, qx, qy, back > 0 ? -1 : (SQ.vx >= 0 ? 1 : -1), now * 22);
+    drawCritter(ctx, qx, qy, back > 0 ? -1 : (SQ.vx >= 0 ? 1 : -1), now * 22);
   } else if (sqAge < 0.5){
     var u = sqAge / 0.5, hx2 = SQ.hx + (SQ.home.x - SQ.hx) * u, hy2 = SQ.hy + (SQ.home.y - SQ.hy) * u - Math.sin(u * PI) * 22;
-    drawSquirrel(ctx, hx2, hy2, SQ.home.x > SQ.hx ? 1 : -1, now * 40);
+    drawCritter(ctx, hx2, hy2, SQ.home.x > SQ.hx ? 1 : -1, now * 40);
   }
   // flippery
   FL.forEach(function(f, i){
@@ -2188,7 +2356,7 @@ var API = 'https://ezra-pinball.atlas-grzybow.workers.dev';
 var SCREENS = ['scrMain', 'scrTop', 'scrBadge', 'scrSet', 'scrHelp'];
 function showScr(id){
   SCREENS.forEach(function(x){ $(x).hidden = x !== id; });
-  if (id === 'scrTop') renderTop(topTab);
+  if (id === 'scrTop'){ topTable = CFG.table; renderTop(topTab); }
   if (id === 'scrBadge') renderBadges();
   if (id === 'scrSet') renderSettings();
   ov.scrollTop = 0;
@@ -2196,13 +2364,13 @@ function showScr(id){
 function renderDaily(){
   var d = DAILY[dayIdx()], done = daily.date === dayStr(new Date()) && daily.done;
   $('daily').innerHTML = '<b>Wyzwanie dnia:</b> ' + d.t + (done ? ' — <b>✓ wykonane</b>' : ' (+50 000)') +
-    (daily.streak > 1 && done ? '<br>Seria: <b>' + daily.streak + ' dni</b>' : '') + '<br>' + rankText();
+    (daily.streak > 1 && done ? '<br>Seria: <b>' + daily.streak + ' dni</b>' : '') + '<br><b>' + weekEv().n + ':</b> ' + weekEv().d + '<br>' + rankText();
 }
 function showOverlay(mode){
   ovMode = mode;
   showScr('scrMain');
   $('ovScore').innerHTML = ''; $('nameBox').hidden = true; $('ovPhoto').hidden = false; $('logo').hidden = true;
-  $('btnB').hidden = mode !== 'pause'; $('btnTime').hidden = mode === 'pause';
+  $('btnB').hidden = mode !== 'pause'; $('btnTime').hidden = mode === 'pause'; $('tableSel').hidden = mode === 'pause';
   if (mode === 'menu'){
     $('ovTitle').textContent = 'Ezra Pinball';
     $('ovText').textContent = 'Beagielka Ezra pilnuje stołu. Rzucaj jej piłkę na rampę, zbij cele E-Z-R-A i wyprowadź trzy piłki na spacer!';
@@ -2228,8 +2396,10 @@ function showOverlay(mode){
 }
 function hideOverlay(){ ov.classList.remove('show'); }
 function loadBest(){ try { game.best = parseInt(localStorage.getItem('pinball_best') || '0', 10) || 0; } catch(e){} }
-var topTime = load('pinball_top_time', []);
-function topList(mode){ return mode === 'time' ? topTime : top10; }
+var tops = {};
+function topKey(mode, table){ return 'pinball_top' + (table === 'bcn' ? '_bcn' : '') + (mode === 'time' ? '_time' : ''); }
+function topList(mode, table){ var k = topKey(mode, table || CFG.table); if (!tops[k]) tops[k] = load(k, []); return tops[k]; }
+function setTop(mode, L){ var k = topKey(mode, CFG.table); tops[k] = L; save(k, L); }
 function qualifies(sc){ var L = topList(game.mode); return sc > 0 && (L.length < 10 || sc > L[L.length - 1].s); }
 function cleanName(v){ return String(v || '').toUpperCase().replace(/[^A-Z0-9ĄĆĘŁŃÓŚŹŻ .\-]/g, '').trim().slice(0, 10); }
 var lastSaved = null;
@@ -2239,8 +2409,7 @@ function saveScore(){
   if (qualifies(game.score)){
     var L = topList(game.mode);
     L.push({n:nm, s:game.score, d:dayStr(new Date()), df:CFG.diff});
-    L.sort(function(x, y){ return y.s - x.s; }); L = L.slice(0, 10);
-    if (game.mode === 'time'){ topTime = L; save('pinball_top_time', L); } else { top10 = L; save('pinball_top', L); }
+    L.sort(function(x, y){ return y.s - x.s; }); setTop(game.mode, L.slice(0, 10));
     lastSaved = game.score;
   }
   $('nameOk').disabled = true; $('nameOk').textContent = 'Zapisano';
@@ -2249,14 +2418,14 @@ function saveScore(){
 function sig(o){ var t = o.name + '|' + o.score + '|' + o.dur + '|' + o.diff + '|ezra-hau'; var hsh = 0; for (var i = 0; i < t.length; i++) hsh = (hsh * 31 + t.charCodeAt(i)) >>> 0; return hsh.toString(36); }
 function submitOnline(nm, sc){
   if (!CFG.online || !window.fetch) return;
-  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.4.0', mode:game.mode};
+  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.5.0', mode:game.mode, table:CFG.table};
   body.k = sig(body);
   fetch(API + '/score', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
     .then(function(r){ return r.json(); })
     .then(function(j){ if (j && j.rank) $('nameTxt').textContent = 'Miejsce w rankingu świata: ' + j.rank; })
     .catch(function(){ $('nameTxt').textContent = 'Zapisano lokalnie (brak połączenia z rankingiem)'; });
 }
-var topTab = 'me', topMode = 'classic';
+var topTab = 'me', topMode = 'classic', topTable = 'park';
 function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;'}[c]; }); }
 function topRows(list, meScore){
   if (!list.length) return '<li class="empty">Jeszcze nikt tu nie zagrał</li>';
@@ -2270,18 +2439,21 @@ function renderTop(tab){
   topTab = tab;
   document.querySelectorAll('#whoTabs button').forEach(function(bt){ bt.classList.toggle('on', bt.getAttribute('data-t') === tab); });
   document.querySelectorAll('#modeTabs button').forEach(function(bt){ bt.classList.toggle('on', bt.getAttribute('data-m') === topMode); });
+  document.querySelectorAll('#tableTabs button').forEach(function(bt){ bt.classList.toggle('on', bt.getAttribute('data-tb') === topTable); });
+  $('modeTabs').hidden = $('tableTabs').hidden = tab === 'week';
   if (tab === 'me'){
-    $('topList').innerHTML = topRows(topList(topMode), lastSaved);
+    $('topList').innerHTML = topRows(topList(topMode, topTable), lastSaved);
     $('topNote').textContent = 'Najlepsze wyniki na tym urządzeniu. Poziom: Ł — łatwy, N — normalny, T — trudny.';
     return;
   }
   $('topList').innerHTML = '<li class="empty">Wczytuję…</li>'; $('topNote').textContent = '';
   if (!window.fetch){ $('topList').innerHTML = '<li class="empty">Brak połączenia</li>'; return; }
-  fetch(API + '/top' + (topMode === 'time' ? '?mode=time' : '')).then(function(r){ return r.json(); }).then(function(list){
-    if (topTab !== 'world') return;
+  var q = tab === 'week' ? '?week=1' : '?mode=' + topMode + '&table=' + topTable;
+  fetch(API + '/top' + q).then(function(r){ return r.json(); }).then(function(list){
+    if (topTab !== tab) return;
     $('topList').innerHTML = topRows((list || []).map(function(e){ return {n:e.n, s:e.s, df:e.df}; }), null);
-    $('topNote').textContent = 'Ranking świata — 20 najlepszych wyników wszystkich graczy.';
-  }).catch(function(){ if (topTab === 'world') $('topList').innerHTML = '<li class="empty">Brak połączenia z rankingiem</li>'; });
+    $('topNote').textContent = tab === 'week' ? weekEv().n + ' (' + weekId() + ') — najlepsi z tego tygodnia, oba stoły.' : 'Ranking świata — 20 najlepszych wyników wszystkich graczy.';
+  }).catch(function(){ if (topTab === tab) $('topList').innerHTML = '<li class="empty">Brak połączenia z rankingiem</li>'; });
 }
 function renderBadges(){
   $('rankBox').innerHTML = rankText();
@@ -2307,6 +2479,14 @@ function renderSettings(){
   var nextLocked = THEMES.filter(function(t){ return rk < t.rank; })[0];
   $('themeInfo').textContent = nextLocked ? 'Następny motyw (' + nextLocked.n + ') od rangi ' + RANKS[nextLocked.rank][0] + '.' : 'Wszystkie motywy odblokowane.';
   document.querySelectorAll('#setTheme button').forEach(function(bt){ bt.addEventListener('click', function(){ CFG.theme = bt.getAttribute('data-th'); saveCfg(); loadTheme(); renderSettings(); }); });
+  $('setOutfit').innerHTML = OUTFITS.map(function(o){
+    var locked = rk < o.rank;
+    return '<button data-of="' + o.id + '"' + ((CFG.outfit || 'none') === o.id ? ' class="on"' : '') + (locked ? ' disabled' : '') + '>' + (locked ? '🔒 ' : '') + o.n + '</button>';
+  }).join('');
+  var nextOf = OUTFITS.filter(function(o){ return rk < o.rank; })[0];
+  $('outfitInfo').textContent = nextOf ? 'Następny strój (' + nextOf.n + ') od rangi ' + RANKS[nextOf.rank][0] + '.' : 'Wszystkie stroje odblokowane.';
+  if (TB.theme) $('themeInfo').textContent = 'Stół Barcelona ma własne tło. ' + $('themeInfo').textContent;
+  document.querySelectorAll('#setOutfit button').forEach(function(bt){ bt.addEventListener('click', function(){ CFG.outfit = bt.getAttribute('data-of'); saveCfg(); buildSprites(); renderSettings(); }); });
 }
 $('setMusic').addEventListener('input', function(e){ CFG.music = e.target.value / 100; saveCfg(); musicUpdate(); });
 $('setSfx').addEventListener('input', function(e){ CFG.sfx = e.target.value / 100; saveCfg(); if (master) master.gain.value = CFG.sfx; });
@@ -2318,6 +2498,8 @@ $('setName').addEventListener('change', function(e){ CFG.name = cleanName(e.targ
 document.querySelectorAll('#setDiff button').forEach(function(bt){ bt.addEventListener('click', function(){ CFG.diff = bt.getAttribute('data-d'); saveCfg(); renderSettings(); }); });
 document.querySelectorAll('#whoTabs button').forEach(function(bt){ bt.addEventListener('click', function(){ renderTop(bt.getAttribute('data-t')); }); });
 document.querySelectorAll('#modeTabs button').forEach(function(bt){ bt.addEventListener('click', function(){ topMode = bt.getAttribute('data-m'); renderTop(topTab); }); });
+document.querySelectorAll('#tableTabs button').forEach(function(bt){ bt.addEventListener('click', function(){ topTable = bt.getAttribute('data-tb'); renderTop(topTab); }); });
+document.querySelectorAll('#tableSel button').forEach(function(bt){ bt.addEventListener('click', function(){ switchTable(bt.getAttribute('data-tb')); }); });
 document.querySelectorAll('[data-scr]').forEach(function(bt){ bt.addEventListener('click', function(){ showScr(bt.getAttribute('data-scr')); }); });
 document.querySelectorAll('.back').forEach(function(bt){ bt.addEventListener('click', function(){ showScr('scrMain'); }); });
 $('nameOk').addEventListener('click', saveScore);
@@ -2501,9 +2683,9 @@ function frame(now){
 }
 
 // do testów w konsoli
-window.__pinball = {game:game, step:step, FL:FL, DROPS:DROPS, BONES:BONES, BUMPERS:BUMPERS, EZRA:EZRA, SPIN:SPIN, RAMP:RAMP, RAMP2:RAMP2, SQ:SQ, MISSIONS:MISSIONS, CAP:CAP, MAG:MAG, DZ:DZ, nudge:nudge, loadTheme:loadTheme, startMini:startMini, CFG:CFG, newGame:newGame, serveBall:serveBall, newBallObj:newBallObj};
+window.__pinball = {game:game, step:step, FL:FL, DROPS:DROPS, BONES:BONES, BUMPERS:BUMPERS, EZRA:EZRA, SPIN:SPIN, RAMP:RAMP, RAMP2:RAMP2, SQ:SQ, MISSIONS:MISSIONS, CAP:CAP, MAG:MAG, DZ:DZ, switchTable:switchTable, weekEv:weekEv, nudge:nudge, loadTheme:loadTheme, startMini:startMini, CFG:CFG, newGame:newGame, serveBall:serveBall, newBallObj:newBallObj};
 
-loadBest(); soundIcon(); fitCanvas(); loadTheme(); renderDaily();
+applyTable(); loadBest(); soundIcon(); fitCanvas(); loadTheme(); renderDaily();
 requestAnimationFrame(frame);
 })();
 </script>
