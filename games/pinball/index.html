@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0b140f">
-<meta name="description" content="Ezra Pinball — flipper z beagielką Ezrą: rampa aport, pętla ze spinnerem, miski-bumpery, cele E-Z-R-A, buda z multiballem, kickback i wyświetlacz kropkowy. Graj w przeglądarce.">
+<meta name="description" content="Ezra Pinball — flipper z beagielką Ezrą: trzy rampy, pętla ze spinnerem, miski-bumpery, cele E-Z-R-A, buda z multiballem, kickback i wyświetlacz kropkowy. Graj w przeglądarce.">
 <title>Ezra Pinball — Beagle Apps Studio</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
@@ -208,7 +208,7 @@ input[type=text]{user-select:text;-webkit-user-select:text;background:rgba(0,0,0
             <li><b>Wyrzutnia:</b> gdy piłka czeka po prawej, przytrzymaj prawą stronę (albo <b>spację</b>) i puść.</li>
             <li><b>Szturchanie:</b> potrząśnij telefonem albo przesuń palcem szybko w górę (klawisz <b>↑</b>). Za często — <b>TILT</b> i piłka przepada.</li>
             <li><b>Skill shot:</b> wystrzel prosto w migającą łapkę (+5 000).</li>
-            <li><b>Rampy „Aport” i „Kość”:</b> co trzeci wjazd Ezra przynosi coraz większą nagrodę. Prawa rampa podaje piłkę na górny flipper.</li>
+            <li><b>Rampy „Aport”, „Kość” i „Smycz”:</b> co trzeci wjazd Ezra przynosi coraz większą nagrodę. Prawa rampa podaje piłkę na górny flipper, a środkowa „Smycz” wiezie ją przez dach prosto do budy — skrót do zadań, blokady piłek i superjackpotu.</li>
             <li><b>Wiewiórka:</b> biega po gałęzi pod łapkami — trafiona ucieka na drzewo.</li>
             <li><b>Piłeczka Ezry:</b> uderz w piłkę zamkniętą w korytarzu po prawej — co trzecie trafienie podnosi bonus.</li>
             <li><b>Zadania Ezry:</b> buda uruchamia kolejne zadanie na czas (Pogoń, Aport, Kąpiel, Trop, Łakomczuch). Wszystkie pięć otwiera finał <b>Wielki Spacer</b> — multiball na 4 piłki, każde trafienie +50 000.</li>
@@ -299,17 +299,17 @@ var BUMPERS = [
 BUMPERS.forEach(function(b){ b.flash = -9; b.cd = 0; });
 var TABLES = {
   park:{n:'Park', bump:[[150, 190, '#e2503f', '#8e2117'], [232, 190, '#3d84d6', '#173f78'], [191, 254, '#f39a3a', '#9a5210'], [95, 212, '#8a63d8', '#3d2a8a'], [285, 215, '#3fae6a', '#1d6a35']], drops:'EZRA',
-    ramps:['APORT', 'KOŚĆ'], buda:'BUDA', critter:'squirrel', crName:'WIEWIÓRKA', crMany:'WIEWIÓRKI', crHide:'Uciekła na drzewo', sling:['#ffb067', '#d4551f'], theme:null,
+    ramps:['APORT', 'KOŚĆ', 'SMYCZ'], buda:'BUDA', critter:'squirrel', crName:'WIEWIÓRKA', crMany:'WIEWIÓRKI', crHide:'Uciekła na drzewo', sling:['#ffb067', '#d4551f'], theme:null,
     mis:['POGOŃ', 'APORT', 'KĄPIEL', 'TROP', 'ŁAKOMCZUCH'], misd:['Trafiaj wiewiórkę', 'Wjeżdżaj na rampy', 'Uderzaj w miski', 'Zbijaj cele E-Z-R-A', 'Głaszcz Ezrę']},
   bcn:{n:'Barcelona', bump:[[146, 186, '#2f9fd8', '#15507a'], [236, 186, '#f2c33a', '#9a6d10'], [191, 246, '#e24f7a', '#8e1f42'], [95, 212, '#3fae6a', '#1d6a35'], [285, 215, '#f08a3a', '#9a4a10']], drops:'TAPA',
-    ramps:['SAGRADA', 'GÜELL'], buda:'TAPAS', critter:'gecko', crName:'JASZCZURKA', crMany:'JASZCZURKI', crHide:'Schowała się w palmie', sling:['#5fc0e8', '#1d6fa5'], theme:'barcelona',
+    ramps:['SAGRADA', 'GÜELL', 'RAMBLA'], buda:'TAPAS', critter:'gecko', crName:'JASZCZURKA', crMany:'JASZCZURKI', crHide:'Schowała się w palmie', sling:['#5fc0e8', '#1d6fa5'], theme:'barcelona',
     mis:['GEKON', 'SAGRADA', 'FONTANNA', 'TAPAS', 'SIESTA'], misd:['Trafiaj jaszczurkę', 'Wjeżdżaj na rampy', 'Uderzaj w mozaiki', 'Zbijaj cele T-A-P-A', 'Głaszcz Ezrę']}
 };
 TABLES.wen = {n:'Wenecja', bump:[[150, 190, '#d8433a', '#7a1a12'], [232, 190, '#2a8f8f', '#14504f'], [191, 254, '#e9b949', '#8a6510'], [95, 212, '#7a5cd6', '#3d2a8a'], [285, 215, '#d8433a', '#7a1a12']], drops:'LIDO',
-  ramps:['RIALTO', 'MARCO'], buda:'PAŁAC', critter:'gondola', crName:'GONDOLA', crMany:'GONDOLE', crHide:'Odpłynęła pod most', sling:['#6fd0d0', '#1d7a7a'], theme:'wenecja',
+  ramps:['RIALTO', 'MARCO', 'LAGUNA'], buda:'PAŁAC', critter:'gondola', crName:'GONDOLA', crMany:'GONDOLE', crHide:'Odpłynęła pod most', sling:['#6fd0d0', '#1d7a7a'], theme:'wenecja',
   mis:['GONDOLA', 'RIALTO', 'KARNAWAŁ', 'LIDO', 'SERENADA'], misd:['Trafiaj gondolę', 'Wjeżdżaj na rampy', 'Uderzaj w maski', 'Zbijaj cele L-I-D-O', 'Głaszcz Ezrę']};
 TABLES.las = {n:'Jesienny las', bump:[[150, 190, '#d8433a', '#7a1a12'], [232, 190, '#c8762c', '#6a3a10'], [191, 254, '#d8433a', '#7a1a12'], [95, 212, '#b5561f', '#5a2a08'], [285, 215, '#d8433a', '#7a1a12']], drops:'LUPA',
-  ramps:['DĄB', 'ŚLADY'], buda:'SZAŁAS', critter:'hedgehog', crName:'JEŻ', crMany:'JEŻE', crHide:'Zwinął się w kłębek', sling:['#e0a040', '#8a4a10'], theme:'las',
+  ramps:['DĄB', 'ŚLADY', 'POLANA'], buda:'SZAŁAS', critter:'hedgehog', crName:'JEŻ', crMany:'JEŻE', crHide:'Zwinął się w kłębek', sling:['#e0a040', '#8a4a10'], theme:'las',
   mis:['JEŻ', 'ŚLADY', 'GRZYBY', 'LUPA', 'UCZTA'], misd:['Trafiaj jeża', 'Wjeżdżaj na rampy', 'Uderzaj w grzyby', 'Zbijaj cele L-U-P-A', 'Głaszcz Ezrę']};
 var TB = TABLES.park;
 var SLINGS = [];
@@ -336,6 +336,8 @@ var FL = [
 FL.forEach(function(f){ f.a = f.rest; f.w = 0; f.held = false; });
 // rampa „Aport” — tor nad stołem (ruch piłki po krzywej)
 var RAMP_CTRL = [[81, 338], [81, 250], [82, 176], [78, 132], [62, 108], [42, 106], [29, 128], [26, 180], [26, 260], [26, 340], [27, 420], [31, 476], [42, 508], [49, 530]];
+// rampa środkowa — przez dach prosto do budy
+var RAMP3_CTRL = [[219, 330], [219, 290], [212, 245], [196, 208], [191, 170], [188, 138], [174, 116], [150, 108], [128, 118], [117, 146], [115, 190], [116, 230], [119, 256]];
 var RAMP2_CTRL = [[271, 338], [271, 260], [272, 190], [278, 142], [295, 114], [320, 104], [341, 116], [351, 148], [353, 186], [348, 212]];
 function makeRamp(P){
   var pts = [];
@@ -352,10 +354,11 @@ function makeRamp(P){
   for (var j = 1; j < pts.length; j++) cum.push(cum[j - 1] + Math.hypot(pts[j][0] - pts[j-1][0], pts[j][1] - pts[j-1][1]));
   return {pts:pts, cum:cum, len:cum[cum.length - 1]};
 }
-var RAMP = makeRamp(RAMP_CTRL), RAMP2 = makeRamp(RAMP2_CTRL);
+var RAMP = makeRamp(RAMP_CTRL), RAMP2 = makeRamp(RAMP2_CTRL), RAMP3 = makeRamp(RAMP3_CTRL);
 RAMP.mouth = {x0:62, x1:100, y0:326, y1:348}; RAMP.label = 'APORT'; RAMP.lx = 40; RAMP.ly = 112; RAMP.la = -0.4;
 RAMP2.mouth = {x0:252, x1:290, y0:326, y1:348}; RAMP2.label = 'KOŚĆ'; RAMP2.lx = 328; RAMP2.ly = 104; RAMP2.la = 0.35;
-var RAMPS = [RAMP, RAMP2];
+RAMP3.mouth = {x0:200, x1:238, y0:300, y1:324}; RAMP3.label = 'SMYCZ'; RAMP3.lx = 152; RAMP3.ly = 108; RAMP3.la = 0; RAMP3.buda = true;
+var RAMPS = [RAMP, RAMP2, RAMP3];
 function rampAt(R, s){
   var c = R.cum, p = R.pts, lo = 0, hi = c.length - 1;
   if (s <= 0) s = 0; if (s >= R.len) s = R.len - 0.001;
@@ -393,6 +396,7 @@ lamp({id:'jack', type:'pill', x:81, y:388, w:44, h:11, txt:'JACKPOT', col:'#ff5a
 lamp({id:'orbit', type:'arrow', x:31, y:372, s:10, ang:-PI / 2, col:'#7fd3ff'});
 lamp({id:'buda', type:'arrow', x:158, y:330, s:12, ang:Math.atan2(282 - 330, 120 - 158), col:'#ffcf6b'});
 lamp({id:'ramp2', type:'arrow', x:271, y:366, s:13, ang:-PI / 2, col:'#ffcf6b'});
+lamp({id:'ramp3', type:'arrow', x:224, y:346, s:11, ang:-PI / 2 - 0.12, col:'#7fd3ff'});
 lamp({id:'kick', type:'arrow', x:22, y:640, s:9, ang:-PI / 2, col:'#7dff9a'});
 for (var pi_ = 0; pi_ < 5; pi_++) lamp({id:'pat' + pi_, type:'heart', x:161 + pi_ * 12, y:449, s:4.2, col:'#ff7fa8'});
 lamp({id:'lock0', type:'circle', x:112, y:318, r:3.6, col:'#e9f1ff'});
@@ -740,7 +744,7 @@ function applyTable(){
     if (L.id.indexOf('mis') === 0) L.txt = TB.mis[+L.id[3]];
   });
   MISSIONS.forEach(function(m, i){ m.name = TB.mis[i]; m.desc = TB.misd[i]; });
-  RAMP.label = TB.ramps[0]; RAMP2.label = TB.ramps[1];
+  RAMP.label = TB.ramps[0]; RAMP2.label = TB.ramps[1]; RAMP3.label = TB.ramps[2];
   document.querySelectorAll('#tableSel button').forEach(function(bt){ bt.classList.toggle('on', bt.getAttribute('data-tb') === CFG.table); });
 }
 function switchTable(id){
@@ -991,7 +995,8 @@ function rampDone(b, R){
   if (game.ramps % 3 === 0){
     game.aport++; var v = 10000 * game.aport; addScore(v);
     say('APORT!', 'Ezra przynosi +' + fmt(v), 2.2, 'run'); sfx.bark(); EZRA.t = T; shake(4);
-  } else if (!game.mission) say('RAMPA ' + R.label, 'Aport ' + (game.ramps % 3) + '/3', 1.3);
+  } else if (R.buda){ if (!game.mission) say('RAMPA ' + R.label, 'Skrót do budy', 1.3); }
+  else if (!game.mission) say('RAMPA ' + R.label, 'Aport ' + (game.ramps % 3) + '/3', 1.3);
   combo();
 }
 function orbitDone(){
@@ -2063,6 +2068,7 @@ function lampOn(L){
   if (id === 'jack') return game.multiball && game.jackpotLit && blink(5);
   if (id === 'orbit') return T - game.comboT < 3.5 ? blink(8) : blink(1);
   if (id === 'buda') return (game.lockLit && blink(3)) || (game.superLit && blink(7)) || (game.treatLit && blink(2)) || (game.wizardReady && blink(5)) || (!game.mission && !game.multiball && blink(0.8));
+  if (id === 'ramp3') return game.multiball ? (game.superLit && blink(7)) : (game.lockLit || game.treatLit || game.wizardReady) ? blink(4) : (T - game.comboT < 3.5 ? blink(8) : blink(0.9));
   if (id === 'ramp2') return game.multiball ? (game.jackpotLit && blink(6)) : (T - game.comboT < 3.5 ? blink(8) : (game.mission && game.mission.m.id === 'aport' ? blink(4) : blink(1.2)));
   if (id.indexOf('mis') === 0){ var mi = +id[3]; return game.mDone[mi] ? true : (game.mission && game.mNext === mi ? blink(4) : false); }
   if (id === 'wiz') return game.wizard ? blink(6) : game.wizardReady && blink(2);
@@ -2077,6 +2083,7 @@ function lampOn(L){
 function lampColor(L){
   if (L.id === 'buda') return game.superLit ? '#ff5a45' : game.lockLit ? L.col : game.wizardReady ? '#ff8fd0' : game.treatLit ? '#7dff9a' : '#8fd0ff';
   if ((L.id === 'ramp' || L.id === 'ramp2') && game.multiball) return '#ff5a45';
+  if (L.id === 'ramp3') return game.multiball ? '#ff5a45' : (game.lockLit || game.treatLit || game.wizardReady) ? '#ffcf6b' : L.col;
   return L.col;
 }
 function drawLamp(L, skill){
@@ -2581,7 +2588,7 @@ function saveScore(){
 function sig(o){ var t = o.name + '|' + o.score + '|' + o.dur + '|' + o.diff + '|ezra-hau'; var hsh = 0; for (var i = 0; i < t.length; i++) hsh = (hsh * 31 + t.charCodeAt(i)) >>> 0; return hsh.toString(36); }
 function submitOnline(nm, sc){
   if (!CFG.online || !window.fetch) return;
-  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.6.2', mode:game.mode, table:CFG.table};
+  var body = {name:nm, score:sc, diff:CFG.diff, dur:Math.round(game.st.dur || 0), v:'1.7.0', mode:game.mode, table:CFG.table};
   body.k = sig(body);
   fetch(API + '/score', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
     .then(function(r){ return r.json(); })
@@ -2864,7 +2871,7 @@ function frame(now){
 }
 
 // do testów w konsoli
-window.__pinball = {game:game, step:step, FL:FL, DROPS:DROPS, BONES:BONES, BUMPERS:BUMPERS, EZRA:EZRA, SPIN:SPIN, RAMP:RAMP, RAMP2:RAMP2, SQ:SQ, MISSIONS:MISSIONS, CAP:CAP, MAG:MAG, DZ:DZ, setGtop:function(v){ GTOP = v; }, setKbias:function(v){ KBIAS = v; }, switchTable:switchTable, weekEv:weekEv, nudge:nudge, loadTheme:loadTheme, startMini:startMini, CFG:CFG, newGame:newGame, serveBall:serveBall, newBallObj:newBallObj};
+window.__pinball = {game:game, step:step, FL:FL, DROPS:DROPS, BONES:BONES, BUMPERS:BUMPERS, EZRA:EZRA, SPIN:SPIN, RAMP:RAMP, RAMP2:RAMP2, RAMP3:RAMP3, input:input, SQ:SQ, MISSIONS:MISSIONS, CAP:CAP, MAG:MAG, DZ:DZ, setGtop:function(v){ GTOP = v; }, setKbias:function(v){ KBIAS = v; }, switchTable:switchTable, weekEv:weekEv, nudge:nudge, loadTheme:loadTheme, startMini:startMini, CFG:CFG, newGame:newGame, serveBall:serveBall, newBallObj:newBallObj};
 
 applyTable(); loadBest(); soundIcon(); fitCanvas(); loadTheme(); renderDaily();
 requestAnimationFrame(frame);
