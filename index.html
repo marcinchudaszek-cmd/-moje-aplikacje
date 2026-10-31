@@ -1888,6 +1888,37 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
 @media (max-width: 340px) {
     .apps-grid { grid-template-columns: 1fr; }
 }
+
+/* ===== Tryb zakładek: menu przełącza widok zamiast przewijać jedną długą stronę ===== */
+body.tryb-zakladek section[data-zakladka]:not(.zakladka-aktywna) { display: none !important; }
+body.tryb-zakladek .nav-menu li.tylko-przewijanie { display: none; }
+body.tryb-zakladek section[data-zakladka]:not(.hero) { min-height: calc(100vh - 160px); }
+/* dolny pasek zakładek — tylko telefon */
+.dolny-pasek { display: none; }
+.jezyki-mobile { display: none; }
+@media (max-width: 768px) {
+    body.tryb-zakladek { padding-bottom: calc(66px + env(safe-area-inset-bottom, 0px)); }
+    body.tryb-zakladek .nav-toggle, body.tryb-zakladek .nav-menu, body.tryb-zakladek .nav-overlay { display: none !important; }
+    body.tryb-zakladek .scroll-top { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+    body.tryb-zakladek .dolny-pasek {
+        display: grid; grid-template-columns: repeat(6, 1fr);
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 1100;
+        padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+        background: rgba(7, 20, 67, 0.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border-top: 1px solid rgba(150, 195, 255, 0.18);
+    }
+    .dolny-pasek a {
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+        min-height: 52px; border-radius: 12px; color: var(--text-muted);
+        font-size: 0.64rem; font-weight: 600; text-decoration: none; letter-spacing: 0.1px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .dolny-pasek a i { font-size: 1.15rem; }
+    .dolny-pasek a.active { color: var(--secondary); background: rgba(245, 166, 35, 0.1); }
+    body.tryb-zakladek .jezyki-mobile { display: flex; gap: 4px; margin-left: auto; }
+    .jezyki-mobile button { min-width: 38px; min-height: 34px; }
+}
 </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -1910,7 +1941,7 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
                 <li><a href="#apps" class="nav-link" data-i18n="nav_apps">Aplikacje</a></li>
                 <li><a href="#games" class="nav-link" data-i18n="nav_games">Gry</a></li>
                 <li><a href="#about" class="nav-link" data-i18n="nav_about">O mnie</a></li>
-                <li><a href="#tech" class="nav-link" data-i18n="nav_tech">Technologie</a></li>
+                <li class="tylko-przewijanie"><a href="#tech" class="nav-link" data-i18n="nav_tech">Technologie</a></li>
                 <li><a href="#fun" class="nav-link" data-i18n="nav_fun">Rozrywka</a></li>
                 <li><a href="#contact" class="nav-link" data-i18n="nav_contact">Kontakt</a></li>
                 <li style="display:flex;gap:4px;align-items:center;padding:8px 4px;">
@@ -1919,6 +1950,11 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
                     <button onclick="switchLang('de')" id="lang-de" class="lang-btn" title="Deutsch">DE</button>
                 </li>
             </ul>
+            <div class="jezyki-mobile" role="group" aria-label="Język">
+                <button type="button" class="lang-btn active-lang" data-lang="pl">PL</button>
+                <button type="button" class="lang-btn" data-lang="en">EN</button>
+                <button type="button" class="lang-btn" data-lang="de">DE</button>
+            </div>
             <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-controls="navMenu">
                 <span></span>
                 <span></span>
@@ -1931,7 +1967,7 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
     <!-- Baner marki zdjęty: logo w navbarze, baner i pigułka hero powtarzały tę samą
          nazwę trzy razy nad zgięciem. Grafika została w img/beagle-banner.png. -->
 
-    <section class="hero" id="home">
+    <section class="hero" id="home" data-zakladka="home">
         <div class="hero-content">
             <div class="hero-badge">Beagle Apps Studio</div>
             <h1 class="hero-title" data-i18n="hero_title">
@@ -1993,7 +2029,7 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
     </section>
 
     <!-- Apps Section -->
-    <section class="apps-section" id="apps">
+    <section class="apps-section" id="apps" data-zakladka="apps">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag" data-i18n="tag_portfolio">Portfolio</span>
@@ -2171,7 +2207,7 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
     </section>
 
     <!-- Games Section -->
-    <section class="apps-section games-section" id="games">
+    <section class="apps-section games-section" id="games" data-zakladka="games">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag" data-i18n="tag_games">Gry</span>
@@ -2185,7 +2221,7 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
     </section>
 
     <!-- About Section -->
-    <section class="about-section" id="about">
+    <section class="about-section" id="about" data-zakladka="about">
         <div class="container">
             <div class="about-grid">
                 <div class="about-image">
@@ -2228,7 +2264,7 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
     </section>
 
     <!-- Technologies Section -->
-    <section class="tech-section" id="tech">
+    <section class="tech-section" id="tech" data-zakladka="about">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag" data-i18n="tag_stack">Stack</span>
@@ -2253,7 +2289,7 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
     </section>
 
     <!-- Entertainment Section -->
-    <section class="fun-section" id="fun">
+    <section class="fun-section" id="fun" data-zakladka="fun">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag" data-i18n="tag_fun">Rozrywka</span>
@@ -2689,7 +2725,7 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
     </section>
 
     <!-- Contact Section -->
-    <section class="contact-section" id="contact">
+    <section class="contact-section" id="contact" data-zakladka="contact">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag" data-i18n="tag_contact">Kontakt</span>
@@ -2748,6 +2784,15 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
     </section>
 
     <!-- Footer -->
+    <nav class="dolny-pasek" aria-label="Zakładki">
+        <a href="#home" data-zakladka="home"><i class="fas fa-house"></i><span data-i18n="nav_home">Start</span></a>
+        <a href="#apps" data-zakladka="apps"><i class="fas fa-mobile-screen"></i><span data-i18n="nav_apps">Aplikacje</span></a>
+        <a href="#games" data-zakladka="games"><i class="fas fa-gamepad"></i><span data-i18n="nav_games">Gry</span></a>
+        <a href="#about" data-zakladka="about"><i class="fas fa-user"></i><span data-i18n="nav_about">O mnie</span></a>
+        <a href="#fun" data-zakladka="fun"><i class="fas fa-star"></i><span data-i18n="nav_fun">Rozrywka</span></a>
+        <a href="#contact" data-zakladka="contact"><i class="fas fa-envelope"></i><span data-i18n="nav_contact">Kontakt</span></a>
+    </nav>
+
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -3017,7 +3062,10 @@ function applySiteData() {
                 // vid.end (s) ucina odtwarzanie przed końcem pliku — np. przed planszą
                 // z logo generatora, której nie da się wyciąć bez ffmpeg
                 var vSrc = vid.path + (vid.end ? '#t=0,' + vid.end : '');
-                vHtml += '<div class="video-item"><video controls playsinline preload="metadata"><source src="' + vSrc + '" type="video/mp4"></video><div class="video-title">' + (vid.title || 'Film') + '</div></div>';
+                // okładka-klatka z video/okladki/ + preload="none": plik pobiera się dopiero po
+                // kliknięciu (wcześniej strona przy wejściu ściągała ok. 17 MB filmów)
+                var vPoster = vid.poster || ('video/okladki/' + String(vid.path).split('/').pop().replace(/\.[^.]+$/, '') + '.webp');
+                vHtml += '<div class="video-item"><video controls playsinline preload="none" poster="' + vPoster + '"><source src="' + vSrc + '" type="video/mp4"></video><div class="video-title">' + (vid.title || 'Film') + '</div></div>';
             });
             videoGrid.innerHTML = vHtml;
             setupSimpleCollapse('videoGrid', 6, 'btn_show_all_videos');
@@ -3104,6 +3152,7 @@ navLinks.forEach(function(link) {
 });
 
 function updateActiveNav() {
+    if (document.body.classList.contains('tryb-zakladek')) return;
     var sections = document.querySelectorAll('section[id], .hero');
     var scrollPos = window.scrollY + 150;
     sections.forEach(function(section) {
@@ -5127,6 +5176,66 @@ document.addEventListener('click', function(e) {
         });
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>
+
+<script>
+// ===== Zakładki: #apps, #games… pokazują jedną grupę sekcji zamiast przewijać.
+// Linki z hashem (także z innych stron) i przycisk „wstecz” działają; treść
+// wszystkich sekcji zostaje w HTML, więc wyszukiwarki widzą całą stronę.
+(function () {
+    var sekcje = [].slice.call(document.querySelectorAll('section[data-zakladka]'));
+    if (!sekcje.length) return;
+    document.body.classList.add('tryb-zakladek');
+
+    function grupaDla(hash) {
+        if (!hash || hash.length < 2) return null;
+        var el = null;
+        try { el = document.querySelector(hash); } catch (e) { return null; }
+        if (!el) return null;
+        var sek = el.closest('section[data-zakladka]');
+        return sek ? { grupa: sek.getAttribute('data-zakladka'), cel: el, sekcja: sek } : null;
+    }
+
+    function pokaz(hash, przewin) {
+        var g = grupaDla(hash) || grupaDla('#home');
+        sekcje.forEach(function (s) { s.classList.toggle('zakladka-aktywna', s.getAttribute('data-zakladka') === g.grupa); });
+        document.querySelectorAll('.nav-link, .dolny-pasek a').forEach(function (a) {
+            var ga = a.getAttribute('data-zakladka') || (grupaDla(a.getAttribute('href')) || {}).grupa;
+            a.classList.toggle('active', ga === g.grupa && a.getAttribute('href') !== '#tech');
+        });
+        if (przewin !== false) {
+            // cel wewnątrz zakładki (np. #tech pod „O mnie”) — przewiń do niego, inaczej na górę
+            var naGore = g.cel === g.sekcja && g.sekcja === document.querySelector('section[data-zakladka="' + g.grupa + '"]');
+            if (naGore) window.scrollTo(0, 0);
+            else g.cel.scrollIntoView({ block: 'start' });
+        }
+    }
+
+    // przechwycenie kliknięć w linki #… zanim zrobi to stara obsługa przewijania
+    document.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a[href^="#"]');
+        if (!a) return;
+        var href = a.getAttribute('href');
+        if (!grupaDla(href)) return;
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof closeNav === 'function') closeNav();
+        if (location.hash !== href) history.pushState(null, '', href);
+        pokaz(href);
+    }, true);
+
+    window.addEventListener('popstate', function () { pokaz(location.hash); });
+    window.addEventListener('hashchange', function () { pokaz(location.hash); });
+    pokaz(location.hash, !!location.hash);
+
+    // przełącznik języka na telefonie — ten sam switchLang co w menu
+    document.querySelectorAll('.jezyki-mobile [data-lang]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            switchLang(b.getAttribute('data-lang'));
+            document.querySelectorAll('.jezyki-mobile [data-lang]').forEach(function (x) { x.classList.toggle('active-lang', x === b); });
+        });
+    });
 })();
 </script>
 </body>
