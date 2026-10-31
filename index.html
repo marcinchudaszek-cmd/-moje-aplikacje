@@ -1418,11 +1418,34 @@ textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
 .meme-preview-wrap { position: relative; display: flex; align-items: center; justify-content: center; background: repeating-conic-gradient(rgba(148,163,184,0.1) 0% 25%, transparent 0% 50%) 0 0 / 20px 20px; min-height: 300px; }
 .meme-placeholder { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 12px; color: var(--text-muted); font-size: 0.9rem; }
 .meme-placeholder i { font-size: 3rem; color: var(--border); }
-#memeCanvas { max-width: 100%; max-height: 500px; display: none; border-radius: 2px; }
+#memeCanvas { max-width: 100%; max-height: 520px; width: auto; height: auto; display: none; border-radius: 4px; touch-action: none; cursor: grab; }
+#memeCanvas.ciagnie { cursor: grabbing; }
+.meme-toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+.meme-toolbar .meme-upload-btn { align-self: flex-start; }
+.meme-hint { font-size: 0.8rem; color: var(--text-muted); }
+.meme-toolbar > * { min-width: 0; max-width: 100%; }
+.meme-templates { display: flex; gap: 8px; overflow-x: auto; min-width: 0; padding-bottom: 4px; scrollbar-width: thin; }
+.meme-tpl { flex: 0 0 64px; width: 64px; height: 64px; padding: 0; border: 2px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; background: none; transition: var(--transition); }
+.meme-tpl img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.meme-tpl:hover { border-color: var(--primary-light); transform: translateY(-2px); }
+.meme-tpl.active { border-color: var(--secondary); box-shadow: 0 0 0 2px rgba(245,166,35,0.35); }
+.meme-input-group select { padding: 9px 12px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-family: inherit; font-size: 0.9rem; }
+.meme-input-group label #memeFontVal { color: var(--secondary); text-transform: none; margin-left: 4px; }
+.meme-colors { display: flex; gap: 8px; flex-wrap: wrap; }
+.meme-checks { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; color: var(--text-secondary); }
+.meme-checks label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.meme-checks input { accent-color: var(--secondary); width: 18px; height: 18px; }
+.meme-drag-tip { font-size: 0.78rem; color: var(--primary-soft); margin: -4px 0 0; }
+.meme-actions { display: flex; flex-direction: column; gap: 8px; }
+.meme-share-btn, .meme-reset-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: var(--radius-sm); font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--bg-surface); color: var(--text-secondary); transition: var(--transition); }
+.meme-share-btn { background: var(--primary); color: #fff; border-color: var(--primary); }
+.meme-share-btn:hover { background: var(--primary-light); }
+.meme-reset-btn:hover { border-color: var(--primary-light); color: #fff; }
+.meme-preview-wrap.upuszczanie { outline: 3px dashed var(--secondary); outline-offset: -10px; }
 
 @media (max-width: 768px) {
     .meme-workspace { grid-template-columns: 1fr; }
-    .meme-inputs { border-right: none; border-bottom: 1px solid var(--border); }
+    .meme-inputs { border-right: none; border-bottom: 1px solid var(--border); } .meme-preview-wrap { order: -1; min-height: 220px; padding: 10px; } #memeCanvas { max-height: 60vh; }
 }
 
 .lang-btn { background: rgba(45,90,160,0.15); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.78rem; font-weight: 700; cursor: pointer; padding: 5px 10px; border-radius: 6px; opacity: 0.7; transition: var(--transition); letter-spacing: 0.5px; font-family: inherit; }
@@ -1920,7 +1943,7 @@ body.tryb-zakladek section[data-zakladka]:not(.hero) { min-height: calc(100vh - 
     .jezyki-mobile button { min-width: 38px; min-height: 34px; }
 }
 </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Great+Vibes&family=Anton&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -2384,14 +2407,20 @@ body.tryb-zakladek section[data-zakladka]:not(.hero) { min-height: calc(100vh - 
                 <div class="mini-app" id="miniapp-meme">
                     <div class="meme-creator">
                         <div class="meme-toolbar">
-                            <div class="meme-tool-group">
-                                <label class="meme-upload-btn">
-                                    <i class="fas fa-image"></i> <span data-i18n="meme_upload_btn">Wgraj zdjęcie</span>
-                                    <input type="file" id="memeImg" accept="image/*" onchange="loadMemeImage(this)" style="display:none;">
-                                </label>
-                                <button class="meme-sample-btn" onclick="loadMemeSample(this)" data-url="https://i.imgflip.com/1g8my4.jpg">Drake</button>
-                                <button class="meme-sample-btn" onclick="loadMemeSample(this)" data-url="https://i.imgflip.com/1bij.jpg">Fry</button>
-                                <button class="meme-sample-btn" onclick="loadMemeSample(this)" data-url="https://i.imgflip.com/4t0m5.jpg">Distracted BF</button>
+                            <label class="meme-upload-btn">
+                                <i class="fas fa-image"></i> <span data-i18n="meme_upload_btn">Wgraj zdjęcie</span>
+                                <input type="file" id="memeImg" accept="image/*" onchange="loadMemeImage(this)" style="display:none;">
+                            </label>
+                            <span class="meme-hint" data-i18n="meme_hint">…albo przeciągnij / wklej (Ctrl+V) zdjęcie, albo wybierz szablon:</span>
+                            <div class="meme-templates" id="memeTemplates">
+                                <button type="button" class="meme-tpl" data-src="img/ai-beagle-kowboj.webp" onclick="loadMemeSample(this)" title="Kowboj"><img src="img/thumb/ai-beagle-kowboj.webp" alt="Kowboj" loading="lazy" width="64" height="64"></button>
+                                <button type="button" class="meme-tpl" data-src="img/ai-beagle-rockman.webp" onclick="loadMemeSample(this)" title="Rockman"><img src="img/thumb/ai-beagle-rockman.webp" alt="Rockman" loading="lazy" width="64" height="64"></button>
+                                <button type="button" class="meme-tpl" data-src="img/ai-beagle-dinozaur.webp" onclick="loadMemeSample(this)" title="Dinozaur"><img src="img/thumb/ai-beagle-dinozaur.webp" alt="Dinozaur" loading="lazy" width="64" height="64"></button>
+                                <button type="button" class="meme-tpl" data-src="img/ai-beagle-kubizm.webp" onclick="loadMemeSample(this)" title="Kubizm"><img src="img/thumb/ai-beagle-kubizm.webp" alt="Kubizm" loading="lazy" width="64" height="64"></button>
+                                <button type="button" class="meme-tpl" data-src="img/ai-beagle-pioropusz.webp" onclick="loadMemeSample(this)" title="Wódz"><img src="img/thumb/ai-beagle-pioropusz.webp" alt="Wódz" loading="lazy" width="64" height="64"></button>
+                                <button type="button" class="meme-tpl" data-src="img/ezra/s3/ezra-s3-08.webp" onclick="loadMemeSample(this)" title="Ezra i lisek"><img src="img/thumb/ezra-s3-08.webp" alt="Ezra i lisek" loading="lazy" width="64" height="64"></button>
+                                <button type="button" class="meme-tpl" data-src="img/ezra/s5/ezra-s5-00.webp" onclick="loadMemeSample(this)" title="Barcelona"><img src="img/thumb/ezra-s5-00.webp" alt="Barcelona" loading="lazy" width="64" height="64"></button>
+                                <button type="button" class="meme-tpl" data-src="img/ezra/s4/ezra-s4-12.webp" onclick="loadMemeSample(this)" title="Wielka uczta"><img src="img/thumb/ezra-s4-12.webp" alt="Wielka uczta" loading="lazy" width="64" height="64"></button>
                             </div>
                         </div>
 
@@ -2399,33 +2428,55 @@ body.tryb-zakladek section[data-zakladka]:not(.hero) { min-height: calc(100vh - 
                             <div class="meme-inputs">
                                 <div class="meme-input-group">
                                     <label for="memeTop" data-i18n="meme_top">Tekst górny</label>
-                                    <input type="text" id="memeTop" placeholder="TEN GÓRNY TEKST..." oninput="renderMeme()" maxlength="80">
+                                    <input type="text" id="memeTop" placeholder="TEN GÓRNY TEKST..." oninput="renderMeme()" maxlength="120">
                                 </div>
                                 <div class="meme-input-group">
                                     <label for="memeBottom" data-i18n="meme_bottom">Tekst dolny</label>
-                                    <input type="text" id="memeBottom" placeholder="TEN DOLNY TEKST..." oninput="renderMeme()" maxlength="80">
+                                    <input type="text" id="memeBottom" placeholder="TEN DOLNY TEKST..." oninput="renderMeme()" maxlength="120">
+                                </div>
+                                <p class="meme-drag-tip"><i class="fas fa-hand-pointer"></i> <span data-i18n="meme_drag">Napisy możesz przesuwać palcem lub myszką.</span></p>
+                                <div class="meme-input-group">
+                                    <label for="memeFontSize"><span data-i18n="meme_size">Rozmiar czcionki</span> <span id="memeFontVal">8%</span></label>
+                                    <input type="range" id="memeFontSize" min="4" max="16" value="8" oninput="document.getElementById('memeFontVal').textContent=this.value+'%'; renderMeme()">
                                 </div>
                                 <div class="meme-input-group">
-                                    <label for="memeFontSize" data-i18n="meme_size">Rozmiar czcionki</label>
-                                    <input type="range" id="memeFontSize" min="20" max="80" value="40" oninput="renderMeme(); document.getElementById('memeFontVal').textContent=this.value+'px'">
-                                    <span id="memeFontVal" style="font-size:0.85rem;color:var(--text-muted);">40px</span>
+                                    <label for="memeFont" data-i18n="meme_font">Czcionka</label>
+                                    <select id="memeFont" onchange="renderMeme()">
+                                        <option value="Anton">Anton (klasyczna)</option>
+                                        <option value="Inter">Inter (nowoczesna)</option>
+                                        <option value="Great Vibes">Great Vibes (ozdobna)</option>
+                                        <option value="Comic Sans MS">Comic Sans</option>
+                                    </select>
                                 </div>
                                 <div class="meme-input-group">
                                     <label data-i18n="meme_color">Kolor tekstu</label>
-                                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                        <button class="meme-color-btn active" data-color="#FFFFFF" onclick="setMemeColor(this,'#FFFFFF')" aria-label="Biały" data-i18n-aria="aria_col_white" style="background:#fff;border:3px solid var(--secondary);"></button>
+                                    <div class="meme-colors">
+                                        <button class="meme-color-btn active" data-color="#FFFFFF" onclick="setMemeColor(this,'#FFFFFF')" aria-label="Biały" data-i18n-aria="aria_col_white" style="background:#fff;"></button>
                                         <button class="meme-color-btn" data-color="#000000" onclick="setMemeColor(this,'#000000')" aria-label="Czarny" data-i18n-aria="aria_col_black" style="background:#000;"></button>
-                                        <button class="meme-color-btn" data-color="#FF0000" onclick="setMemeColor(this,'#FF0000')" aria-label="Czerwony" data-i18n-aria="aria_col_red" style="background:#f00;"></button>
+                                        <button class="meme-color-btn" data-color="#FF3B30" onclick="setMemeColor(this,'#FF3B30')" aria-label="Czerwony" data-i18n-aria="aria_col_red" style="background:#ff3b30;"></button>
                                         <button class="meme-color-btn" data-color="#FFD700" onclick="setMemeColor(this,'#FFD700')" aria-label="Złoty" data-i18n-aria="aria_col_gold" style="background:#ffd700;"></button>
-                                        <button class="meme-color-btn" data-color="#00FF00" onclick="setMemeColor(this,'#00FF00')" aria-label="Zielony" data-i18n-aria="aria_col_green" style="background:#0f0;"></button>
+                                        <button class="meme-color-btn" data-color="#34C759" onclick="setMemeColor(this,'#34C759')" aria-label="Zielony" data-i18n-aria="aria_col_green" style="background:#34c759;"></button>
                                         <button class="meme-color-btn" data-color="#00BFFF" onclick="setMemeColor(this,'#00BFFF')" aria-label="Błękitny" data-i18n-aria="aria_col_blue" style="background:#00bfff;"></button>
                                     </div>
                                 </div>
-                                <button class="meme-download-btn" onclick="downloadMeme()">
-                                    <i class="fas fa-download"></i> <span data-i18n="meme_download">Pobierz Mema!</span>
-                                </button>
+                                <div class="meme-checks">
+                                    <label><input type="checkbox" id="memeUpper" checked onchange="renderMeme()"> <span data-i18n="meme_upper">WIELKIE LITERY</span></label>
+                                    <label><input type="checkbox" id="memeOutline" checked onchange="renderMeme()"> <span data-i18n="meme_outline">Obrys liter</span></label>
+                                    <label><input type="checkbox" id="memeMark" checked onchange="renderMeme()"> <span data-i18n="meme_mark">Podpis beagleapps.pl</span></label>
+                                </div>
+                                <div class="meme-actions">
+                                    <button class="meme-download-btn" onclick="downloadMeme()">
+                                        <i class="fas fa-download"></i> <span data-i18n="meme_download">Pobierz Mema!</span>
+                                    </button>
+                                    <button class="meme-share-btn" id="memeShare" onclick="shareMeme()" hidden>
+                                        <i class="fas fa-share-nodes"></i> <span data-i18n="meme_share">Udostępnij</span>
+                                    </button>
+                                    <button class="meme-reset-btn" onclick="resetMemePositions()" title="Wróć napisy na górę i dół">
+                                        <i class="fas fa-rotate-left"></i> <span data-i18n="meme_reset">Ułóż napisy od nowa</span>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="meme-preview-wrap">
+                            <div class="meme-preview-wrap" id="memeDrop">
                                 <canvas id="memeCanvas" width="600" height="500"></canvas>
                                 <div id="memePlaceholder" class="meme-placeholder">
                                     <i class="fas fa-image"></i>
@@ -3450,7 +3501,7 @@ var i18n = {
         game_reaction: 'Test Refleksu', game_play: 'Graj!', game_color: 'Zgadnij Kolor', game_typing: 'Szybkie Pisanie',
         miniapp_pass_tile: 'Hasła',
         music_choose: 'Wybierz utwór',
-        meme_top: 'Tekst górny', meme_bottom: 'Tekst dolny', meme_size: 'Rozmiar czcionki',
+        meme_hint: '…albo przeciągnij / wklej (Ctrl+V) zdjęcie, albo wybierz szablon:', meme_drag: 'Napisy możesz przesuwać palcem lub myszką.', meme_font: 'Czcionka', meme_upper: 'WIELKIE LITERY', meme_outline: 'Obrys liter', meme_mark: 'Podpis beagleapps.pl', meme_share: 'Udostępnij', meme_reset: 'Ułóż napisy od nowa', meme_top: 'Tekst górny', meme_bottom: 'Tekst dolny', meme_size: 'Rozmiar czcionki',
         meme_color: 'Kolor tekstu', meme_download: 'Pobierz Mema!', meme_upload: 'Wgraj zdjęcie lub wybierz szablon',
         pass_click: 'Kliknij Generuj!', pass_copy: 'Kopiuj', pass_generate: 'Generuj hasło',
         pass_options: 'Opcje', pass_len: 'Długość:', pass_upper: 'Wielkie litery (A-Z)',
@@ -3542,7 +3593,7 @@ var i18n = {
         game_reaction: 'Reaction Test', game_play: 'Play!', game_color: 'Guess the Colour', game_typing: 'Speed Typing',
         miniapp_pass_tile: 'Passwords',
         music_choose: 'Pick a track',
-        meme_top: 'Top text', meme_bottom: 'Bottom text', meme_size: 'Font size',
+        meme_hint: '…or drag / paste (Ctrl+V) a photo, or pick a template:', meme_drag: 'Drag the captions with your finger or mouse.', meme_font: 'Font', meme_upper: 'UPPERCASE', meme_outline: 'Text outline', meme_mark: 'beagleapps.pl signature', meme_share: 'Share', meme_reset: 'Reset caption positions', meme_top: 'Top text', meme_bottom: 'Bottom text', meme_size: 'Font size',
         meme_color: 'Text colour', meme_download: 'Download meme!', meme_upload: 'Upload a photo or pick a template',
         pass_click: 'Hit Generate!', pass_copy: 'Copy', pass_generate: 'Generate password',
         pass_options: 'Options', pass_len: 'Length:', pass_upper: 'Uppercase (A-Z)',
@@ -3634,7 +3685,7 @@ var i18n = {
         game_reaction: 'Reaktionstest', game_play: 'Spielen!', game_color: 'Farbe raten', game_typing: 'Schnellschreiben',
         miniapp_pass_tile: 'Passwörter',
         music_choose: 'Titel wählen',
-        meme_top: 'Oberer Text', meme_bottom: 'Unterer Text', meme_size: 'Schriftgröße',
+        meme_hint: '…oder Foto ziehen / einfügen (Strg+V) oder Vorlage wählen:', meme_drag: 'Texte mit Finger oder Maus verschieben.', meme_font: 'Schrift', meme_upper: 'GROSSBUCHSTABEN', meme_outline: 'Textumriss', meme_mark: 'Signatur beagleapps.pl', meme_share: 'Teilen', meme_reset: 'Texte neu anordnen', meme_top: 'Oberer Text', meme_bottom: 'Unterer Text', meme_size: 'Schriftgröße',
         meme_color: 'Textfarbe', meme_download: 'Meme herunterladen!', meme_upload: 'Bild hochladen oder Vorlage wählen',
         pass_click: 'Auf Generieren tippen!', pass_copy: 'Kopieren', pass_generate: 'Passwort generieren',
         pass_options: 'Optionen', pass_len: 'Länge:', pass_upper: 'Großbuchstaben (A-Z)',
@@ -4473,36 +4524,38 @@ function backToMiniApps() {
 var memeImage = null;
 var memeTextColor = '#FFFFFF';
 
-function loadMemeImage(input) {
-    if (!input.files || !input.files[0]) return;
+// pozycje napisów jako ułamki wymiarów obrazka (null = domyślnie góra/dół)
+var memePos = { top: null, bottom: null };
+var memeDrag = null;
+
+function ustawObrazMema(img) {
+    memeImage = img;
+    memePos = { top: null, bottom: null };
+    renderMeme();
+}
+
+function wczytajPlikMema(file) {
+    if (!file || !/^image\//.test(file.type)) return;
     var reader = new FileReader();
     reader.onload = function(e) {
         var img = new Image();
-        img.onload = function() { memeImage = img; renderMeme(); };
+        img.onload = function() { ustawObrazMema(img); };
         img.src = e.target.result;
     };
-    reader.readAsDataURL(input.files[0]);
+    reader.readAsDataURL(file);
+    document.querySelectorAll('.meme-tpl').forEach(function(b) { b.classList.remove('active'); });
 }
 
+function loadMemeImage(input) {
+    if (input.files && input.files[0]) wczytajPlikMema(input.files[0]);
+}
+
+// szablony są na naszym serwerze — płótno nie jest „skażone”, pobieranie działa
 function loadMemeSample(btn) {
-    document.querySelectorAll('.meme-sample-btn').forEach(function(b) { b.style.borderColor = ''; b.style.color = ''; });
-    btn.style.borderColor = 'var(--secondary)';
-    btn.style.color = 'var(--text-primary)';
+    document.querySelectorAll('.meme-tpl').forEach(function(b) { b.classList.toggle('active', b === btn); });
     var img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = function() { memeImage = img; renderMeme(); };
-    img.onerror = function() {
-        var c = document.createElement('canvas');
-        c.width = 600; c.height = 400;
-        var ctx = c.getContext('2d');
-        ctx.fillStyle = '#1e293b'; ctx.fillRect(0,0,600,400);
-        ctx.fillStyle = '#f5a623'; ctx.font = 'bold 32px Impact,Arial'; ctx.textAlign = 'center';
-        ctx.fillText(btn.textContent.trim() + ' 😂', 300, 200);
-        var fi = new Image();
-        fi.onload = function() { memeImage = fi; renderMeme(); };
-        fi.src = c.toDataURL();
-    };
-    img.src = btn.dataset.url;
+    img.onload = function() { ustawObrazMema(img); };
+    img.src = btn.dataset.src;
 }
 
 function setMemeColor(btn, color) {
@@ -5058,39 +5111,71 @@ function copyQRLink(ev) {
     else gotowe();
 })();
 
-function renderMeme() {
+// Mem rysowany w rozdzielczości zdjęcia (do 1600 px) — podgląd skaluje CSS,
+// a pobrany plik ma pełną jakość. Napisy można przeciągać po płótnie.
+var MEME_MAX = 1600;
+var memeBoxes = {};
+
+function memeLinie(ctx, txt, maxW) {
+    var wynik = [];
+    String(txt).split('\n').forEach(function(akapit) { wynik = wynik.concat(wrapMemeText(ctx, akapit, maxW)); });
+    return wynik;
+}
+
+function renderMeme(bezPodpisu) {
     var canvas = document.getElementById('memeCanvas');
     var placeholder = document.getElementById('memePlaceholder');
     if (!memeImage) return;
     canvas.style.display = 'block';
     if (placeholder) placeholder.style.display = 'none';
-    var topText = (document.getElementById('memeTop').value || '').toUpperCase();
-    var bottomText = (document.getElementById('memeBottom').value || '').toUpperCase();
-    var fontSize = parseInt(document.getElementById('memeFontSize').value) || 40;
-    var maxW = 600, maxH = 500;
-    var ratio = memeImage.width / memeImage.height;
-    var w = maxW, h = Math.round(maxW / ratio);
-    if (h > maxH) { h = maxH; w = Math.round(maxH * ratio); }
+    var duze = document.getElementById('memeUpper').checked;
+    var topText = document.getElementById('memeTop').value || '';
+    var bottomText = document.getElementById('memeBottom').value || '';
+    if (duze) { topText = topText.toUpperCase(); bottomText = bottomText.toUpperCase(); }
+    var skala = Math.min(1, MEME_MAX / Math.max(memeImage.naturalWidth || memeImage.width, memeImage.naturalHeight || memeImage.height));
+    var w = Math.round((memeImage.naturalWidth || memeImage.width) * skala);
+    var h = Math.round((memeImage.naturalHeight || memeImage.height) * skala);
     canvas.width = w; canvas.height = h;
     var ctx = canvas.getContext('2d');
     ctx.drawImage(memeImage, 0, 0, w, h);
-    ctx.font = 'bold ' + fontSize + 'px Impact,Arial Black,sans-serif';
+    var proc = parseInt(document.getElementById('memeFontSize').value, 10) || 8;
+    var fontSize = Math.round(Math.min(w, h * 1.2) * proc / 100);
+    var krój = document.getElementById('memeFont').value;
+    ctx.font = (krój === 'Inter' ? '800 ' : (krój === 'Great Vibes' ? '' : 'bold ')) + fontSize + 'px "' + krój + '", Impact, "Arial Black", sans-serif';
     ctx.textAlign = 'center';
-    ctx.lineWidth = Math.max(3, fontSize / 10);
-    ctx.strokeStyle = memeTextColor === '#FFFFFF' ? '#000000' : '#FFFFFF';
+    ctx.textBaseline = 'top';
+    ctx.lineJoin = 'round';
+    var obrys = document.getElementById('memeOutline').checked;
+    ctx.lineWidth = Math.max(2, fontSize / 8);
+    ctx.strokeStyle = memeTextColor === '#000000' ? '#FFFFFF' : '#000000';
     ctx.fillStyle = memeTextColor;
-    if (topText) {
-        wrapMemeText(ctx, topText, w - 30).forEach(function(line, i) {
-            var y = fontSize + i * (fontSize + 4);
-            ctx.strokeText(line, w/2, y); ctx.fillText(line, w/2, y);
+    var odstep = Math.round(fontSize * 1.08);
+    var margines = Math.round(fontSize * 0.35);
+    memeBoxes = {};
+    [['top', topText], ['bottom', bottomText]].forEach(function(para) {
+        var klucz = para[0], tekst = para[1];
+        if (!tekst.trim()) return;
+        var linie = memeLinie(ctx, tekst, w * 0.94);
+        var wys = linie.length * odstep;
+        var szer = Math.max.apply(null, linie.map(function(l) { return ctx.measureText(l).width; }));
+        var cx, y;
+        if (memePos[klucz]) { cx = memePos[klucz].x * w; y = memePos[klucz].y * h - wys / 2; }
+        else { cx = w / 2; y = klucz === 'top' ? margines : h - margines - wys; }
+        linie.forEach(function(l, i) {
+            var ly = y + i * odstep;
+            if (obrys) ctx.strokeText(l, cx, ly);
+            ctx.fillText(l, cx, ly);
         });
-    }
-    if (bottomText) {
-        var bl = wrapMemeText(ctx, bottomText, w - 30);
-        bl.reverse().forEach(function(line, i) {
-            var y = h - 12 - i * (fontSize + 4);
-            ctx.strokeText(line, w/2, y); ctx.fillText(line, w/2, y);
-        });
+        memeBoxes[klucz] = { x: cx - szer / 2 - margines, y: y - margines, w: szer + 2 * margines, h: wys + 2 * margines, cx: cx, cy: y + wys / 2 };
+    });
+    if (document.getElementById('memeMark').checked) {
+        var fs2 = Math.max(12, Math.round(Math.min(w, h) * 0.028));
+        ctx.font = '600 ' + fs2 + 'px Inter, sans-serif';
+        ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+        ctx.lineWidth = Math.max(2, fs2 / 5);
+        ctx.strokeStyle = 'rgba(0,0,0,0.55)'; ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        ctx.strokeText('beagleapps.pl', w - fs2 * 0.6, h - fs2 * 0.4);
+        ctx.fillText('beagleapps.pl', w - fs2 * 0.6, h - fs2 * 0.4);
     }
 }
 
@@ -5105,13 +5190,96 @@ function wrapMemeText(ctx, text, maxWidth) {
     return lines;
 }
 
-function downloadMeme() {
+function resetMemePositions() {
+    memePos = { top: null, bottom: null };
+    renderMeme();
+}
+
+(function() {
     var canvas = document.getElementById('memeCanvas');
+    if (!canvas) return;
+    function punkt(e) {
+        var r = canvas.getBoundingClientRect();
+        return { x: (e.clientX - r.left) * canvas.width / r.width, y: (e.clientY - r.top) * canvas.height / r.height };
+    }
+    canvas.addEventListener('pointerdown', function(e) {
+        if (!memeImage) return;
+        var p = punkt(e);
+        ['bottom', 'top'].some(function(k) {
+            var b = memeBoxes[k];
+            if (b && p.x >= b.x && p.x <= b.x + b.w && p.y >= b.y && p.y <= b.y + b.h) {
+                memeDrag = { klucz: k, dx: p.x - b.cx, dy: p.y - b.cy };
+                canvas.setPointerCapture(e.pointerId);
+                canvas.classList.add('ciagnie');
+                return true;
+            }
+            return false;
+        });
+    });
+    canvas.addEventListener('pointermove', function(e) {
+        if (!memeDrag) return;
+        var p = punkt(e);
+        memePos[memeDrag.klucz] = {
+            x: Math.min(0.98, Math.max(0.02, (p.x - memeDrag.dx) / canvas.width)),
+            y: Math.min(0.98, Math.max(0.02, (p.y - memeDrag.dy) / canvas.height))
+        };
+        renderMeme();
+    });
+    function koniec() { memeDrag = null; canvas.classList.remove('ciagnie'); }
+    canvas.addEventListener('pointerup', koniec);
+    canvas.addEventListener('pointercancel', koniec);
+
+    // upuszczanie i wklejanie zdjęcia
+    var strefa = document.getElementById('memeDrop');
+    ['dragenter', 'dragover'].forEach(function(t) { strefa.addEventListener(t, function(e) { e.preventDefault(); strefa.classList.add('upuszczanie'); }); });
+    ['dragleave', 'drop'].forEach(function(t) { strefa.addEventListener(t, function() { strefa.classList.remove('upuszczanie'); }); });
+    strefa.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) wczytajPlikMema(e.dataTransfer.files[0]);
+    });
+    document.addEventListener('paste', function(e) {
+        var app = document.getElementById('miniapp-meme');
+        if (!app || !app.offsetParent) return;
+        var el = [].slice.call((e.clipboardData || {}).items || []).find(function(i) { return i.type && i.type.indexOf('image/') === 0; });
+        if (el) { e.preventDefault(); wczytajPlikMema(el.getAsFile()); }
+    });
+    // „Udostępnij” tylko tam, gdzie przeglądarka umie wysłać plik (telefony)
+    try {
+        var test = new File([new Blob()], 'x.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [test] })) document.getElementById('memeShare').hidden = false;
+    } catch (e) {}
+    // czcionki z Google Fonts mogą dojść później — przerysuj, gdy są gotowe
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function() { if (memeImage) renderMeme(); });
+    var fontSel = document.getElementById('memeFont');
+    if (fontSel) fontSel.addEventListener('change', function() {
+        if (document.fonts && document.fonts.load) document.fonts.load('40px "' + fontSel.value + '"').then(function() { renderMeme(); });
+    });
+})();
+
+function memeBlob(cb) {
+    document.getElementById('memeCanvas').toBlob(cb, 'image/jpeg', 0.92);
+}
+
+function downloadMeme() {
     if (!memeImage) { alert('Najpierw wybierz zdjęcie lub szablon!'); return; }
-    var link = document.createElement('a');
-    link.download = 'meme-beagle-' + Date.now() + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    memeBlob(function(blob) {
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.download = 'mem-beagleapps-' + Date.now() + '.jpg';
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(function() { URL.revokeObjectURL(url); }, 4000);
+    });
+}
+
+function shareMeme() {
+    if (!memeImage) { alert('Najpierw wybierz zdjęcie lub szablon!'); return; }
+    memeBlob(function(blob) {
+        var plik = new File([blob], 'mem-beagleapps.jpg', { type: 'image/jpeg' });
+        navigator.share({ files: [plik], title: 'Mem z beagleapps.pl' }).catch(function() {});
+    });
 }
 
 /*SITE_DATA_START*/
