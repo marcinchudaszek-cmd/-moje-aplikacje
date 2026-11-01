@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polityka prywatności — Promptly</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    max-width: 46rem; margin: 0 auto; padding: 2rem 1.25rem 4rem;
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #1e293b; background: #fff;
+  }
+  h1 { font-size: 1.75rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.15rem; margin-top: 2.25rem; border-bottom: 1px solid #e2e8f0; padding-bottom: .35rem; }
+  .updated { color: #64748b; font-size: .9rem; margin-top: 0; }
+  .box { background: #f1f5f9; border-left: 4px solid #7763ed; padding: .9rem 1.1rem; border-radius: 0 .5rem .5rem 0; margin: 1.25rem 0; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+  th, td { text-align: left; padding: .55rem .6rem; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  th { background: #f8fafc; }
+  a { color: #6d5ae6; }
+  hr { margin: 3.5rem 0 1rem; border: 0; border-top: 2px solid #e2e8f0; }
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #64748b; font-size: .9rem; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e2e8f0; background: #0f172a; }
+    h2, hr, footer { border-color: #334155; }
+    .box, th { background: #1e293b; }
+    th, td { border-color: #334155; }
+    a { color: #a89bff; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Polityka prywatności — Promptly</h1>
+<p class="updated">Ostatnia aktualizacja: 1 listopada 2026 · <a href="#en">English version below</a></p>
+
+<div class="box">
+  <strong>W skrócie:</strong> Promptly nie ma kont, reklam ani analityki. Twoje prompty, kolekcje i historia
+  są zapisane wyłącznie na Twoim urządzeniu. Do internetu trafia tylko to, co sam wyślesz do AI
+  przyciskiem w aplikacji — i nie jest to nigdzie przechowywane.
+</div>
+
+<h2>1. Kto odpowiada za aplikację</h2>
+<p>Aplikację <strong>Promptly</strong> tworzy Beagleapps. Kontakt w sprawach prywatności:
+  <strong><a href="mailto:beagleappsstudio@gmail.com">beagleappsstudio@gmail.com</a></strong></p>
+
+<h2>2. Dane zapisane na urządzeniu</h2>
+<p>Prompty, kolekcje, ulubione, historia wersji i ustawienia (motyw, język) są przechowywane tylko w pamięci
+  aplikacji na Twoim urządzeniu. Nie wysyłamy ich na żaden serwer. Kopię zapasową (plik JSON) tworzysz
+  i udostępniasz sam. Odinstalowanie aplikacji usuwa te dane.</p>
+
+<h2>3. Dane wysyłane do AI — tylko na Twoje polecenie</h2>
+<p>Gdy użyjesz funkcji AI (np. „Przetłumacz i ulepsz”, „Wypróbuj”, „Oceń”, „Z filmu”, „Obrazy i wideo”),
+  aplikacja wysyła przez serwer pośredniczący Promptly (Cloudflare Workers) do Google Gemini:</p>
+<table>
+  <tr><th>Dane</th><th>Kiedy</th><th>Po co</th></tr>
+  <tr><td>Tekst opisu lub promptu</td><td>Każda funkcja AI</td><td>Przygotowanie, sprawdzenie lub ocena promptu</td></tr>
+  <tr><td>Zdjęcia, które dodasz (wzorzec stylu, Twoje zdjęcia osób, zwierząt, produktów)</td><td>Tryb „Obrazy i wideo”</td><td>Opisanie ich w prompcie dla generatora</td></tr>
+  <tr><td>Film z telefonu albo link do filmu</td><td>„Z filmu” i film wzorcowy</td><td>Opisanie stylu, ujęć i tempa filmu</td></tr>
+</table>
+<ul>
+  <li>Przy linku do filmu spoza YouTube serwer Promptly pobiera plik spod tego linku, przekazuje go do Gemini i nie zapisuje go.</li>
+  <li>Przy włączonym wyszukiwaniu w internecie Gemini korzysta z wyszukiwarki Google.</li>
+  <li>Gdy AI jest niedostępne, sam tekst może zostać wysłany do darmowego tłumacza MyMemory (Translated srl).</li>
+</ul>
+<p>Serwer Promptly <strong>nie zapisuje</strong> treści zapytań, zdjęć ani filmów. Przetwarzanie przez Google
+  podlega <a href="https://ai.google.dev/gemini-api/terms">warunkom Gemini API</a> i
+  <a href="https://policies.google.com/privacy">polityce prywatności Google</a>.
+  Nie wpisuj do promptów haseł, kluczy API ani danych wrażliwych.</p>
+
+<h2>4. Dzienny limit i adres IP</h2>
+<p>Aby chronić bezpłatną usługę przed nadużyciami, serwer liczy dzienne użycie AI. Przechowuje w tym celu
+  wyłącznie licznik powiązany z adresem IP i datą. Licznik jest automatycznie usuwany po 48 godzinach
+  i nie służy do niczego innego.</p>
+
+<h2>5. Czego nie robimy</h2>
+<p>Brak kont i logowania, reklam, analityki, identyfikatorów śledzących, sprzedaży lub udostępniania danych
+  w celach marketingowych. Aplikacja prosi tylko o dostęp do internetu; zdjęcia i filmy wybierasz sam
+  w systemowym oknie wyboru pliku.</p>
+
+<h2>6. Dzieci</h2>
+<p>Aplikacja nie jest skierowana do dzieci poniżej 13 lat i świadomie nie zbiera ich danych.</p>
+
+<h2>7. Twoje prawa i zmiany</h2>
+<p>Ponieważ nie przechowujemy Twoich danych, nie ma czego udostępniać ani usuwać po naszej stronie —
+  dane na urządzeniu usuniesz w Ustawieniach aplikacji („Usuń wszystkie dane”) albo odinstalowując ją.
+  W razie pytań napisz na adres powyżej. O zmianach tej polityki informuje data aktualizacji.</p>
+
+<hr id="en">
+
+<h1>Privacy Policy — Promptly</h1>
+<p class="updated">Last updated: 1 November 2026</p>
+
+<div class="box"><strong>In short:</strong> Promptly has no accounts, ads or analytics. Your prompts, collections
+  and history are stored only on your device. Only what you explicitly send to the AI leaves the device, and it is not stored.</div>
+
+<h2>1. Who is responsible</h2>
+<p>Promptly is made by Beagleapps. Privacy contact: <a href="mailto:beagleappsstudio@gmail.com">beagleappsstudio@gmail.com</a></p>
+
+<h2>2. Data on your device</h2>
+<p>Prompts, collections, favourites, version history and settings are stored only in the app on your device.
+  Backups (JSON files) are created and shared by you. Uninstalling the app deletes this data.</p>
+
+<h2>3. Data sent to the AI — only when you ask</h2>
+<p>When you use an AI feature, the app sends the text you wrote and, if you added them, photos and a video
+  (a file from your phone or a link) through the Promptly relay server (Cloudflare Workers) to Google Gemini.
+  For non-YouTube video links the relay downloads the file, passes it to Gemini and does not keep it.
+  With web search enabled, Gemini uses Google Search. If the AI is unavailable, only the text may be sent to
+  the MyMemory translator (Translated srl). The relay server does not store requests, photos or videos.
+  Google processes the data under the <a href="https://ai.google.dev/gemini-api/terms">Gemini API terms</a> and
+  <a href="https://policies.google.com/privacy">Google Privacy Policy</a>.</p>
+
+<h2>4. Daily limit and IP address</h2>
+<p>To protect the free service from abuse, the server keeps only a daily usage counter linked to the IP address
+  and date. It is deleted automatically after 48 hours and used for nothing else.</p>
+
+<h2>5. What we do not do</h2>
+<p>No accounts, ads, analytics, tracking identifiers, or selling or sharing of data for marketing. The app only
+  requests internet access; photos and videos are picked by you in the system file picker.</p>
+
+<h2>6. Children</h2>
+<p>The app is not directed at children under 13 and does not knowingly collect their data.</p>
+
+<h2>7. Your rights and changes</h2>
+<p>We do not store your data, so there is nothing to export or delete on our side. Delete on-device data in
+  the app's Settings or by uninstalling it. Questions: the address above. Changes are marked by the update date.</p>
+
+<footer>Promptly · Beagleapps · <a href="https://beagleapps.pl">beagleapps.pl</a></footer>
+</body>
+</html>
