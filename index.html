@@ -704,6 +704,7 @@ img { max-width: 100%; display: block; }
 .badge-new { background: #10b981; color: white; }
 .badge-popular { background: #f59e0b; color: #1a1a2e; }
 .badge-beta { background: #2456a4; color: white; }
+.badge-test { background: transparent; color: var(--primary-soft); border: 1px solid rgba(150,195,255,0.45); }
 
 .app-content { padding: 18px 20px; display: flex; flex-direction: column; flex: 1; }
 
@@ -3003,17 +3004,24 @@ function applySiteData() {
                 // w kilka linii i karta robiła się nieczytelna. Etykiety w ikonach
                 // zostają jako tekst dla czytników ekranu (i dla switchLang).
                 var linki = [];
-                if (playUrl) linki.push({ url: playUrl, cls: 'card-link-play', ikona: 'fab fa-google-play', tekst: 'Google Play' });
+                // Test zamknięty: link /apps/testing/ działa dopiero po dołączeniu do grupy,
+                // więc główny przycisk prowadzi do grupy, a Play jest „krokiem 2”. Gdy karta
+                // dostanie zwykły link do sklepu, przycisk sam wraca do „Google Play”.
+                var testZamkniety = !!(playUrl && groupUrl && /\/apps\/testing\//.test(playUrl));
+                if (testZamkniety) {
+                    linki.push({ url: groupUrl, cls: 'card-link-join', ikona: 'fas fa-user-plus', tekst: '<span class="btn-label-join">' + tr.btn_join_test + '</span>', tytul: tr.btn_join_test_tip });
+                    linki.push({ url: playUrl, cls: 'card-link-play', ikona: 'fab fa-google-play', tekst: '<span class="btn-label-step2">' + tr.btn_play_step2 + '</span>', tytul: tr.btn_play_step2 });
+                } else if (playUrl) linki.push({ url: playUrl, cls: 'card-link-play', ikona: 'fab fa-google-play', tekst: 'Google Play' });
                 if (demoUrl) linki.push({ url: demoUrl, cls: 'card-link-open', ikona: 'fas fa-eye', tekst: '<span class="btn-label">' + openLabel + '</span>', tytul: openLabel });
                 if (apkUrl) linki.push({ url: apkUrl, cls: 'card-link-apk', ikona: 'fas fa-download', tekst: '<span class="btn-label-apk">' + apkLabel + '</span>', tytul: apkLabel, pobierz: true });
                 if (appStoreUrl) linki.push({ url: appStoreUrl, cls: '', ikona: 'fab fa-app-store', tekst: 'App Store' });
                 if (githubUrl && !sameLink) linki.push({ url: githubUrl, cls: '', ikona: 'fab fa-github', tekst: 'GitHub' });
-                if (groupUrl) linki.push({ url: groupUrl, cls: '', ikona: 'fas fa-users', tekst: '<span class="btn-label-testers">' + tr.btn_testers + '</span>', tytul: tr.btn_testers });
+                if (groupUrl && !testZamkniety) linki.push({ url: groupUrl, cls: '', ikona: 'fas fa-users', tekst: '<span class="btn-label-testers">' + tr.btn_testers + '</span>', tytul: tr.btn_testers });
                 var linksHtml = '';
                 linki.forEach(function(l, li) {
                     var atr = l.pobierz ? ' download' : ' target="_blank" rel="noopener"';
                     if (li === 0) {
-                        linksHtml += '<a href="' + l.url + '" class="card-link-btn card-link-main ' + l.cls + '"' + atr + '><i class="' + l.ikona + '"></i> ' + l.tekst + '</a>';
+                        linksHtml += '<a href="' + l.url + '" class="card-link-btn card-link-main ' + l.cls + '"' + atr + (l.tytul ? ' title="' + l.tytul + '"' : '') + '><i class="' + l.ikona + '"></i> ' + l.tekst + '</a>';
                     } else {
                         linksHtml += '<a href="' + l.url + '" class="card-link-icon ' + l.cls + '"' + atr + ' title="' + (l.tytul || l.tekst) + '"><i class="' + l.ikona + '"></i><span class="sr-only">' + l.tekst + '</span></a>';
                     }
@@ -3040,6 +3048,7 @@ function applySiteData() {
                                 (app.rating ? '<span class="app-rating"><i class="fas fa-star"></i> ' + app.rating + '</span>' : '') +
                                 (app.downloads ? '<span class="app-rating"><i class="fas fa-download"></i> ' + app.downloads + '</span>' : '') +
                                 badge +
+                                (testZamkniety ? '<span class="app-badge badge-test">' + tr.badge_test + '</span>' : '') +
                             '</div>' +
                         '</div>' +
                     '</div>' +
@@ -3532,7 +3541,7 @@ var i18n = {
         badge_new: 'Nowa', badge_popular: 'Popularna', badge_beta: 'Beta',
         cat_web: 'Web App', cat_mobile: 'Mobile App', cat_desktop: 'Desktop App',
         cat_ai: 'AI / ML', cat_games: 'Gra', tech_game: 'Gra',
-        btn_testers: 'Grupa testerów',
+        btn_testers: 'Grupa testerów', btn_join_test: 'Zostań testerem', btn_join_test_tip: 'Krok 1: dołącz do grupy testerów (to samo konto Google co w Sklepie Play), potem pobierz aplikację', btn_play_step2: 'Krok 2: pobierz z Google Play (po dołączeniu do grupy)', badge_test: 'Test zamknięty',
         contact_email: 'Email', contact_location: 'Lokalizacja',
         contact_location_value: 'Eichendorf (Niemcy), Jelenia Góra (Polska)',
         contact_hours: 'Dostępność', contact_hours_value: 'Pon-Pt, 9:00-18:00',
@@ -3624,7 +3633,7 @@ var i18n = {
         badge_new: 'New', badge_popular: 'Popular', badge_beta: 'Beta',
         cat_web: 'Web App', cat_mobile: 'Mobile App', cat_desktop: 'Desktop App',
         cat_ai: 'AI / ML', cat_games: 'Game', tech_game: 'Game',
-        btn_testers: 'Tester group',
+        btn_testers: 'Tester group', btn_join_test: 'Become a tester', btn_join_test_tip: 'Step 1: join the tester group (same Google account as in the Play Store), then download the app', btn_play_step2: 'Step 2: get it on Google Play (after joining the group)', badge_test: 'Closed test',
         contact_email: 'Email', contact_location: 'Location',
         contact_location_value: 'Eichendorf (Germany), Jelenia Góra (Poland)',
         contact_hours: 'Availability', contact_hours_value: 'Mon-Fri, 9:00-18:00',
@@ -3716,7 +3725,7 @@ var i18n = {
         badge_new: 'Neu', badge_popular: 'Beliebt', badge_beta: 'Beta',
         cat_web: 'Web-App', cat_mobile: 'Mobile App', cat_desktop: 'Desktop-App',
         cat_ai: 'KI / ML', cat_games: 'Spiel', tech_game: 'Spiel',
-        btn_testers: 'Testergruppe',
+        btn_testers: 'Testergruppe', btn_join_test: 'Tester werden', btn_join_test_tip: 'Schritt 1: der Testergruppe beitreten (dasselbe Google-Konto wie im Play Store), dann die App laden', btn_play_step2: 'Schritt 2: bei Google Play laden (nach dem Beitritt)', badge_test: 'Geschlossener Test',
         contact_email: 'E-Mail', contact_location: 'Standort',
         contact_location_value: 'Eichendorf (Deutschland), Jelenia Góra (Polen)',
         contact_hours: 'Erreichbarkeit', contact_hours_value: 'Mo-Fr, 9:00-18:00 Uhr',
@@ -3804,7 +3813,15 @@ function switchLang(lang) {
     // Napisy wygenerowane w JS przy renderowaniu kart. Tłumaczymy je w miejscu,
     // zamiast przerysowywać wszystkie karty — przerysowanie zgubiłoby stan
     // zwijania sekcji i filtrów.
-    var plakietki = { 'badge-new': t.badge_new, 'badge-popular': t.badge_popular, 'badge-beta': t.badge_beta };
+    var plakietki = { 'badge-new': t.badge_new, 'badge-popular': t.badge_popular, 'badge-beta': t.badge_beta, 'badge-test': t.badge_test };
+    if (t.btn_join_test) document.querySelectorAll('.btn-label-join').forEach(function(el) {
+        el.textContent = t.btn_join_test;
+        var a = el.closest('a'); if (a && t.btn_join_test_tip) a.title = t.btn_join_test_tip;
+    });
+    if (t.btn_play_step2) document.querySelectorAll('.btn-label-step2').forEach(function(el) {
+        el.textContent = t.btn_play_step2;
+        var a = el.closest('a'); if (a) a.title = t.btn_play_step2;
+    });
     Object.keys(plakietki).forEach(function(klasa) {
         if (!plakietki[klasa]) return;
         document.querySelectorAll('.app-badge.' + klasa).forEach(function(el) { el.textContent = plakietki[klasa]; });
