@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1b1a17">
+<meta name="description" content="Szachy — gra z komputerem na 8 poziomach albo we dwóch na jednym urządzeniu. Pełne zasady, zegar, podpowiedzi, cofanie ruchów, przegląd partii i zapis PGN.">
+<title>Szachy — Beagle Apps Studio</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231b1a17'/%3E%3Crect x='8' y='8' width='24' height='24' fill='%23f0d9b5'/%3E%3Crect x='32' y='8' width='24' height='24' fill='%23b58863'/%3E%3Crect x='8' y='32' width='24' height='24' fill='%23b58863'/%3E%3Crect x='32' y='32' width='24' height='24' fill='%23f0d9b5'/%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1b1a17; --panel:#262420; --panel2:#302d28; --line:#3d3a33;
+  --text:#ece6da; --muted:#a39b8c; --accent:#d9a441; --good:#7fa650; --bad:#d0574b;
+  --light:#f0d9b5; --dark:#b58863;
+  --sa-top:var(--safe-area-inset-top,env(safe-area-inset-top,0px));
+  --sa-right:var(--safe-area-inset-right,env(safe-area-inset-right,0px));
+  --sa-bottom:var(--safe-area-inset-bottom,env(safe-area-inset-bottom,0px));
+  --sa-left:var(--safe-area-inset-left,env(safe-area-inset-left,0px));
+  --bs:min(calc(100vw - 24px - var(--sa-left) - var(--sa-right)), calc(100dvh - 300px));
+}
+@media (min-width:900px){ :root{ --bs:min(calc(100dvh - 180px), calc(100vw - 440px)); } }
+html,body{min-height:100%;background:var(--bg);overscroll-behavior:none}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;color:var(--text);
+  background:radial-gradient(1100px 600px at 50% -10%,#2c2820 0%,var(--bg) 65%) fixed;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+#app{min-height:100dvh;display:flex;flex-direction:column;
+  padding:calc(var(--sa-top)) calc(var(--sa-right)) calc(var(--sa-bottom)) calc(var(--sa-left))}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:.3px}
+.brand svg{width:30px;height:30px}
+.top-actions{display:flex;gap:8px}
+.btn{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-weight:600;font-size:14px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:background .15s,transform .1s}
+.btn:hover{background:#3a3630}.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--accent);color:#1d1a14;border-color:transparent}
+.btn.primary:hover{background:#e6b350}
+.btn:disabled{opacity:.4;cursor:default}
+.icon-btn{width:40px;height:40px;padding:0;font-size:20px}
+
+.layout{flex:1;display:flex;gap:22px;justify-content:center;align-items:flex-start;padding:4px 12px 16px}
+.board-col{display:flex;flex-direction:column;gap:8px;width:var(--bs);min-width:260px}
+.player{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:42px}
+.pinfo{display:flex;align-items:center;gap:10px;min-width:0}
+.avatar{width:34px;height:34px;border-radius:8px;flex:none;display:grid;place-items:center;border:1px solid var(--line)}
+.avatar.w{background:#f3eee3}.avatar.b{background:#2e2a26}
+.avatar svg{width:28px;height:28px}
+.pname{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcap{display:flex;align-items:center;height:18px;color:var(--muted);font-size:12px;font-weight:600}
+.pcap svg{width:18px;height:18px;margin-right:-6px}
+.pcap .adv{margin-left:10px}
+.turn-dot{width:8px;height:8px;border-radius:50%;background:transparent;flex:none}
+.player.on .turn-dot{background:var(--good);box-shadow:0 0 8px var(--good)}
+.clock{font-variant-numeric:tabular-nums;font-size:20px;font-weight:700;background:var(--panel);border:1px solid var(--line);
+  border-radius:8px;padding:4px 12px;min-width:88px;text-align:right;color:var(--muted)}
+.clock.active{background:#ece6da;color:#1b1a17}
+.clock.low.active{background:var(--bad);color:#fff}
+.clock.hidden{display:none}
+
+.board{position:relative;width:var(--bs);height:var(--bs);min-width:260px;min-height:260px;border-radius:6px;overflow:hidden;
+  box-shadow:0 18px 50px rgba(0,0,0,.5);touch-action:none;user-select:none;-webkit-user-select:none}
+.squares{position:absolute;inset:0;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr)}
+.sq{position:relative}
+.sq.l{background:var(--light)}.sq.d{background:var(--dark)}
+.sq::before,.sq::after{content:'';position:absolute;pointer-events:none}
+.sq.last::before{inset:0;background:rgba(255,212,59,.38)}
+.sq.sel::before{inset:0;background:rgba(255,212,59,.6)}
+.sq.hint::before{inset:0;background:rgba(80,170,255,.42)}
+.sq.check::before{inset:0;background:radial-gradient(circle,rgba(255,30,30,.95) 0,rgba(230,30,30,.6) 30%,rgba(230,30,30,0) 72%)}
+.sq.dot::after{left:50%;top:50%;width:30%;height:30%;transform:translate(-50%,-50%);border-radius:50%;background:rgba(25,20,15,.24)}
+.sq.ring::after{inset:3%;border-radius:50%;border:calc(var(--bs)/80) solid rgba(25,20,15,.26)}
+.sq.over{box-shadow:inset 0 0 0 calc(var(--bs)/150 + 2px) rgba(255,255,255,.75)}
+.coord{position:absolute;font-size:calc(var(--bs)/8*.19);font-weight:700;line-height:1;pointer-events:none}
+.coord.f{right:4%;bottom:4%}.coord.r{left:5%;top:5%}
+.sq.l .coord{color:var(--dark)}.sq.d .coord{color:var(--light)}
+.no-coords .coord{display:none}
+.pieces{position:absolute;inset:0;pointer-events:none}
+.pc{position:absolute;left:0;top:0;width:12.5%;height:12.5%;transition:transform .2s cubic-bezier(.3,.7,.4,1),opacity .2s;will-change:transform}
+.pc svg{width:100%;height:100%;display:block;filter:drop-shadow(0 calc(var(--bs)/300) calc(var(--bs)/400) rgba(0,0,0,.35));transition:transform .12s}
+.pc.dragging{transition:none;z-index:20}
+.pc.dragging svg{transform:scale(1.18)}
+.pc.gone{opacity:0}
+.no-anim .pc{transition:none}
+.arrows{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:15}
+.promo{position:absolute;inset:0;z-index:30;background:rgba(0,0,0,.45)}
+.promo .opt{position:absolute;width:12.5%;height:12.5%;background:#f6f1e7;border-radius:50%;box-shadow:0 4px 14px rgba(0,0,0,.5);
+  display:grid;place-items:center;transition:transform .1s}
+.promo .opt:hover{transform:scale(1.07);background:#fff}
+.promo .opt svg{width:86%;height:86%}
+.hidden{display:none!important}
+.review-banner{position:absolute;left:50%;top:8px;transform:translateX(-50%);z-index:25;background:rgba(20,18,15,.88);
+  border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+
+.side{width:340px;display:flex;flex-direction:column;gap:10px;align-self:stretch;max-height:calc(var(--bs) + 116px)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.status{font-weight:700;font-size:17px;min-height:24px}
+.status small{display:block;font-weight:500;font-size:13px;color:var(--muted);margin-top:2px}
+.opening{font-size:13px;color:var(--accent);min-height:18px;margin-top:4px}
+.moves-card{flex:1;min-height:120px;display:flex;flex-direction:column;padding:0;overflow:hidden}
+.moves{flex:1;overflow-y:auto;padding:6px 6px;font-size:14px;font-variant-numeric:tabular-nums}
+.mrow{display:grid;grid-template-columns:38px 1fr 1fr;align-items:center}
+.mrow:nth-child(odd){background:rgba(255,255,255,.025)}
+.mnum{color:var(--muted);padding-left:8px;font-size:13px}
+.mv{padding:5px 8px;border-radius:6px;cursor:pointer;font-weight:600}
+.mv:hover{background:rgba(255,255,255,.07)}
+.mv.cur{background:var(--accent);color:#1d1a14}
+.moves .empty{color:var(--muted);padding:10px;font-size:13px}
+.nav{display:flex;border-top:1px solid var(--line)}
+.nav button{flex:1;padding:9px 0;font-size:17px;color:var(--muted)}
+.nav button:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.actions{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.actions .btn{flex-direction:column;gap:2px;padding:8px 2px;font-size:11px;font-weight:600}
+.actions .btn span.i{font-size:18px;line-height:1}
+.think{display:inline-block;width:14px;height:14px;border:2px solid var(--muted);border-top-color:var(--accent);border-radius:50%;
+  animation:spin .8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media (max-width:899px){
+  .layout{flex-direction:column;align-items:center;gap:10px}
+  .side{width:var(--bs);min-width:260px;max-height:none}
+  .moves-card{min-height:0}
+  .moves{max-height:92px}
+  .actions .btn{padding:7px 2px}
+  .side .status-card{order:-1}
+}
+@media (max-width:420px){ .brand span{display:none} .btn{padding:8px 11px} }
+
+dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:22px;
+  width:min(440px,calc(100vw - 28px));max-height:calc(100dvh - 40px);margin:auto;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog h2{font-size:20px;margin-bottom:14px}
+dialog p{color:var(--muted);line-height:1.5;font-size:14px}
+.field{margin-bottom:16px}
+.field>label,.field>.lbl{display:block;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:7px}
+.seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:3px;gap:3px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{flex:1;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;color:var(--muted)}
+.seg input:checked+label{background:var(--panel2);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.seg input:focus-visible+label{outline:2px solid var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.lvl-name{display:flex;justify-content:space-between;font-weight:700;margin-top:4px}
+.lvl-name span:last-child{color:var(--muted);font-weight:500;font-size:13px}
+select{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font:inherit}
+.row-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
+.check{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+.themes{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.theme{border-radius:10px;overflow:hidden;aspect-ratio:1;display:grid;grid-template-columns:1fr 1fr;border:2px solid transparent;cursor:pointer;padding:0}
+.theme.on{border-color:var(--accent)}
+.theme i{display:block}
+.theme-name{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+table.stats{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:12px}
+table.stats th,table.stats td{padding:6px 4px;text-align:center;border-bottom:1px solid var(--line)}
+table.stats th:first-child,table.stats td:first-child{text-align:left}
+table.stats th{color:var(--muted);font-weight:600;font-size:12px}
+.w{color:var(--good)}.l{color:var(--bad)}
+.over-big{font-size:26px;font-weight:800;margin-bottom:4px}
+.menu{position:fixed;z-index:50;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px;min-width:210px;
+  box-shadow:0 16px 40px rgba(0,0,0,.5);top:calc(58px + var(--sa-top));right:calc(14px + var(--sa-right))}
+.menu button{display:flex;width:100%;text-align:left;padding:10px 12px;border-radius:8px;font-size:15px;gap:10px}
+.menu button:hover{background:var(--panel2)}
+.toast{position:fixed;left:50%;bottom:calc(24px + var(--sa-bottom));transform:translateX(-50%) translateY(20px);opacity:0;
+  background:#ece6da;color:#1b1a17;padding:10px 18px;border-radius:999px;font-weight:600;font-size:14px;transition:.25s;z-index:100;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%)}
+textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;font:13px/1.4 ui-monospace,Consolas,monospace}
+.help li{margin:0 0 8px 18px;color:var(--muted);font-size:14px;line-height:1.45}
+.help b{color:var(--text)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#d9a441"/><g transform="translate(10 6) scale(.8)" fill="#1d1a14" stroke="#1d1a14" stroke-width="3" stroke-linejoin="round"><path d="M30 80 C30 68 34 62 42 56 C34 58 26 60 21 56 C16 52 17 45 22 41 L38 26 L41 13 L49 22 C63 23 73 36 72 54 C71 64 69 72 68 80 Z"/><rect x="24" y="80" width="52" height="9" rx="4"/></g></svg>
+      <span>Szachy</span>
+    </div>
+    <div class="top-actions">
+      <button class="btn primary" id="btnNew">Nowa gra</button>
+      <button class="btn icon-btn" id="btnMenu" aria-label="Menu">⋮</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="board-col">
+      <div class="player" id="pTop">
+        <div class="pinfo"><div class="avatar"></div><div><div class="pname"></div><div class="pcap"></div></div><div class="turn-dot"></div></div>
+        <div class="clock"></div>
+      </div>
+      <div class="board" id="board">
+        <div class="squares" id="squares"></div>
+        <div class="pieces" id="pieces"></div>
+        <svg class="arrows" id="arrows" viewBox="0 0 800 800"></svg>
+        <div class="promo hidden" id="promo"></div>
+        <div class="review-banner hidden" id="reviewBanner">Podgląd partii — wróć do bieżącej pozycji ⏭</div>
+      </div>
+      <div class="player" id="pBottom">
+        <div class="pinfo"><div class="avatar"></div><div><div class="pname"></div><div class="pcap"></div></div><div class="turn-dot"></div></div>
+        <div class="clock"></div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="card status-card">
+        <div class="status" id="status"></div>
+        <div class="opening" id="opening"></div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="btnUndo" title="Cofnij ruch (Ctrl+Z)"><span class="i">↶</span>Cofnij</button>
+        <button class="btn" id="btnHint" title="Podpowiedź (H)"><span class="i">💡</span>Podpowiedź</button>
+        <button class="btn" id="btnFlip" title="Obróć planszę (F)"><span class="i">⇅</span>Obróć</button>
+        <button class="btn" id="btnDraw"><span class="i">½</span>Remis</button>
+        <button class="btn" id="btnResign"><span class="i">⚑</span>Poddaj</button>
+      </div>
+      <div class="card moves-card">
+        <div class="moves" id="moves"></div>
+        <div class="nav">
+          <button id="navFirst" aria-label="Początek">⏮</button>
+          <button id="navPrev" aria-label="Poprzedni ruch">◀</button>
+          <button id="navNext" aria-label="Następny ruch">▶</button>
+          <button id="navLast" aria-label="Bieżąca pozycja">⏭</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<div class="menu hidden" id="menu">
+  <button data-act="stats">📊 Statystyki</button>
+  <button data-act="settings">⚙️ Ustawienia</button>
+  <button data-act="pgn">📋 Kopiuj zapis partii (PGN)</button>
+  <button data-act="fen">♟ Kopiuj pozycję (FEN)</button>
+  <button data-act="help">❔ Jak grać</button>
+</div>
+
+<dialog id="dlgNew">
+  <h2>Nowa gra</h2>
+  <form method="dialog" id="formNew">
+    <div class="field"><span class="lbl">Przeciwnik</span>
+      <div class="seg">
+        <input type="radio" name="mode" id="mAi" value="ai" checked><label for="mAi">Komputer</label>
+        <input type="radio" name="mode" id="mPvp" value="pvp"><label for="mPvp">Dwóch graczy</label>
+      </div>
+    </div>
+    <div class="field ai-only"><span class="lbl">Grasz</span>
+      <div class="seg">
+        <input type="radio" name="color" id="cW" value="w" checked><label for="cW">Białymi</label>
+        <input type="radio" name="color" id="cR" value="r"><label for="cR">Losowo</label>
+        <input type="radio" name="color" id="cB" value="b"><label for="cB">Czarnymi</label>
+      </div>
+    </div>
+    <div class="field ai-only"><label for="lvl">Poziom komputera</label>
+      <input type="range" id="lvl" name="level" min="1" max="8" value="4">
+      <div class="lvl-name"><span id="lvlName"></span><span id="lvlDesc"></span></div>
+    </div>
+    <div class="field"><label for="tc">Tempo gry</label>
+      <select id="tc" name="time"></select>
+    </div>
+    <div class="row-btns">
+      <button type="button" class="btn" id="newCancel">Anuluj</button>
+      <button type="submit" class="btn primary" id="newStart">Graj</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlgOver">
+  <div class="over-big" id="overTitle"></div>
+  <p id="overReason"></p>
+  <div class="row-btns" style="margin-top:18px">
+    <button class="btn" id="overReview">Przejrzyj partię</button>
+    <button class="btn" id="overPgn">Kopiuj PGN</button>
+    <button class="btn primary" id="overRematch">Rewanż</button>
+  </div>
+</dialog>
+
+<dialog id="dlgConfirm">
+  <h2 id="confTitle"></h2>
+  <p id="confText"></p>
+  <div class="row-btns" style="margin-top:18px">
+    <button class="btn" id="confNo">Anuluj</button>
+    <button class="btn primary" id="confYes">Tak</button>
+  </div>
+</dialog>
+
+<dialog id="dlgSettings">
+  <h2>Ustawienia</h2>
+  <div class="field"><span class="lbl">Wygląd planszy</span><div class="themes" id="themes"></div></div>
+  <label class="check">Dźwięki <input type="checkbox" data-set="sound"></label>
+  <label class="check">Pokazuj możliwe ruchy <input type="checkbox" data-set="legal"></label>
+  <label class="check">Współrzędne pól <input type="checkbox" data-set="coords"></label>
+  <label class="check">Animacje ruchów <input type="checkbox" data-set="animate"></label>
+  <label class="check">Obracaj planszę po ruchu (dwóch graczy) <input type="checkbox" data-set="autoFlip"></label>
+  <div class="row-btns" style="margin-top:16px"><button class="btn primary" data-close>Gotowe</button></div>
+</dialog>
+
+<dialog id="dlgStats">
+  <h2>Statystyki z komputerem</h2>
+  <table class="stats"><thead><tr><th>Poziom</th><th>Wygrane</th><th>Remisy</th><th>Porażki</th></tr></thead><tbody id="statsBody"></tbody></table>
+  <div class="row-btns"><button class="btn" id="statsReset">Wyzeruj</button><button class="btn primary" data-close>Zamknij</button></div>
+</dialog>
+
+<dialog id="dlgText">
+  <h2 id="textTitle"></h2>
+  <textarea id="textArea" readonly></textarea>
+  <div class="row-btns" style="margin-top:12px"><button class="btn primary" data-close>Zamknij</button></div>
+</dialog>
+
+<dialog id="dlgHelp">
+  <h2>Jak grać</h2>
+  <ul class="help">
+    <li><b>Ruch</b> — dotknij bierki, a potem pola docelowego, albo przeciągnij bierkę.</li>
+    <li><b>Roszada</b> — przesuń króla o dwa pola w stronę wieży.</li>
+    <li><b>Promocja</b> — gdy pion dojdzie do końca planszy, wybierz figurę.</li>
+    <li><b>Podpowiedź</b> pokazuje strzałką ruch, który poleca komputer.</li>
+    <li><b>Cofnij</b> w grze z komputerem cofa Twój ruch i odpowiedź komputera.</li>
+    <li><b>Przegląd</b> — kliknij ruch na liście albo użyj strzałek ◀ ▶ (także klawiszy ← →).</li>
+    <li>Remis zapada sam przy pacie, trzykrotnym powtórzeniu pozycji, 50 ruchach bez bicia i ruchu pionem oraz przy braku materiału do mata.</li>
+    <li>Partia zapisuje się sama — po zamknięciu strony wrócisz do niej.</li>
+    <li>Na komputerze: <b>H</b> podpowiedź, <b>F</b> obrót, <b>Ctrl+Z</b> cofnij.</li>
+  </ul>
+  <div class="row-btns"><button class="btn primary" data-close>Rozumiem</button></div>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/engine.js"></script>
+<script src="js/pieces.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
