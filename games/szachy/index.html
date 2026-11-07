@@ -164,6 +164,26 @@ table.stats th{color:var(--muted);font-weight:600;font-size:12px}
   background:#ece6da;color:#1b1a17;padding:10px 18px;border-radius:999px;font-weight:600;font-size:14px;transition:.25s;z-index:100;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%)}
 textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;font:13px/1.4 ui-monospace,Consolas,monospace}
+.pz-mode .actions{display:none}
+.pz-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted);margin-bottom:10px}
+.pz-meta b{color:var(--text)}
+.pz-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pz-btns .btn{flex-direction:column;gap:2px;padding:8px 2px;font-size:12px}
+.pz-btns .btn span.i{font-size:17px;line-height:1}
+.pz-exit{margin-top:10px;font-size:13px;color:var(--muted);font-weight:600}
+.pz-exit:hover{color:var(--text)}
+.status.good{color:#9ccc65}.status.bad{color:#ef7d70}
+.daily{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--bg);border:1px solid var(--line);
+  border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.daily .t{font-weight:700}.daily .s{font-size:13px;color:var(--muted);margin-top:2px}
+.daily.done .t::after{content:' ✓';color:var(--good)}
+.pz-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;text-align:center}
+.pz-stats div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 4px}
+.pz-stats b{display:block;font-size:19px}
+.pz-stats span{font-size:11px;color:var(--muted)}
+.seg.cats label{font-size:13px;padding:8px 2px}
+.seg.cats small{display:block;font-size:11px;font-weight:500;opacity:.8}
+@media (max-width:420px){ #btnPuzzles{padding:8px 10px} }
 .help li{margin:0 0 8px 18px;color:var(--muted);font-size:14px;line-height:1.45}
 .help b{color:var(--text)}
 </style>
@@ -176,6 +196,7 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
       <span>Szachy</span>
     </div>
     <div class="top-actions">
+      <button class="btn" id="btnPuzzles">🧩 Zadania</button>
       <button class="btn primary" id="btnNew">Nowa gra</button>
       <button class="btn icon-btn" id="btnMenu" aria-label="Menu">⋮</button>
     </div>
@@ -204,6 +225,15 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
       <div class="card status-card">
         <div class="status" id="status"></div>
         <div class="opening" id="opening"></div>
+      </div>
+      <div class="card puzzle-card hidden" id="puzzleCard">
+        <div class="pz-meta" id="pzMeta"></div>
+        <div class="pz-btns">
+          <button class="btn" id="pzHint"><span class="i">💡</span>Podpowiedź</button>
+          <button class="btn" id="pzSolution"><span class="i">👁</span>Rozwiązanie</button>
+          <button class="btn primary" id="pzNext"><span class="i">➜</span>Następne</button>
+        </div>
+        <button class="pz-exit" id="pzExit">← Wróć do partii</button>
       </div>
       <div class="actions">
         <button class="btn" id="btnUndo" title="Cofnij ruch (Ctrl+Z)"><span class="i">↶</span>Cofnij</button>
@@ -263,6 +293,33 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
   </form>
 </dialog>
 
+<dialog id="dlgPuzzles">
+  <h2>Zadania szachowe</h2>
+  <div class="daily" id="pzDaily">
+    <div><div class="t">Zadanie dnia</div><div class="s" id="pzDailyInfo"></div></div>
+    <button class="btn primary" id="pzDailyGo">Rozwiąż</button>
+  </div>
+  <div class="pz-stats">
+    <div><b id="psRating"></b><span>ranking</span></div>
+    <div><b id="psSolved"></b><span>rozwiązane</span></div>
+    <div><b id="psStreak"></b><span>seria</span></div>
+    <div><b id="psDays"></b><span>dni z rzędu</span></div>
+  </div>
+  <div class="field"><span class="lbl">Rodzaj zadań</span>
+    <div class="seg cats" id="pzCats">
+      <input type="radio" name="pzcat" id="pc0" value="0" checked><label for="pc0">Wszystkie<small id="pcc0"></small></label>
+      <input type="radio" name="pzcat" id="pc1" value="1"><label for="pc1">Mat w 1<small id="pcc1"></small></label>
+      <input type="radio" name="pzcat" id="pc2" value="2"><label for="pc2">Mat w 2<small id="pcc2"></small></label>
+      <input type="radio" name="pzcat" id="pc3" value="3"><label for="pc3">Mat w 3<small id="pcc3"></small></label>
+    </div>
+  </div>
+  <p style="margin-bottom:14px">Zadania dobierają się do Twojego rankingu. Rozwiązanie bez błędu i bez podpowiedzi podnosi ranking i serię.</p>
+  <div class="row-btns">
+    <button class="btn" data-close>Anuluj</button>
+    <button class="btn primary" id="pzStart">Rozwiązuj</button>
+  </div>
+</dialog>
+
 <dialog id="dlgOver">
   <div class="over-big" id="overTitle"></div>
   <p id="overReason"></p>
@@ -316,6 +373,7 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
     <li><b>Przegląd</b> — kliknij ruch na liście albo użyj strzałek ◀ ▶ (także klawiszy ← →).</li>
     <li>Remis zapada sam przy pacie, trzykrotnym powtórzeniu pozycji, 50 ruchach bez bicia i ruchu pionem oraz przy braku materiału do mata.</li>
     <li>Partia zapisuje się sama — po zamknięciu strony wrócisz do niej.</li>
+    <li><b>Zadania</b> — znajdź mata w 1, 2 lub 3 ruchach. Odpowiedzi przeciwnika wykonują się same. Codziennie czeka nowe zadanie dnia.</li>
     <li>Na komputerze: <b>H</b> podpowiedź, <b>F</b> obrót, <b>Ctrl+Z</b> cofnij.</li>
   </ul>
   <div class="row-btns"><button class="btn primary" data-close>Rozumiem</button></div>
@@ -323,8 +381,9 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
 
 <div class="toast" id="toast"></div>
 
-<script src="js/engine.js"></script>
-<script src="js/pieces.js"></script>
-<script src="js/app.js"></script>
+<script src="js/engine.js?v=1.1.0"></script>
+<script src="js/pieces.js?v=1.1.0"></script>
+<script src="js/zadania.js?v=1.1.0"></script>
+<script src="js/app.js?v=1.1.0"></script>
 </body>
 </html>

@@ -953,6 +953,61 @@ function think(pos, level, bookPlayed, override) {
   return { uci: toUci(best.m), score: best.score, depth: cfg.depth };
 }
 
+/* ======================================================================= */
+/* Dokładne szukanie matów (pełne przeszukanie, bez przycinania) — do zadań.
+   attackerWins(pos, n): strona na ruchu daje mata w co najwyżej n ruchach.
+   defenderLoses(pos, n): po ruchu atakującego (pierwszym z n) obrońca nie ucieknie. */
+function attackerWins(pos, n) {
+  const list = pos.gen([], false), us = pos.turn, them = us ^ 24;
+  for (let i = 0; i < list.length; i++) {
+    pos.make(list[i]);
+    let ok = false;
+    if (!pos.isAttacked(pos.kingSq[us], them)) {
+      // mat w ostatnim ruchu wymaga szacha — szybkie odrzucenie
+      if (n > 1 || pos.inCheck()) ok = defenderLoses(pos, n);
+    }
+    pos.unmake();
+    if (ok) return true;
+  }
+  return false;
+}
+function defenderLoses(pos, n) {
+  const replies = pos.legalMoves();
+  if (!replies.length) return pos.inCheck();
+  if (n <= 1) return false;
+  for (let i = 0; i < replies.length; i++) {
+    pos.make(replies[i]);
+    const w = attackerWins(pos, n - 1);
+    pos.unmake();
+    if (!w) return false;
+  }
+  return true;
+}
+/* Wszystkie ruchy dające mata w co najwyżej n ruchach. */
+function mateMoves(pos, n) {
+  const out = [];
+  for (const m of pos.legalMoves()) {
+    pos.make(m);
+    const ok = (n > 1 || pos.inCheck()) && defenderLoses(pos, n);
+    pos.unmake();
+    if (ok) out.push(m);
+  }
+  return out;
+}
+/* Najtwardsza obrona: odpowiedź, po której mat przychodzi najpóźniej (remis przy równych — najlepsza ocena). */
+function toughestReply(pos, n) {
+  let best = 0, bestLen = -1, bestEv = -Infinity;
+  for (const r of pos.legalMoves()) {
+    pos.make(r);
+    let len = n - 1;
+    for (let k = 1; k < n - 1; k++) if (attackerWins(pos, k)) { len = k; break; }
+    const ev = -evaluate(pos);
+    pos.unmake();
+    if (len > bestLen || (len === bestLen && ev > bestEv)) { best = r; bestLen = len; bestEv = ev; }
+  }
+  return best;
+}
+
 /* Wspólne wejście dla Workera i trybu awaryjnego w głównym wątku. */
 function runRequest(msg) {
   const pos = new Position(msg.startFen || START_FEN);
@@ -969,7 +1024,7 @@ function runRequest(msg) {
 root.ChessEngine = {
   WHITE, BLACK, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, START_FEN, MATE,
   F_CAP, F_EP, F_CASTLE, F_DOUBLE, F_PROMO,
-  Position, Searcher, evaluate, think, runRequest, bookMove, openingName, BOOK, OPENINGS, LEVELS,
+  Position, Searcher, evaluate, think, runRequest, attackerWins, defenderLoses, mateMoves, toughestReply, bookMove, openingName, BOOK, OPENINGS, LEVELS,
   sqName, sqFromName, toUci, mFrom, mTo, mFlags, mPromo, VAL
 };
 })(typeof globalThis !== 'undefined' ? globalThis : self);

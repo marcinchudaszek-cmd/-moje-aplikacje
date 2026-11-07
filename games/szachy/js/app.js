@@ -166,6 +166,7 @@ function fmtClock(ms) {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
 function playerName(color) {
+  if (G.mode === 'puzzle') return color === G.human ? 'Ty' : 'Obrona';
   if (G.mode === 'pvp') return color === WHITE ? 'Białe' : 'Czarne';
   return color === G.human ? 'Ty' : `Komputer · ${LEVELS[G.level][0]}`;
 }
@@ -178,10 +179,10 @@ function renderPlayers() {
     root.querySelector('.avatar').innerHTML = P.svg(color | (G.mode === 'ai' && color !== G.human ? E.KNIGHT : E.KING));
     root.querySelector('.pname').textContent = playerName(color);
     let cap = '';
-    for (const t of [1, 2, 3, 4, 5]) for (let i = cnt[opp][t]; i < INIT[t]; i++) cap += P.svg(opp | t);
+    if (G.mode !== 'puzzle') for (const t of [1, 2, 3, 4, 5]) for (let i = cnt[opp][t]; i < INIT[t]; i++) cap += P.svg(opp | t);
     const adv = color === WHITE ? mat : -mat;
     root.querySelector('.pcap').innerHTML = cap + (adv > 0 ? `<span class="adv">+${Math.round(adv / 100)}</span>` : '');
-    root.classList.toggle('on', !G.over && G.view === null && pos.turn === color);
+    root.classList.toggle('on', !G.over && !(G.mode === 'puzzle' && G.pz.done) && G.view === null && pos.turn === color);
     const clk = root.querySelector('.clock');
     clk.classList.toggle('hidden', !G.time.base);
     clk.textContent = fmtClock(G.clocks[color]);
@@ -209,6 +210,8 @@ function resultText() {
 }
 function renderStatus() {
   const st = $('#status'), pos = G.pos;
+  st.classList.remove('good', 'bad');
+  if (G.mode === 'puzzle') { renderPuzzleStatus(st); return; }
   if (G.over) st.innerHTML = `${resultText()}<small>${REASONS[G.over.reason] || ''} · ${G.over.result.replace('1/2', '½').replace('1/2', '½')}</small>`;
   else if (G.thinking) st.innerHTML = '<span class="think"></span>Komputer myśli…';
   else {
@@ -244,6 +247,9 @@ function renderAll(full) {
   renderStatus();
   renderMoves();
   $('#reviewBanner').classList.toggle('hidden', G.view === null);
+  document.body.classList.toggle('pz-mode', G.mode === 'puzzle');
+  $('#puzzleCard').classList.toggle('hidden', G.mode !== 'puzzle');
+  if (G.mode === 'puzzle') renderPuzzleCard();
   boardEl.classList.toggle('no-coords', !settings.coords);
   const th = THEMES[settings.theme] || THEMES.drewno;
   document.documentElement.style.setProperty('--light', th[1]);
@@ -319,9 +325,10 @@ function commitMove(m) {
     if (G.started) G.clocks[mover] += G.time.inc;
     G.started = true; G.lastTick = performance.now();
   }
-  const st = pos.status();
+  const st = G.mode === 'puzzle' ? null : pos.status();
   sound(pos.inCheck() ? 'check' : (fl & E.F_CAP) ? 'capture' : 'move');
   if (st) endGame(st.result, st.reason);
+  if (G.mode === 'puzzle') { if (!settings.animate) renderPieces(); puzzleAfterMove(); return; }
   if (!settings.animate) renderPieces();
   renderAll(false);
   if (G.mode === 'pvp' && settings.autoFlip && !G.over) {
@@ -362,6 +369,7 @@ function closePromo() { promoOpen = false; $('#promo').classList.add('hidden'); 
 
 /* ---------------- wejście: dotknięcie i przeciąganie ---------------- */
 function canInteract() {
+  if (G.mode === 'puzzle') return G.view === null && !promoOpen && !G.pz.done && !G.pz.busy && !G.pz.auto && G.pos.turn === G.human;
   return G.active && !G.over && G.view === null && !G.thinking && !promoOpen &&
     (G.mode === 'pvp' || G.pos.turn === G.human);
 }
@@ -423,7 +431,7 @@ let worker = null, workerBroken = false;
 function getWorker() {
   if (worker || workerBroken) return worker;
   try {
-    worker = new Worker('js/ai-worker.js');
+    worker = new Worker('js/ai-worker.js?v=1.1.0');
     worker.onmessage = (e) => onEngine(e.data);
     worker.onerror = () => { workerBroken = true; worker = null; };
   } catch { workerBroken = true; worker = null; }
@@ -532,7 +540,7 @@ function rebuild() {
 }
 
 function undo() {
-  if (!G.moves.length || promoOpen) return;
+  if (!G.moves.length || promoOpen || G.mode === 'puzzle') return;
   // z komputerem: cofamy jego odpowiedź i Twój ruch (gdy komputer jeszcze myśli — tylko Twój ruch)
   let n = G.mode === 'ai' && !G.thinking && G.pos.turn === G.human ? 2 : 1;
   n = Math.min(n, G.moves.length);
@@ -556,6 +564,7 @@ const curPly = () => G.view === null ? G.moves.length : G.view;
 
 /* ---------------- zapis ---------------- */
 function save() {
+  if (G.mode === 'puzzle') return; // zadania nie nadpisują zapisanej partii
   store.set('szachy.gra', {
     startFen: G.startFen, moves: G.moves.map((m) => m.uci), mode: G.mode, human: G.human, level: G.level,
     time: G.time.id, clocks: [G.clocks[WHITE], G.clocks[BLACK]], started: G.started, over: G.over,
@@ -659,6 +668,7 @@ $('#btnNew').onclick = openNew;
 $('#btnUndo').onclick = undo;
 $('#btnFlip').onclick = () => { G.flipped = !G.flipped; buildSquares(); renderAll(true); };
 $('#btnHint').onclick = () => {
+  if (G.mode === 'puzzle') return puzzleHint();
   if (!canInteract()) return;
   $('#btnHint').disabled = true;
   toast('Szukam najlepszego ruchu…');
@@ -749,6 +759,221 @@ document.querySelectorAll('[data-set]').forEach((c) => c.addEventListener('chang
   if (c.dataset.set === 'sound' && c.checked) ensureAudio();
   renderAll(false);
 }));
+
+/* ---------------- zadania szachowe ---------------- */
+const PUZZLES = (window.ZADANIA || []);
+const PZ = Object.assign({ rating: 1000, solved: {}, tried: {}, streak: 0, best: 0, dailyLast: '', dailyDays: 0, cat: 0 },
+  store.get('szachy.zadania', {}));
+const savePZ = () => store.set('szachy.zadania', PZ);
+const ruchy = (n) => n === 1 ? 'ruchu' : 'ruchach';
+
+function dayKey(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+function dailyPuzzle() {
+  const pool = PUZZLES.filter((p) => p.n >= 2);
+  if (!pool.length) return null;
+  const d = new Date(), day = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5);
+  return pool[(day * 7919) % pool.length];
+}
+function pickPuzzle(cat) {
+  let pool = PUZZLES.filter((p) => !cat || p.n === cat);
+  const fresh = pool.filter((p) => !PZ.solved[p.id] && (!G.pz || p.id !== G.pz.p.id));
+  if (fresh.length) pool = fresh;
+  pool = pool.slice().sort((a, b) => Math.abs(a.r - PZ.rating) - Math.abs(b.r - PZ.rating));
+  return pool[Math.random() * Math.min(5, pool.length) | 0];
+}
+
+function startPuzzle(p, daily) {
+  if (!p) { toast('Brak zadań'); return; }
+  G.mode = 'puzzle';
+  G.startFen = p.fen;
+  G.pos = new Position(p.fen);
+  G.moves = []; G.legal = G.pos.legalMoves();
+  G.human = G.pos.turn;
+  G.time = TIMES[0]; G.clocks = { [WHITE]: 0, [BLACK]: 0 }; G.started = false;
+  G.over = null; G.view = null; G.hint = null; G.thinking = false; G.aiId++; G.active = true;
+  G.flipped = G.human === BLACK;
+  G.pz = { p, line: p.line.split(' '), step: 0, k: p.n, lineValid: true, mistakes: false, helped: false,
+    done: false, busy: false, daily: !!daily, msg: '', tone: '', hintLevel: 0, scored: false };
+  sel = -1; targets = []; closePromo();
+  ensureAudio();
+  buildSquares(); renderAll(true);
+}
+
+function scorePuzzle(clean) {
+  const pz = G.pz;
+  if (pz.scored) return;
+  pz.scored = true;
+  const expct = 1 / (1 + Math.pow(10, (pz.p.r - PZ.rating) / 400));
+  const delta = Math.round(32 * ((clean ? 1 : 0) - expct));
+  PZ.rating = Math.max(100, PZ.rating + delta);
+  pz.delta = delta;
+  PZ.tried[pz.p.id] = 1;
+  if (clean) { PZ.solved[pz.p.id] = 1; PZ.streak++; PZ.best = Math.max(PZ.best, PZ.streak); }
+  else PZ.streak = 0;
+  savePZ();
+}
+function markDaily() {
+  const pz = G.pz;
+  if (!pz.daily) return;
+  const today = dayKey(), y = new Date(); y.setDate(y.getDate() - 1);
+  if (PZ.dailyLast === today) return;
+  PZ.dailyDays = PZ.dailyLast === dayKey(y) ? PZ.dailyDays + 1 : 1;
+  PZ.dailyLast = today;
+  savePZ();
+}
+
+/* Następny ruch atakującego zgodny z rozwiązaniem (z zapisanej linii albo policzony dokładnie). */
+function solutionMove() {
+  const pz = G.pz;
+  if (pz.lineValid && pz.line[pz.step]) return G.pos.moveFromUci(pz.line[pz.step]);
+  return E.mateMoves(G.pos, pz.k)[0] || 0;
+}
+function defenceMove() {
+  const pz = G.pz;
+  if (pz.lineValid && pz.line[pz.step]) return G.pos.moveFromUci(pz.line[pz.step]);
+  return E.toughestReply(G.pos, pz.k + 1);
+}
+
+function puzzleAfterMove() {
+  const pz = G.pz, pos = G.pos, last = G.moves[G.moves.length - 1];
+  const moverHuman = pos.turn !== G.human;
+  if (!moverHuman) { // odpowiedź obrony
+    if (pz.lineValid && pz.line[pz.step] !== last.uci) pz.lineValid = false;
+    pz.step++;
+    pz.busy = false;
+    if (pz.auto) setTimeout(autoStep, 650);
+    renderAll(false);
+    return;
+  }
+  const mated = pos.inCheck() && !G.legal.length;
+  let ok = pz.lineValid && last.uci === pz.line[pz.step];
+  if (!ok) {
+    if (pz.k === 1) ok = mated;
+    else if (pz.k === 2) ok = E.defenderLoses(pos, 2);
+    if (ok) pz.lineValid = false;
+  }
+  if (!ok) {
+    pz.mistakes = true; pz.busy = true;
+    pz.msg = 'To nie ten ruch — spróbuj jeszcze raz'; pz.tone = 'bad';
+    scorePuzzle(false);
+    renderAll(false);
+    setTimeout(() => {
+      if (G.mode !== 'puzzle' || G.pz !== pz) return;
+      G.moves.pop(); rebuild(); pz.busy = false; renderAll(true);
+    }, 750);
+    return;
+  }
+  pz.hintLevel = 0;
+  if (mated) {
+    pz.done = true;
+    const clean = !pz.mistakes && !pz.helped;
+    scorePuzzle(clean);
+    markDaily();
+    pz.msg = pz.auto ? 'Tak wyglądało rozwiązanie' : clean ? 'Rozwiązane! Brawo' : 'Rozwiązane';
+    pz.tone = 'good';
+    setTimeout(() => sound('end'), 150);
+    renderAll(false);
+    return;
+  }
+  pz.msg = pz.auto ? '' : 'Dobrze! Grasz dalej…'; pz.tone = pz.auto ? '' : 'good';
+  pz.step++;
+  pz.k--;
+  pz.busy = true;
+  renderAll(false);
+  setTimeout(() => {
+    if (G.mode !== 'puzzle' || G.pz !== pz) return;
+    const r = defenceMove();
+    if (r) commitMove(r);
+  }, 550);
+}
+
+function puzzleHint() {
+  const pz = G.pz;
+  if (!pz || pz.done || pz.busy || G.pos.turn !== G.human) return;
+  const m = solutionMove();
+  if (!m) return;
+  pz.helped = true;
+  scorePuzzle(false);
+  pz.hintLevel++;
+  if (pz.hintLevel === 1) {
+    G.hint = null; select(E.mFrom(m));
+    pz.msg = 'Podpowiedź: rusz zaznaczoną bierką'; pz.tone = '';
+  } else {
+    G.hint = { from: E.mFrom(m), to: E.mTo(m) };
+    pz.msg = 'Podpowiedź: ' + plSan(G.pos.san(m)); pz.tone = '';
+  }
+  renderAll(false);
+}
+function autoStep() {
+  const pz = G.pz;
+  if (G.mode !== 'puzzle' || !pz || pz.done || pz.busy || G.pos.turn !== G.human) return;
+  const m = solutionMove();
+  if (m) commitMove(m);
+}
+function puzzleSolution() {
+  const pz = G.pz;
+  if (!pz || pz.done) return;
+  pz.helped = true; pz.auto = true;
+  scorePuzzle(false);
+  autoStep();
+}
+
+function renderPuzzleStatus(st) {
+  const pz = G.pz, n = pz.p.n;
+  const side = G.human === WHITE ? 'białe' : 'czarne';
+  if (pz.msg) {
+    st.innerHTML = `${pz.msg}<small>Mat w ${n} · grają ${side}</small>`;
+    if (pz.tone) st.classList.add(pz.tone);
+  } else st.innerHTML = `Znajdź mata w ${n} ${ruchy(n)}<small>Grają ${side}${n > 1 ? ' · odpowiedzi obrony wykonają się same' : ''}</small>`;
+  $('#opening').textContent = pz.daily ? 'Zadanie dnia' : '';
+}
+function renderPuzzleCard() {
+  const pz = G.pz;
+  const total = PUZZLES.length, solved = Object.keys(PZ.solved).length;
+  const d = pz.scored && pz.delta !== undefined ? ` <span class="${pz.delta >= 0 ? 'w' : 'l'}">${pz.delta >= 0 ? '+' : ''}${pz.delta}</span>` : '';
+  $('#pzMeta').innerHTML = `<span>Trudność <b>${pz.p.r}</b></span><span>Twój ranking <b>${PZ.rating}</b>${d}</span>` +
+    `<span>Seria <b>${PZ.streak}</b></span><span>Rozwiązane <b>${solved}/${total}</b></span>`;
+  $('#pzHint').disabled = pz.done || pz.busy;
+  $('#pzSolution').disabled = pz.done || pz.busy;
+  $('#pzNext').classList.toggle('primary', pz.done);
+}
+
+function openPuzzles() {
+  const dp = dailyPuzzle();
+  const doneToday = PZ.dailyLast === dayKey();
+  $('#pzDaily').classList.toggle('done', doneToday);
+  $('#pzDailyInfo').textContent = dp ? `Mat w ${dp.n} · trudność ${dp.r}${doneToday ? ' · rozwiązane dziś' : ''}` : '';
+  $('#pzDailyGo').textContent = doneToday ? 'Jeszcze raz' : 'Rozwiąż';
+  $('#psRating').textContent = PZ.rating;
+  $('#psSolved').textContent = Object.keys(PZ.solved).length;
+  $('#psStreak').textContent = PZ.streak + (PZ.best > PZ.streak ? ` / ${PZ.best}` : '');
+  $('#psDays').textContent = PZ.dailyDays && (PZ.dailyLast === dayKey() || PZ.dailyLast === dayKey(new Date(Date.now() - 864e5))) ? PZ.dailyDays : 0;
+  for (let c = 0; c <= 3; c++) {
+    const pool = PUZZLES.filter((p) => !c || p.n === c);
+    $('#pcc' + c).textContent = `${pool.filter((p) => PZ.solved[p.id]).length}/${pool.length}`;
+  }
+  $('#pc' + (PZ.cat || 0)).checked = true;
+  openDlg('#dlgPuzzles');
+}
+$('#btnPuzzles').onclick = openPuzzles;
+$('#pzDailyGo').onclick = () => { $('#dlgPuzzles').close(); startPuzzle(dailyPuzzle(), true); };
+$('#pzStart').onclick = () => {
+  PZ.cat = +document.querySelector('input[name=pzcat]:checked').value; savePZ();
+  $('#dlgPuzzles').close();
+  startPuzzle(pickPuzzle(PZ.cat));
+};
+$('#pzHint').onclick = puzzleHint;
+$('#pzSolution').onclick = puzzleSolution;
+$('#pzNext').onclick = () => {
+  const pz = G.pz;
+  if (pz && !pz.done && !pz.scored && G.moves.length) scorePuzzle(false); // pominięte po rozpoczęciu = nierozwiązane
+  startPuzzle(pickPuzzle(PZ.cat));
+};
+$('#pzExit').onclick = () => {
+  G.pz = null;
+  if (restore()) { buildSquares(); renderAll(true); maybeAI(); }
+  else { G.mode = 'ai'; startGame(settings.last); }
+};
 
 /* ---------------- start ---------------- */
 if (restore()) {

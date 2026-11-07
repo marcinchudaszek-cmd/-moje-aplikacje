@@ -1,5 +1,5 @@
 /* Wątek komputera — liczy ruchy, żeby interfejs nie zamarzał. */
-importScripts('engine.js');
+importScripts('engine.js?v=1.1.0'); // numer wersji = świeży plik po aktualizacji
 self.onmessage = (e) => {
   const msg = e.data;
   let res;
