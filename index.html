@@ -3239,6 +3239,32 @@ window.addEventListener('scroll', updateActiveNav);
 var appsExpanded = false;
 var APPS_VISIBLE_LIMIT = 9;
 
+// Limit zwiniętej listy zaokrąglony do pełnych rzędów siatki — przy stałym limicie
+// (9 pod 3 kolumny) na szerokim ekranie z 4 kolumnami w ostatnim rzędzie zostawała
+// jedna samotna karta. Ukryta siatka (inna zakładka) nie ma kolumn → zwykły limit.
+function limitPelneRzedy(grid, limit) {
+    if (!grid) return limit;
+    var szablon = getComputedStyle(grid).gridTemplateColumns;
+    if (!szablon || szablon === 'none' || szablon.indexOf('(') >= 0) return limit;
+    var kolumny = szablon.split(' ').filter(Boolean).length;
+    if (kolumny < 2) return limit;
+    return Math.max(1, Math.round(limit / kolumny)) * kolumny;
+}
+// Siatka pokazana (przełączenie zakładki) albo zmiana szerokości → przelicz limity
+// Tworzony przy pierwszym użyciu: setup siatek bywa wołany, zanim skrypt dojdzie do tej linii.
+var obserwatorRzedow; // bez "= null": późniejsze wykonanie tej linii nie może skasować obserwatora
+function obserwujRzedy(grid) {
+    if (typeof ResizeObserver !== 'function' || !grid) return;
+    if (!obserwatorRzedow) obserwatorRzedow = new ResizeObserver(function(wpisy) {
+        wpisy.forEach(function(w) {
+            var id = w.target.id;
+            if (id === 'appsGrid') applyAppsCollapse();
+            else if (simpleCollapseConfigs[id]) applySimpleCollapse(id);
+        });
+    });
+    obserwatorRzedow.observe(grid);
+}
+
 function applyAppsCollapse() {
     var btn = document.getElementById('showMoreApps');
     var cards = document.querySelectorAll('#appsGrid .app-card');
@@ -3250,8 +3276,9 @@ function applyAppsCollapse() {
         btn.style.display = 'none';
         return;
     }
-    cards.forEach(function(c, i) { c.classList.toggle('collapsed', !appsExpanded && i >= APPS_VISIBLE_LIMIT); });
-    btn.style.display = cards.length > APPS_VISIBLE_LIMIT ? '' : 'none';
+    var limit = limitPelneRzedy(document.getElementById('appsGrid'), APPS_VISIBLE_LIMIT);
+    cards.forEach(function(c, i) { c.classList.toggle('collapsed', !appsExpanded && i >= limit); });
+    btn.style.display = cards.length > limit ? '' : 'none';
     var t = (i18n[currentLang] || i18n.pl);
     var label = appsExpanded ? (t.btn_show_less || i18n.pl.btn_show_less)
                              : (t.btn_show_all || i18n.pl.btn_show_all).replace('{n}', cards.length);
@@ -3273,6 +3300,7 @@ function setupShowMoreApps() {
         });
         grid.parentNode.insertBefore(btn, grid.nextSibling);
     }
+    obserwujRzedy(grid);
     applyAppsCollapse();
 }
 
@@ -3288,9 +3316,10 @@ function applySimpleCollapse(gridId) {
     var btn = document.getElementById(gridId + 'ShowMore');
     var items = [].slice.call(grid.children);
     var expanded = !!simpleCollapseExpanded[gridId];
-    items.forEach(function(el, i) { el.classList.toggle('is-collapsed', !expanded && i >= cfg.limit); });
+    var limit = limitPelneRzedy(grid, cfg.limit);
+    items.forEach(function(el, i) { el.classList.toggle('is-collapsed', !expanded && i >= limit); });
     if (!btn) return;
-    if (items.length <= cfg.limit) { btn.style.display = 'none'; return; }
+    if (items.length <= limit) { btn.style.display = 'none'; return; }
     btn.style.display = '';
     var t = (i18n[currentLang] || i18n.pl);
     var label = expanded ? (t.btn_show_less || i18n.pl.btn_show_less)
@@ -3314,6 +3343,7 @@ function setupSimpleCollapse(gridId, limit, labelKey) {
         });
         grid.parentNode.insertBefore(btn, grid.nextSibling);
     }
+    obserwujRzedy(grid);
     applySimpleCollapse(gridId);
 }
 
@@ -5396,6 +5426,9 @@ document.addEventListener('click', function(e) {
     function pokaz(hash, przewin) {
         var g = grupaDla(hash) || grupaDla('#home');
         sekcje.forEach(function (s) { s.classList.toggle('zakladka-aktywna', s.getAttribute('data-zakladka') === g.grupa); });
+        // pokazana siatka ma teraz kolumny — limity „Pokaż wszystkie” do pełnych rzędów
+        if (typeof applyAppsCollapse === 'function') applyAppsCollapse();
+        if (typeof simpleCollapseConfigs === 'object') Object.keys(simpleCollapseConfigs).forEach(function (id) { applySimpleCollapse(id); });
         document.querySelectorAll('.nav-link, .dolny-pasek a').forEach(function (a) {
             var ga = a.getAttribute('data-zakladka') || (grupaDla(a.getAttribute('href')) || {}).grupa;
             a.classList.toggle('active', ga === g.grupa && a.getAttribute('href') !== '#tech');
