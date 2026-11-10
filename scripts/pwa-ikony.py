@@ -1,70 +1,52 @@
-"""Ikony PWA. Zwykle biore wprost z brand kitu (02-favicon), ale Android
-przycina ikone do ksztaltu zaleznego od launchera, wiec potrzebna jest tez
-wersja "maskable": znak wysrodkowany w bezpiecznym polu 80%, tlo na cala
-powierzchnie, bez zaokraglonych rogow (system zaokragla sam).
+"""Ikony strony: PWA (any + maskable), apple-touch-icon i favikony.
+
+  * pwa-192/512 ("any") i favikony 16/32 + favicon.ico — gotowce z brand kitu
+    (02-favicon), czyli kafel ze znakiem z zaokraglonymi rogami,
+  * pwa-maskable-512 — Android przycina ikone do ksztaltu launchera, wiec znak
+    w bezpiecznym polu, tlo na cala powierzchnie, bez zaokraglen,
+  * apple-touch-icon (180) — iOS sam zaokragla rogi i zamienia przezroczystosc
+    na czern, wiec pelny kwadrat bez przezroczystosci.
 
 Uruchom:  python scripts/pwa-ikony.py
 """
 import importlib.util
 import os
 import shutil
+import sys
 
-from PIL import Image, ImageDraw
+from PIL import Image
 
-BRANDKIT = r"C:\Users\marci\Desktop\Projekty\BeagleAppsStudio-BrandKit"
-ROOT = r"C:\Users\marci\Desktop\Projekty\moje-aplikacje-strona"
+TU = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.normpath(os.path.join(TU, ".."))
+BRANDKIT = os.path.normpath(os.path.join(ROOT, "..", "BeagleAppsStudio-BrandKit"))
 IMG = os.path.join(ROOT, "img")
+FAV = os.path.join(BRANDKIT, "02-favicon")
 
-# --- ikony "any": gotowce z brand kitu ---
-for zrodlo, cel in (("favicon-192.png", "pwa-192.png"),
-                    ("favicon-512.png", "pwa-512.png")):
-    shutil.copy2(os.path.join(BRANDKIT, "02-favicon", zrodlo),
-                 os.path.join(IMG, cel))
-    print("%-22s <- %s  %d KB" % (cel, zrodlo,
-                                  os.path.getsize(os.path.join(IMG, cel)) // 1024))
 
-# --- ikona maskable: znak na pelnym tle marki ---
-spec = importlib.util.spec_from_file_location(
-    "brandkit", os.path.join(BRANDKIT, "_generator.py"))
+def kb(p):
+    return os.path.getsize(p) // 1024
+
+
+for zrodlo, cel in (("favicon-192.png", os.path.join(IMG, "pwa-192.png")),
+                    ("favicon-512.png", os.path.join(IMG, "pwa-512.png")),
+                    ("favicon-16.png", os.path.join(IMG, "favicon-16.png")),
+                    ("favicon-32.png", os.path.join(IMG, "favicon-32.png")),
+                    ("favicon.ico", os.path.join(ROOT, "favicon.ico"))):
+    shutil.copy2(os.path.join(FAV, zrodlo), cel)
+    print("%-22s <- %s  %d KB" % (os.path.basename(cel), zrodlo, kb(cel)))
+
+sys.path.insert(0, BRANDKIT)
+spec = importlib.util.spec_from_file_location("brandkit", os.path.join(BRANDKIT, "_generator.py"))
 bk = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bk)
 
-clean = bk.build_clean()
-
-# ikona Google Play wchodzi w kadr glowy — zamalowujemy ja jak build_head()
-dawca = clean.crop((700, 585, 830, 715))
-tmp = clean.copy()
-tmp.paste(dawca, (455, 585))
-tmp = tmp.filter(bk.ImageFilter.GaussianBlur(5))
-m = Image.new("L", clean.size, 0)
-ImageDraw.Draw(m).ellipse((445, 575, 595, 725), fill=255)
-clean = Image.composite(tmp, clean, m.filter(bk.ImageFilter.GaussianBlur(16)))
-
-src = clean.crop((195, 305, 484, 660)).convert("RGB")
-w0, h0 = src.size
-maska = Image.new("L", (w0, h0), 0)
-sp, mp = src.load(), maska.load()
-for y in range(h0):
-    for x in range(w0):
-        r, g, b = sp[x, y]
-        mp[x, y] = 0 if (b > 140 and r < 60) else 255
-znak = src.convert("RGBA")
-znak.putalpha(maska.filter(bk.ImageFilter.GaussianBlur(0.8)))
-znak = znak.crop(znak.split()[3].getbbox())
-
-S = 512
-BEZPIECZNE = 0.62          # znak mniejszy niz pole 80%, z zapasem na przyciecie
-
-# Tlo w kolorach kafelka z favicon-512 (probki z naroznikow). Nie uzywam tu
-# palety NAVY/NAVY_D, bo granatowy znak zlewalby sie z ciemnym rogiem.
-tlo = bk.gradient(S, S, (13, 69, 208), (4, 40, 175), (0, 40, 182), (1, 30, 162))
-tlo = bk.glow(tlo, S // 2, int(S * 0.45), int(S * 0.40), colour=(90, 150, 255), alpha=70)
-
-skala = min(S * BEZPIECZNE / znak.width, S * BEZPIECZNE / znak.height)
-z = znak.resize((round(znak.width * skala), round(znak.height * skala)), Image.LANCZOS)
-tlo.alpha_composite(z, ((S - z.width) // 2, (S - z.height) // 2))
-
+# maskable: bezpieczne pole to kolo o srednicy 80% — znak na 58% z zapasem
 cel = os.path.join(IMG, "pwa-maskable-512.png")
-tlo.convert("RGB").save(cel, "PNG", optimize=True)
-print("%-22s znak na %d%% szerokosci  %d KB" % (
-    "pwa-maskable-512.png", round(BEZPIECZNE * 100), os.path.getsize(cel) // 1024))
+bk.build_head(S=2048, wielkosc=0.58, promien=0).resize((512, 512), Image.LANCZOS) \
+    .convert("RGB").save(cel, "PNG", optimize=True)
+print("%-22s znak na 58%%  %d KB" % ("pwa-maskable-512.png", kb(cel)))
+
+cel = os.path.join(IMG, "apple-touch-icon.png")
+bk.build_head(S=1440, wielkosc=0.70, promien=0).resize((180, 180), Image.LANCZOS) \
+    .convert("RGB").save(cel, "PNG", optimize=True)
+print("%-22s pelny kwadrat  %d KB" % ("apple-touch-icon.png", kb(cel)))
