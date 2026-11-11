@@ -3445,7 +3445,9 @@ contactForm.addEventListener('submit', function(e) {
 document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     anchor.addEventListener('click', function(e) {
         var href = this.getAttribute('href');
-        if (href === '#' || href.length < 2) return;
+        // Ikony społecznościowe startują z href="#", a applySiteData() wpisuje im
+        // później pełny adres — taki link ma się po prostu otworzyć.
+        if (!href || href.charAt(0) !== '#' || href.length < 2) return;
         e.preventDefault();
         var target = document.querySelector(href);
         if (target) {
