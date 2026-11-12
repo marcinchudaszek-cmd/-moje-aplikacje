@@ -1048,6 +1048,10 @@
                             <label><i class="fab fa-reddit-alien"></i> Reddit</label>
                             <input type="url" class="form-input" id="socialReddit" placeholder="https://www.reddit.com/user/twojnick/">
                         </div>
+                        <div class="form-group">
+                            <label><i class="fab fa-instagram"></i> Instagram</label>
+                            <input type="url" class="form-input" id="socialInstagram" placeholder="https://www.instagram.com/twojnick/">
+                        </div>
                     </div>
                 </div>
                 <div class="form-actions">
@@ -1327,7 +1331,7 @@ function getData() {
             { name:'Deutsch Lernen', category:'web', desc:'Aplikacja do nauki niemieckiego z 760+ słówkami, czatem AI (Gemini), rozpoznawaniem mowy, grywalizacją i trybem offline. Glassmorphism UI.', icon:'fas fa-language', color:'linear-gradient(135deg, #f093fb, #f5576c)', badge:'none', tech:['React','PWA','Gemini AI','Speech API'], demo:'', github:'', playstore:'', appstore:'', community:'', apk:'', rating:'', downloads:'' },
             { name:'Notatnik Pro', category:'mobile', desc:'Prosty i elegancki notatnik na Androida. Tworzenie, edycja i organizacja notatek z przejrzystym Material Design.', icon:'fas fa-sticky-note', color:'linear-gradient(135deg, #a18cd1, #fbc2eb)', badge:'none', tech:['Flutter','Dart','Material Design'], demo:'', github:'', playstore:'', appstore:'', community:'', apk:'', rating:'', downloads:'' }
         ],
-        contact: { email:'', location:'', hours:'', github:'', linkedin:'', twitter:'', discord:'', reddit:'' },
+        contact: { email:'', location:'', hours:'', github:'', linkedin:'', twitter:'', discord:'', reddit:'', instagram:'' },
         stats: { stat1Value:6, stat1Label:'Aplikacji', stat2Value:3, stat2Label:'Platformy', stat3Value:2, stat3Label:'W Google Play' }
     };
     try {
@@ -1427,6 +1431,7 @@ function loadContact() {
     document.getElementById('socialTwitter').value = data.contact.twitter || '';
     document.getElementById('socialDiscord').value = data.contact.discord || '';
     document.getElementById('socialReddit').value = data.contact.reddit || '';
+    document.getElementById('socialInstagram').value = data.contact.instagram || '';
 }
 
 function saveContact() {
@@ -1439,6 +1444,7 @@ function saveContact() {
     data.contact.twitter = document.getElementById('socialTwitter').value;
     data.contact.discord = document.getElementById('socialDiscord').value;
     data.contact.reddit = document.getElementById('socialReddit').value;
+    data.contact.instagram = document.getElementById('socialInstagram').value;
     saveData(data);
     showToast('Dane kontaktowe zapisane!', 'success');
 }
