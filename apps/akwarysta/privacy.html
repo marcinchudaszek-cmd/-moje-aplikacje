@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Akwarysta — polityka prywatności</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; line-height: 1.6; max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; color: #0f172a; background: #f8fafc; }
+  h1 { color: #0e7490; font-size: 1.8rem; margin-bottom: .2rem; }
+  h2 { color: #155e75; font-size: 1.15rem; margin-top: 2rem; }
+  .meta { color: #64748b; font-size: .9rem; }
+  @media (prefers-color-scheme: dark) { body { background: #0b1220; color: #e2e8f0; } h1, h2 { color: #67e8f9; } .meta { color: #94a3b8; } }
+</style>
+</head>
+<body>
+<h1>Akwarysta — polityka prywatności</h1>
+<p class="meta">Aplikacja: Akwarysta (com.beagleappsstudio.akwarysta) · Wydawca: Beagleapps · Obowiązuje od 15 listopada 2026</p>
+
+<h2>Najważniejsze w skrócie</h2>
+<p>Akwarysta nie wymaga konta, nie wyświetla reklam i nie używa narzędzi analitycznych ani śledzących. Wszystko, co wpisujesz — akwaria, obsada, pomiary wody, dziennik, zdjęcia, zadania, sprzęt i wydatki — zostaje na Twoim urządzeniu. Jedyny wyjątek to funkcja „Zapytaj AI”, opisana niżej, z której korzystasz wyłącznie wtedy, gdy sam ją uruchomisz.</p>
+
+<h2>Dane przechowywane na urządzeniu</h2>
+<p>Dane aplikacji są zapisywane w pamięci telefonu (w przeglądarce — w pamięci tej przeglądarki). Nie wysyłamy ich na żaden serwer. Usunięcie aplikacji albo danych przeglądarki usuwa je bezpowrotnie, dlatego aplikacja oferuje kopię zapasową:</p>
+<ul>
+  <li><b>Ręczna kopia</b> — plik .json, który sam zapisujesz lub udostępniasz wybranej aplikacji.</li>
+  <li><b>Kopia automatyczna</b> (opcjonalna, tylko Android) — raz w tygodniu plik w folderze Dokumenty/Akwarysta na Twoim telefonie. Na Androidzie 10 i starszym wymaga to zgody na zapis plików; na nowszych wersjach zgoda nie jest potrzebna.</li>
+</ul>
+
+<h2>Funkcja „Zapytaj AI”</h2>
+<p>Gdy samodzielnie wyślesz pytanie, do serwera Beagleapps (Cloudflare Workers) trafia: treść pytania, zaznaczone objawy, opis akwarium wygenerowany przez aplikację (pojemność, obsada, rośliny, ostatnie pomiary wody, trwające leczenie) oraz — jeśli je dodasz — zdjęcie. Przed wysłaniem możesz zobaczyć, co dokładnie zostanie przesłane. Serwer przekazuje te dane do usługi Google Gemini, która przygotowuje odpowiedź, i odsyła ją do aplikacji.</p>
+<ul>
+  <li>Nie zapisujemy treści pytań, opisów akwarium ani zdjęć — są przetwarzane tylko na czas przygotowania odpowiedzi.</li>
+  <li>Aby chronić usługę przed nadużyciami, serwer zlicza dzienną liczbę pytań z danego adresu IP. Licznik (adres IP i liczba pytań) jest usuwany automatycznie po 48 godzinach.</li>
+  <li>Przetwarzanie przez Google podlega warunkom Google dotyczącym Gemini API (<a href="https://ai.google.dev/gemini-api/terms">ai.google.dev/gemini-api/terms</a>).</li>
+  <li>Prosimy nie dołączać zdjęć, na których widać osoby, ani danych osobowych w treści pytania.</li>
+</ul>
+
+<h2>Powiadomienia</h2>
+<p>Przypomnienia o pracach, dawkach leków, etapach tarła i serwisie sprzętu są planowane lokalnie na telefonie. Nie korzystamy z powiadomień wysyłanych z serwera.</p>
+
+<h2>Uprawnienia</h2>
+<ul>
+  <li><b>Powiadomienia</b> — przypomnienia opisane wyżej.</li>
+  <li><b>Internet</b> — wyłącznie dla funkcji „Zapytaj AI” i otwierania linków do źródeł zdjęć.</li>
+  <li><b>Zapis plików</b> (tylko Android 10 i starszy) — automatyczna kopia danych w folderze Dokumenty.</li>
+  <li><b>Wybór zdjęcia</b> — zdjęcia akwarium i wpisów dziennika wybierasz sam; są pomniejszane i zapisywane tylko w aplikacji.</li>
+</ul>
+
+<h2>Zdjęcia gatunków</h2>
+<p>Zdjęcia w atlasie pochodzą z Wikimedia Commons, na wolnych licencjach. Autor i licencja są podane przy każdym zdjęciu. Zdjęcia są dołączone do aplikacji — ich wyświetlanie nie wysyła żadnych danych.</p>
+
+<h2>Dzieci</h2>
+<p>Aplikacja nie jest skierowana do dzieci poniżej 13 lat i świadomie nie zbiera ich danych.</p>
+
+<h2>Twoje prawa i kontakt</h2>
+<p>Ponieważ nie przechowujemy Twoich danych na serwerach, wszystkie możesz w każdej chwili przejrzeć, zmienić lub usunąć w samej aplikacji. W sprawach prywatności napisz: <a href="mailto:beagleappsstudio@gmail.com">beagleappsstudio@gmail.com</a>.</p>
+
+<h2>Zmiany</h2>
+<p>O istotnych zmianach tej polityki poinformujemy w opisie aktualizacji aplikacji. Aktualna wersja jest zawsze pod tym adresem.</p>
+</body>
+</html>
