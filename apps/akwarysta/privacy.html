@@ -14,10 +14,10 @@
 </head>
 <body>
 <h1>Akwarysta — polityka prywatności</h1>
-<p class="meta">Aplikacja: Akwarysta (com.beagleappsstudio.akwarysta) · Wydawca: Beagleapps · Obowiązuje od 15 listopada 2026</p>
+<p class="meta">Aplikacja: Akwarysta (com.beagleappsstudio.akwarysta) · Wydawca: Beagleapps · Obowiązuje od 16 listopada 2026</p>
 
 <h2>Najważniejsze w skrócie</h2>
-<p>Akwarysta nie wymaga konta, nie wyświetla reklam i nie używa narzędzi analitycznych ani śledzących. Wszystko, co wpisujesz — akwaria, obsada, pomiary wody, dziennik, zdjęcia, zadania, sprzęt i wydatki — zostaje na Twoim urządzeniu. Jedyny wyjątek to funkcja „Zapytaj AI”, opisana niżej, z której korzystasz wyłącznie wtedy, gdy sam ją uruchomisz.</p>
+<p>Akwarysta nie wymaga konta, nie wyświetla reklam i nie używa narzędzi analitycznych ani śledzących. Wszystko, co wpisujesz — akwaria, obsada, pomiary wody, dziennik, zdjęcia, zadania, sprzęt i wydatki — zostaje na Twoim urządzeniu. Jedyny wyjątek to funkcje AI — „Zapytaj AI” oraz rozpoznawanie rośliny lub sprzętu ze zdjęcia — opisane niżej, z których korzystasz wyłącznie wtedy, gdy sam je uruchomisz.</p>
 
 <h2>Dane przechowywane na urządzeniu</h2>
 <p>Dane aplikacji są zapisywane w pamięci telefonu (w przeglądarce — w pamięci tej przeglądarki). Nie wysyłamy ich na żaden serwer. Usunięcie aplikacji albo danych przeglądarki usuwa je bezpowrotnie, dlatego aplikacja oferuje kopię zapasową:</p>
@@ -26,8 +26,8 @@
   <li><b>Kopia automatyczna</b> (opcjonalna, tylko Android) — raz w tygodniu plik w folderze Dokumenty/Akwarysta na Twoim telefonie. Na Androidzie 10 i starszym wymaga to zgody na zapis plików; na nowszych wersjach zgoda nie jest potrzebna.</li>
 </ul>
 
-<h2>Funkcja „Zapytaj AI”</h2>
-<p>Gdy samodzielnie wyślesz pytanie, do serwera Beagleapps (Cloudflare Workers) trafia: treść pytania, zaznaczone objawy, opis akwarium wygenerowany przez aplikację (pojemność, obsada, rośliny, ostatnie pomiary wody, trwające leczenie) oraz — jeśli je dodasz — zdjęcie. Przed wysłaniem możesz zobaczyć, co dokładnie zostanie przesłane. Serwer przekazuje te dane do usługi Google Gemini, która przygotowuje odpowiedź, i odsyła ją do aplikacji.</p>
+<h2>Funkcje AI: „Zapytaj AI” i rozpoznawanie ze zdjęcia</h2>
+<p>Gdy samodzielnie wyślesz pytanie, do serwera Beagleapps (Cloudflare Workers) trafia: treść pytania, zaznaczone objawy, opis akwarium wygenerowany przez aplikację (pojemność, obsada, rośliny, ostatnie pomiary wody, trwające leczenie) oraz — jeśli je dodasz — zdjęcie. Przed wysłaniem możesz zobaczyć, co dokładnie zostanie przesłane. Przy rozpoznawaniu rośliny lub sprzętu wysyłane jest tylko wybrane zdjęcie (przy roślinach także lista nazw roślin z atlasu aplikacji), a wynik jedynie wypełnia formularz, który sam zatwierdzasz. Serwer przekazuje te dane do usługi Google Gemini, która przygotowuje odpowiedź, i odsyła ją do aplikacji.</p>
 <ul>
   <li>Nie zapisujemy treści pytań, opisów akwarium ani zdjęć — są przetwarzane tylko na czas przygotowania odpowiedzi.</li>
   <li>Aby chronić usługę przed nadużyciami, serwer zlicza dzienną liczbę pytań z danego adresu IP. Licznik (adres IP i liczba pytań) jest usuwany automatycznie po 48 godzinach.</li>
@@ -41,7 +41,7 @@
 <h2>Uprawnienia</h2>
 <ul>
   <li><b>Powiadomienia</b> — przypomnienia opisane wyżej.</li>
-  <li><b>Internet</b> — wyłącznie dla funkcji „Zapytaj AI” i otwierania linków do źródeł zdjęć.</li>
+  <li><b>Internet</b> — wyłącznie dla funkcji AI i otwierania linków do źródeł zdjęć.</li>
   <li><b>Zapis plików</b> (tylko Android 10 i starszy) — automatyczna kopia danych w folderze Dokumenty.</li>
   <li><b>Wybór zdjęcia</b> — zdjęcia akwarium i wpisów dziennika wybierasz sam; są pomniejszane i zapisywane tylko w aplikacji.</li>
 </ul>
