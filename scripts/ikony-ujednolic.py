@@ -25,7 +25,7 @@ ROZMIAR = 192
 ROBOCZY = 512
 
 # ikony z ramka w kolorze tla pliku: obcinamy wszystko, co ma ten kolor przy krawedzi
-RAMKA = {'plantcare-icon.png', 'toonblast-icon.png', 'deutsch-lernen-icon.png'}
+RAMKA = {'toonblast-icon.png', 'deutsch-lernen-icon.png'}
 
 # ikony z polprzezroczystym wnetrzem, projektowane pod ciemne tlo:
 # kladziemy je na jednolitym kolorze tla ikony (rozlewanie koloru robi z nich plame)
