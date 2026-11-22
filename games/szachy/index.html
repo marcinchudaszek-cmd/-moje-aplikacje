@@ -184,6 +184,30 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
 .seg.cats label{font-size:13px;padding:8px 2px}
 .seg.cats small{display:block;font-size:11px;font-weight:500;opacity:.8}
 @media (max-width:420px){ #btnPuzzles{padding:8px 10px} }
+.marks{position:absolute;inset:0;pointer-events:none;z-index:2}
+.star{position:absolute;left:0;top:0;width:12.5%;height:12.5%;display:grid;place-items:center;font-size:calc(var(--bs)/8*.62);
+  color:#ffcf3f;text-shadow:0 2px 6px rgba(0,0,0,.45),0 0 2px #7a5200}
+.star span{display:block;animation:pulse 1.6s ease-in-out infinite}
+.ls-solo .player{display:none}
+@keyframes pulse{50%{transform:scale(1.12)}}
+.ls-mode .actions,.ls-mode .moves-card{display:none}
+.ls-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}
+.ls-head span{font-size:12px;color:var(--muted);white-space:nowrap}
+.ls-text{font-size:14px;line-height:1.5;color:var(--muted);margin-bottom:12px}
+.coach{margin-top:8px;font-size:13.5px;line-height:1.45;padding:8px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.coach.good{border-color:#4f6b33;color:#b7dd8c}.coach.warn{border-color:#7a6326;color:#f0cf7a}
+.coach.bad{border-color:#7a3a33;color:#f19a8f}.coach.info{color:var(--muted)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.dlg-head h2{margin:0}
+.seg.tabs{margin-bottom:14px}
+.ls-progress{font-size:13px;color:var(--muted);margin-bottom:8px}
+.ch-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:12px 0 6px}
+.ls-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:8px 10px;border-radius:10px;font-size:15px;font-weight:600}
+.ls-item:hover{background:var(--panel2)}
+.ls-item svg{width:28px;height:28px;flex:none}
+.ls-item .ok{margin-left:auto;color:var(--good);font-weight:800}
+.tip-cat{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:12px 0 4px}
+.tip{font-size:14px;line-height:1.5;color:var(--text);padding:6px 0;border-bottom:1px solid var(--line)}
 .help li{margin:0 0 8px 18px;color:var(--muted);font-size:14px;line-height:1.45}
 .help b{color:var(--text)}
 </style>
@@ -196,7 +220,7 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
       <span>Szachy</span>
     </div>
     <div class="top-actions">
-      <button class="btn" id="btnPuzzles">🧩 Zadania</button>
+      <button class="btn" id="btnPuzzles">🎓 Nauka</button>
       <button class="btn primary" id="btnNew">Nowa gra</button>
       <button class="btn icon-btn" id="btnMenu" aria-label="Menu">⋮</button>
     </div>
@@ -210,6 +234,7 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
       </div>
       <div class="board" id="board">
         <div class="squares" id="squares"></div>
+        <div class="marks" id="marks"></div>
         <div class="pieces" id="pieces"></div>
         <svg class="arrows" id="arrows" viewBox="0 0 800 800"></svg>
         <div class="promo hidden" id="promo"></div>
@@ -225,6 +250,7 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
       <div class="card status-card">
         <div class="status" id="status"></div>
         <div class="opening" id="opening"></div>
+        <div class="coach hidden" id="coach"></div>
       </div>
       <div class="card puzzle-card hidden" id="puzzleCard">
         <div class="pz-meta" id="pzMeta"></div>
@@ -234,6 +260,16 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
           <button class="btn primary" id="pzNext"><span class="i">➜</span>Następne</button>
         </div>
         <button class="pz-exit" id="pzExit">← Wróć do partii</button>
+      </div>
+      <div class="card lesson-card hidden" id="lessonCard">
+        <div class="ls-head"><b id="lsTitle"></b><span id="lsStep"></span></div>
+        <p class="ls-text" id="lsText"></p>
+        <div class="pz-btns">
+          <button class="btn" id="lsRestart"><span class="i">↺</span>Od nowa</button>
+          <button class="btn" id="lsList"><span class="i">☰</span>Lekcje</button>
+          <button class="btn" id="lsNext"><span class="i">➜</span>Dalej</button>
+        </div>
+        <button class="pz-exit" id="lsExit">← Wróć do partii</button>
       </div>
       <div class="actions">
         <button class="btn" id="btnUndo" title="Cofnij ruch (Ctrl+Z)"><span class="i">↶</span>Cofnij</button>
@@ -294,7 +330,15 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
 </dialog>
 
 <dialog id="dlgPuzzles">
-  <h2>Zadania szachowe</h2>
+  <div class="dlg-head"><h2>Nauka gry</h2><button class="btn icon-btn" data-close aria-label="Zamknij">✕</button></div>
+  <div class="seg tabs" id="learnTabs">
+    <input type="radio" name="ltab" id="lt0" value="lessons" checked><label for="lt0">Lekcje</label>
+    <input type="radio" name="ltab" id="lt1" value="puzzles"><label for="lt1">Zadania</label>
+    <input type="radio" name="ltab" id="lt2" value="tips"><label for="lt2">Porady</label>
+  </div>
+  <div class="tab-panel" id="tabLessons"><div class="ls-progress" id="lsProgress"></div><div id="lessonList"></div></div>
+  <div class="tab-panel" id="tabTips"><div id="tipList"></div></div>
+  <div class="tab-panel" id="tabPuzzles">
   <div class="daily" id="pzDaily">
     <div><div class="t">Zadanie dnia</div><div class="s" id="pzDailyInfo"></div></div>
     <button class="btn primary" id="pzDailyGo">Rozwiąż</button>
@@ -315,8 +359,8 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
   </div>
   <p style="margin-bottom:14px">Zadania dobierają się do Twojego rankingu. Rozwiązanie bez błędu i bez podpowiedzi podnosi ranking i serię.</p>
   <div class="row-btns">
-    <button class="btn" data-close>Anuluj</button>
     <button class="btn primary" id="pzStart">Rozwiązuj</button>
+  </div>
   </div>
 </dialog>
 
@@ -347,6 +391,8 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
   <label class="check">Współrzędne pól <input type="checkbox" data-set="coords"></label>
   <label class="check">Animacje ruchów <input type="checkbox" data-set="animate"></label>
   <label class="check">Obracaj planszę po ruchu (dwóch graczy) <input type="checkbox" data-set="autoFlip"></label>
+  <label class="check">Trener: oceniaj moje ruchy w grze z komputerem <input type="checkbox" data-set="coach"></label>
+  <label class="check">Porada na start partii <input type="checkbox" data-set="tips"></label>
   <div class="row-btns" style="margin-top:16px"><button class="btn primary" data-close>Gotowe</button></div>
 </dialog>
 
@@ -373,6 +419,8 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
     <li><b>Przegląd</b> — kliknij ruch na liście albo użyj strzałek ◀ ▶ (także klawiszy ← →).</li>
     <li>Remis zapada sam przy pacie, trzykrotnym powtórzeniu pozycji, 50 ruchach bez bicia i ruchu pionem oraz przy braku materiału do mata.</li>
     <li>Partia zapisuje się sama — po zamknięciu strony wrócisz do niej.</li>
+    <li><b>Nauka</b> — 19 lekcji od ruchów bierek po taktykę i matowanie, a w zakładce Porady wskazówki na każdą fazę partii.</li>
+    <li><b>Trener</b> ocenia Twoje ruchy w grze z komputerem i pokazuje lepszy ruch po błędzie (wyłączysz go w ustawieniach).</li>
     <li><b>Zadania</b> — znajdź mata w 1, 2 lub 3 ruchach. Odpowiedzi przeciwnika wykonują się same. Codziennie czeka nowe zadanie dnia.</li>
     <li>Na komputerze: <b>H</b> podpowiedź, <b>F</b> obrót, <b>Ctrl+Z</b> cofnij.</li>
   </ul>
@@ -381,9 +429,10 @@ textarea{width:100%;height:160px;background:var(--bg);color:var(--text);border:1
 
 <div class="toast" id="toast"></div>
 
-<script src="js/engine.js?v=1.1.0"></script>
-<script src="js/pieces.js?v=1.1.0"></script>
-<script src="js/zadania.js?v=1.1.0"></script>
-<script src="js/app.js?v=1.1.0"></script>
+<script src="js/engine.js?v=1.2.0"></script>
+<script src="js/pieces.js?v=1.2.0"></script>
+<script src="js/zadania.js?v=1.2.0"></script>
+<script src="js/nauka.js?v=1.2.0"></script>
+<script src="js/app.js?v=1.2.0"></script>
 </body>
 </html>

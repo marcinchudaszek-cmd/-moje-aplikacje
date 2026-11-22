@@ -35,7 +35,7 @@ const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* brak miejsca / tryb prywatny */ } }
 };
-const settings = Object.assign({ theme: 'drewno', sound: true, legal: true, coords: true, animate: true, autoFlip: false,
+const settings = Object.assign({ theme: 'drewno', sound: true, legal: true, coords: true, animate: true, autoFlip: false, coach: true, tips: true,
   last: { mode: 'ai', color: 'w', level: 4, time: 'none' } }, store.get('szachy.ustawienia', {}));
 const saveSettings = () => store.set('szachy.ustawienia', settings);
 let stats = store.get('szachy.statystyki', {});
@@ -49,7 +49,7 @@ const G = {
   thinking: false, aiId: 0, hint: null, active: false
 };
 
-const boardEl = $('#board'), squaresEl = $('#squares'), piecesEl = $('#pieces'), arrowsEl = $('#arrows');
+const boardEl = $('#board'), squaresEl = $('#squares'), piecesEl = $('#pieces'), arrowsEl = $('#arrows'), marksEl = $('#marks');
 let squareEls = new Array(128), pieceEls = new Array(128);
 
 /* ---------------- geometria ---------------- */
@@ -77,7 +77,7 @@ function buildSquares() {
 
 function shownPosition() {
   if (G.view === null) return G.pos;
-  return new Position(G.view === 0 ? G.startFen : G.moves[G.view - 1].fen);
+  return new Position(G.view === 0 ? G.startFen : G.moves[G.view - 1].fen, true);
 }
 
 function renderPieces() {
@@ -130,6 +130,7 @@ function renderHighlights() {
     }
   }
   drawArrow();
+  drawStars();
 }
 
 function drawArrow() {
@@ -167,6 +168,7 @@ function fmtClock(ms) {
 }
 function playerName(color) {
   if (G.mode === 'puzzle') return color === G.human ? 'Ty' : 'Obrona';
+  if (G.mode === 'lesson') return color === G.human ? 'Ty' : (G.ls.data.type === 'play' ? 'Komputer' : 'Przeciwnik');
   if (G.mode === 'pvp') return color === WHITE ? 'Białe' : 'Czarne';
   return color === G.human ? 'Ty' : `Komputer · ${LEVELS[G.level][0]}`;
 }
@@ -179,7 +181,7 @@ function renderPlayers() {
     root.querySelector('.avatar').innerHTML = P.svg(color | (G.mode === 'ai' && color !== G.human ? E.KNIGHT : E.KING));
     root.querySelector('.pname').textContent = playerName(color);
     let cap = '';
-    if (G.mode !== 'puzzle') for (const t of [1, 2, 3, 4, 5]) for (let i = cnt[opp][t]; i < INIT[t]; i++) cap += P.svg(opp | t);
+    if (G.mode !== 'puzzle' && G.mode !== 'lesson') for (const t of [1, 2, 3, 4, 5]) for (let i = cnt[opp][t]; i < INIT[t]; i++) cap += P.svg(opp | t);
     const adv = color === WHITE ? mat : -mat;
     root.querySelector('.pcap').innerHTML = cap + (adv > 0 ? `<span class="adv">+${Math.round(adv / 100)}</span>` : '');
     root.classList.toggle('on', !G.over && !(G.mode === 'puzzle' && G.pz.done) && G.view === null && pos.turn === color);
@@ -212,6 +214,7 @@ function renderStatus() {
   const st = $('#status'), pos = G.pos;
   st.classList.remove('good', 'bad');
   if (G.mode === 'puzzle') { renderPuzzleStatus(st); return; }
+  if (G.mode === 'lesson') { renderLessonStatus(st); return; }
   if (G.over) st.innerHTML = `${resultText()}<small>${REASONS[G.over.reason] || ''} · ${G.over.result.replace('1/2', '½').replace('1/2', '½')}</small>`;
   else if (G.thinking) st.innerHTML = '<span class="think"></span>Komputer myśli…';
   else {
@@ -228,8 +231,8 @@ function renderStatus() {
 function renderMoves() {
   const box = $('#moves');
   if (!G.moves.length) { box.innerHTML = '<div class="empty">Partia jeszcze się nie zaczęła.</div>'; return; }
-  const blackFirst = new Position(G.startFen).turn === BLACK;
-  const startNo = new Position(G.startFen).full;
+  const blackFirst = new Position(G.startFen, true).turn === BLACK;
+  const startNo = new Position(G.startFen, true).full;
   const cur = G.view === null ? G.moves.length : G.view;
   let html = '', i = 0, no = startNo;
   if (blackFirst) { html += `<div class="mrow"><span class="mnum">${no}.</span><span class="mv">…</span>${cell(0)}</div>`; i = 1; no++; }
@@ -248,6 +251,11 @@ function renderAll(full) {
   renderMoves();
   $('#reviewBanner').classList.toggle('hidden', G.view === null);
   document.body.classList.toggle('pz-mode', G.mode === 'puzzle');
+  document.body.classList.toggle('ls-mode', G.mode === 'lesson');
+  document.body.classList.toggle('ls-solo', G.mode === 'lesson' && G.ls.data.type !== 'play');
+  $('#lessonCard').classList.toggle('hidden', G.mode !== 'lesson');
+  if (G.mode === 'lesson') renderLessonCard();
+  renderCoach();
   $('#puzzleCard').classList.toggle('hidden', G.mode !== 'puzzle');
   if (G.mode === 'puzzle') renderPuzzleCard();
   boardEl.classList.toggle('no-coords', !settings.coords);
@@ -325,10 +333,13 @@ function commitMove(m) {
     if (G.started) G.clocks[mover] += G.time.inc;
     G.started = true; G.lastTick = performance.now();
   }
-  const st = G.mode === 'puzzle' ? null : pos.status();
+  const st = G.mode === 'puzzle' || G.mode === 'lesson' ? null : pos.status();
   sound(pos.inCheck() ? 'check' : (fl & E.F_CAP) ? 'capture' : 'move');
   if (st) endGame(st.result, st.reason);
   if (G.mode === 'puzzle') { if (!settings.animate) renderPieces(); puzzleAfterMove(); return; }
+  if (G.mode === 'lesson') { if (!settings.animate) renderPieces(); lessonAfterMove(); return; }
+  if (G.mode === 'ai' && mover === G.human && !G.over) askCoach();
+  else if (G.mode === 'ai' && mover === G.human) G.coachMsg = null;
   if (!settings.animate) renderPieces();
   renderAll(false);
   if (G.mode === 'pvp' && settings.autoFlip && !G.over) {
@@ -370,6 +381,7 @@ function closePromo() { promoOpen = false; $('#promo').classList.add('hidden'); 
 /* ---------------- wejście: dotknięcie i przeciąganie ---------------- */
 function canInteract() {
   if (G.mode === 'puzzle') return G.view === null && !promoOpen && !G.pz.done && !G.pz.busy && !G.pz.auto && G.pos.turn === G.human;
+  if (G.mode === 'lesson') return G.view === null && !promoOpen && !G.ls.done && !G.ls.busy && !G.ls.failed && G.pos.turn === G.human;
   return G.active && !G.over && G.view === null && !G.thinking && !promoOpen &&
     (G.mode === 'pvp' || G.pos.turn === G.human);
 }
@@ -431,7 +443,7 @@ let worker = null, workerBroken = false;
 function getWorker() {
   if (worker || workerBroken) return worker;
   try {
-    worker = new Worker('js/ai-worker.js?v=1.1.0');
+    worker = new Worker('js/ai-worker.js?v=1.2.0');
     worker.onmessage = (e) => onEngine(e.data);
     worker.onerror = () => { workerBroken = true; worker = null; };
   } catch { workerBroken = true; worker = null; }
@@ -456,6 +468,11 @@ function maybeAI() {
 let pendingDraw = null;
 function onEngine(r) {
   if (r.id !== G.aiId) return;
+  if (r.kind === 'lesson') {
+    if (G.mode !== 'lesson') return;
+    setTimeout(() => { if (r.id !== G.aiId || G.mode !== 'lesson') return; const m = r.uci && G.pos.moveFromUci(r.uci); if (m) commitMove(m); }, 300);
+    return;
+  }
   if (r.kind === 'move') {
     const wait = Math.max(0, 380 - (performance.now() - aiStarted));
     setTimeout(() => {
@@ -528,23 +545,25 @@ function startGame(opts) {
   G.thinking = false; G.aiId++; G.active = true;
   G.flipped = G.mode === 'ai' && G.human === BLACK;
   sel = -1; targets = []; closePromo();
+  G.coachMsg = settings.tips ? { cls: 'info', text: '💡 Porada: ' + randomTip() } : null;
   buildSquares(); renderAll(true); save();
   ensureAudio(); sound('start');
   maybeAI();
 }
 
 function rebuild() {
-  G.pos = new Position(G.startFen);
+  G.pos = new Position(G.startFen, G.mode === 'lesson');
   for (const m of G.moves) G.pos.play(m.uci);
   G.legal = G.pos.legalMoves();
 }
 
 function undo() {
-  if (!G.moves.length || promoOpen || G.mode === 'puzzle') return;
+  if (!G.moves.length || promoOpen || G.mode === 'puzzle' || G.mode === 'lesson') return;
   // z komputerem: cofamy jego odpowiedź i Twój ruch (gdy komputer jeszcze myśli — tylko Twój ruch)
   let n = G.mode === 'ai' && !G.thinking && G.pos.turn === G.human ? 2 : 1;
   n = Math.min(n, G.moves.length);
   G.aiId++; G.thinking = false; G.over = null; G.hint = null; G.view = null;
+  G.coachMsg = null; coachId++;
   G.moves.splice(G.moves.length - n, n);
   rebuild();
   sel = -1; targets = [];
@@ -553,7 +572,7 @@ function undo() {
 }
 
 function setView(k) {
-  if (!G.moves.length) return;
+  if (!G.moves.length || G.mode === 'lesson') return;
   k = Math.max(0, Math.min(k, G.moves.length));
   G.view = k === G.moves.length ? null : k;
   sel = -1; targets = []; closePromo();
@@ -564,7 +583,7 @@ const curPly = () => G.view === null ? G.moves.length : G.view;
 
 /* ---------------- zapis ---------------- */
 function save() {
-  if (G.mode === 'puzzle') return; // zadania nie nadpisują zapisanej partii
+  if (G.mode === 'puzzle' || G.mode === 'lesson') return; // zadania i lekcje nie nadpisują zapisanej partii
   store.set('szachy.gra', {
     startFen: G.startFen, moves: G.moves.map((m) => m.uci), mode: G.mode, human: G.human, level: G.level,
     time: G.time.id, clocks: [G.clocks[WHITE], G.clocks[BLACK]], started: G.started, over: G.over,
@@ -603,7 +622,7 @@ function pgn() {
   const res = G.over ? G.over.result : '*';
   let h = `[Event "Partia towarzyska"]\n[Site "beagleapps.pl"]\n[Date "${date}"]\n[White "${nm(WHITE)}"]\n[Black "${nm(BLACK)}"]\n[Result "${res}"]\n`;
   if (G.startFen !== E.START_FEN) h += `[SetUp "1"]\n[FEN "${G.startFen}"]\n`;
-  const p0 = new Position(G.startFen);
+  const p0 = new Position(G.startFen, true);
   let no = p0.full, black = p0.turn === BLACK, out = [];
   G.moves.forEach((m, i) => {
     if (!black) out.push(`${no}.`); else if (i === 0) out.push(`${no}...`);
@@ -669,6 +688,7 @@ $('#btnUndo').onclick = undo;
 $('#btnFlip').onclick = () => { G.flipped = !G.flipped; buildSquares(); renderAll(true); };
 $('#btnHint').onclick = () => {
   if (G.mode === 'puzzle') return puzzleHint();
+  if (G.mode === 'lesson') return;
   if (!canInteract()) return;
   $('#btnHint').disabled = true;
   toast('Szukam najlepszego ruchu…');
@@ -969,11 +989,243 @@ $('#pzNext').onclick = () => {
   if (pz && !pz.done && !pz.scored && G.moves.length) scorePuzzle(false); // pominięte po rozpoczęciu = nierozwiązane
   startPuzzle(pickPuzzle(PZ.cat));
 };
-$('#pzExit').onclick = () => {
-  G.pz = null;
+$('#pzExit').onclick = $('#lsExit').onclick = () => {
+  G.pz = null; G.coachMsg = null;
   if (restore()) { buildSquares(); renderAll(true); maybeAI(); }
   else { G.mode = 'ai'; startGame(settings.last); }
 };
+
+/* ---------------- nauka: lekcje, porady, trener ---------------- */
+const NAUKA = window.NAUKA || { chapters: [], tips: [] };
+const LESSONS = NAUKA.chapters.flatMap((c) => c.lessons);
+const LS = Object.assign({ done: {} }, store.get('szachy.nauka', {}));
+const saveLS = () => store.set('szachy.nauka', LS);
+const PRAISE = ['Świetnie!', 'Brawo!', 'Doskonale!', 'Tak jest!', 'Dokładnie tak!'];
+const pick = (a) => a[Math.random() * a.length | 0];
+const randomTip = () => (NAUKA.tips.length ? pick(NAUKA.tips).text : '');
+const ICON = { P: E.PAWN, N: E.KNIGHT, B: E.BISHOP, R: E.ROOK, Q: E.QUEEN, K: E.KING };
+
+function drawStars() {
+  if (G.mode !== 'lesson' || !G.ls.stars || G.view !== null) { marksEl.innerHTML = ''; return; }
+  marksEl.innerHTML = [...G.ls.stars].map((sq) => {
+    const [x, y] = sqXY(sq);
+    return `<div class="star" style="transform:translate(${x * 100}%,${y * 100}%)"><span>★</span></div>`;
+  }).join('');
+}
+
+function startLesson(li, si = 0) {
+  const lesson = LESSONS[li];
+  if (!lesson) return;
+  const step = lesson.steps[si];
+  const lenient = step.type === 'stars' || step.type === 'capture';
+  G.mode = 'lesson';
+  G.startFen = step.fen;
+  G.pos = new Position(step.fen, lenient);
+  G.moves = []; G.legal = G.pos.legalMoves();
+  G.human = G.pos.turn;
+  G.time = TIMES[0]; G.clocks = { [WHITE]: 0, [BLACK]: 0 }; G.started = false;
+  G.over = null; G.view = null; G.hint = null; G.thinking = false; G.aiId++; G.active = true;
+  G.flipped = G.human === BLACK; G.coachMsg = null; G.pz = null;
+  G.ls = { li, si, lesson, data: step, done: false, busy: false, failed: false, msg: '', tone: '', moves: 0,
+    stars: step.stars ? new Set(step.stars.map(E.sqFromName)) : null };
+  sel = -1; targets = []; closePromo();
+  ensureAudio();
+  buildSquares(); renderAll(true);
+}
+
+function enemyLeft(pos) {
+  for (let sq = 0; sq < 128; sq++) if (!(sq & 0x88) && pos.board[sq] && !(pos.board[sq] & G.human)) return true;
+  return false;
+}
+function lessonWrong(msg) {
+  const ls = G.ls;
+  ls.msg = msg; ls.tone = 'bad'; ls.busy = true;
+  renderAll(false);
+  setTimeout(() => {
+    if (G.mode !== 'lesson' || G.ls !== ls) return;
+    G.moves.pop(); rebuild(); ls.busy = false; renderAll(true);
+  }, 900);
+}
+function lessonDone(msg) {
+  const ls = G.ls;
+  ls.done = true; ls.msg = msg || pick(PRAISE); ls.tone = 'good';
+  if (ls.si === ls.lesson.steps.length - 1) { LS.done[ls.lesson.id] = 1; saveLS(); }
+  setTimeout(() => sound('end'), 150);
+  renderAll(false);
+}
+function lessonAfterMove() {
+  const ls = G.ls, st = ls.data, pos = G.pos, last = G.moves[G.moves.length - 1];
+  if (pos.turn === G.human) { // odpowiedź komputera w ćwiczeniu „play”
+    ls.busy = false;
+    const s = pos.status();
+    if (s) lessonPlayEnd(s); else renderAll(false);
+    return;
+  }
+  ls.moves++;
+  switch (st.type) {
+    case 'stars':
+    case 'capture': {
+      if (ls.stars) ls.stars.delete(last.to);
+      pos.makeNull(); // przeciwnik stoi — znowu Twój ruch
+      G.legal = pos.legalMoves();
+      const finished = st.type === 'stars' ? ls.stars.size === 0 : !enemyLeft(pos);
+      if (finished) lessonDone(`${pick(PRAISE)} Ruchy: ${ls.moves}.`);
+      else renderAll(false);
+      break;
+    }
+    case 'move':
+    case 'win':
+      if (st.accept.includes(last.uci)) lessonDone(st.success);
+      else lessonWrong(st.fail);
+      break;
+    case 'escape': {
+      const p = pos.board[last.to] & 7;
+      lessonDone(p === E.KING ? 'Król uciekł spod szacha.' : /x/.test(last.san) ? 'Zbiłeś atakującą bierkę.' : 'Zasłoniłeś króla.');
+      break;
+    }
+    case 'mate': {
+      const s = pos.status();
+      if (s && s.reason === 'checkmate') lessonDone('Mat! ' + pick(PRAISE));
+      else if (s && s.reason === 'stalemate') lessonWrong('Pat! Czarne nie mają ruchu, ale nie są szachowane — to remis. Spróbuj jeszcze raz.');
+      else lessonWrong(pos.inCheck() ? 'Szach, ale nie mat — król ma ucieczkę. Szukaj dalej.' : 'To nie jest mat. Szukaj dalej.');
+      break;
+    }
+    case 'play': {
+      const s = pos.status();
+      if (s) { lessonPlayEnd(s); break; }
+      ls.busy = true; ls.msg = ''; renderAll(false);
+      askEngine('lesson');
+      break;
+    }
+  }
+}
+function lessonPlayEnd(s) {
+  const ls = G.ls;
+  if (s.reason === 'checkmate' && (s.result === '1-0') === (G.human === WHITE)) { lessonDone(`Mat w ${Math.ceil(G.moves.length / 2)} ruchach! ${pick(PRAISE)}`); return; }
+  ls.failed = true; ls.tone = 'bad';
+  ls.msg = s.reason === 'stalemate' ? 'Pat — remis. Zostaw królowi przeciwnika choć jeden ruch, zanim dasz mata. Spróbuj od nowa.'
+    : s.reason === 'material' ? 'Straciłeś figurę i mata nie da się już dać. Spróbuj od nowa.'
+    : 'Remis. Spróbuj od nowa.';
+  renderAll(false);
+}
+
+function renderLessonStatus(st) {
+  const ls = G.ls, d = ls.data;
+  if (ls.msg) { st.innerHTML = ls.msg; if (ls.tone) st.classList.add(ls.tone); }
+  else if (ls.busy && d.type === 'play') st.innerHTML = '<span class="think"></span>Komputer myśli…';
+  else {
+    let extra = '';
+    if (d.type === 'stars') extra = `<small>Zostało gwiazdek: ${ls.stars.size} · ruchy: ${ls.moves}</small>`;
+    else if (d.type === 'play' && G.pos.inCheck()) extra = '<small>Szach!</small>';
+    st.innerHTML = d.goal + extra;
+  }
+  $('#opening').textContent = '';
+}
+function renderLessonCard() {
+  const ls = G.ls, n = ls.lesson.steps.length;
+  $('#lsTitle').textContent = ls.lesson.title;
+  $('#lsStep').textContent = n > 1 ? `Ćwiczenie ${ls.si + 1} z ${n}` : '';
+  $('#lsText').textContent = ls.lesson.intro;
+  const lastStep = ls.si === n - 1, lastLesson = ls.li === LESSONS.length - 1;
+  const next = $('#lsNext');
+  next.disabled = !ls.done || (lastStep && lastLesson);
+  next.classList.toggle('primary', ls.done);
+  next.lastChild.textContent = lastStep ? 'Następna lekcja' : 'Dalej';
+}
+$('#lsRestart').onclick = () => startLesson(G.ls.li, G.ls.si);
+$('#lsList').onclick = () => openLearn('lessons');
+$('#lsNext').onclick = () => {
+  const ls = G.ls;
+  if (!ls.done) return;
+  if (ls.si < ls.lesson.steps.length - 1) startLesson(ls.li, ls.si + 1);
+  else startLesson(ls.li + 1, 0);
+};
+
+/* Trener: osobny wątek, żeby nie spowalniał ruchów komputera. */
+let coachWorker = null, coachId = 0;
+function askCoach() {
+  G.coachMsg = settings.coach ? { cls: 'info', text: '<span class="think"></span>Trener ocenia ruch…' } : null;
+  if (!settings.coach) return;
+  const id = ++coachId;
+  const msg = { id, kind: 'coach', startFen: G.startFen, moves: G.moves.map((m) => m.uci) };
+  if (!coachWorker) {
+    try { coachWorker = new Worker('js/ai-worker.js?v=1.2.0'); coachWorker.onmessage = (e) => onCoach(e.data); }
+    catch { coachWorker = null; }
+  }
+  if (coachWorker) coachWorker.postMessage(msg);
+  else setTimeout(() => onCoach(Object.assign({ id }, E.runRequest(msg))), 50);
+}
+function onCoach(r) {
+  if (r.id !== coachId || G.mode !== 'ai' || !r.best || !r.ply) return;
+  const played = G.moves[r.ply - 1];
+  if (!played) return;
+  const before = new Position(G.startFen);
+  for (let i = 0; i < r.ply - 1; i++) before.play(G.moves[i].uci);
+  const bm = before.moveFromUci(r.best);
+  const bestSan = bm ? plSan(before.san(bm)) : r.best;
+  const clamp = (v) => Math.max(-1500, Math.min(1500, v));
+  const loss = clamp(r.bestScore) - clamp(r.actual);
+  const pawns = (loss / 100).toFixed(1).replace('.', ',');
+  const mateMissed = r.bestScore > E.MATE - 300 && r.actual < E.MATE - 300;
+  let m;
+  if (played.uci === r.best) m = { cls: 'good', text: '✓ Najlepszy ruch!' };
+  else if (r.inBook) m = { cls: 'good', text: '📖 Ruch z teorii debiutu.' };
+  else if (mateMissed) m = { cls: 'bad', text: `⚡ Przegapiony mat! Było ${bestSan}. Możesz cofnąć ruch.` };
+  else if (loss >= 250) m = { cls: 'bad', text: `?? Poważny błąd (ok. −${pawns} piona). Lepsze było ${bestSan}. Możesz cofnąć ruch.` };
+  else if (loss >= 120) m = { cls: 'bad', text: `? Błąd (ok. −${pawns} piona). Lepsze było ${bestSan}.` };
+  else if (loss >= 60) m = { cls: 'warn', text: `?! Niedokładność. Lepsze było ${bestSan}.` };
+  else m = { cls: 'good', text: '✓ Dobry ruch.' };
+  G.coachMsg = m;
+  renderCoach();
+}
+function renderCoach() {
+  const el = $('#coach');
+  const m = (G.mode === 'ai' || G.mode === 'pvp') && G.view === null ? G.coachMsg : null;
+  el.classList.toggle('hidden', !m);
+  if (m) { el.className = 'coach ' + m.cls; el.innerHTML = m.text; }
+}
+
+/* Okno „Nauka”: zakładki Lekcje / Zadania / Porady. */
+function renderLessonList() {
+  const total = LESSONS.length, done = LESSONS.filter((l) => LS.done[l.id]).length;
+  $('#lsProgress').textContent = `Ukończone lekcje: ${done} z ${total}`;
+  let html = '', i = 0;
+  for (const ch of NAUKA.chapters) {
+    html += `<div class="ch-title">${ch.title}</div>`;
+    for (const l of ch.lessons) {
+      html += `<button class="ls-item" data-li="${i}">${P.svg(WHITE | (ICON[l.icon] || E.PAWN))}<span>${l.title}</span>${LS.done[l.id] ? '<span class="ok">✓</span>' : ''}</button>`;
+      i++;
+    }
+  }
+  $('#lessonList').innerHTML = html;
+}
+function renderTips() {
+  let html = '', cat = '';
+  for (const t of NAUKA.tips) {
+    if (t.cat !== cat) { cat = t.cat; html += `<div class="tip-cat">${cat}</div>`; }
+    html += `<div class="tip">${t.text}</div>`;
+  }
+  $('#tipList').innerHTML = html;
+}
+function showLearnTab(tab) {
+  $('#tabLessons').classList.toggle('hidden', tab !== 'lessons');
+  $('#tabPuzzles').classList.toggle('hidden', tab !== 'puzzles');
+  $('#tabTips').classList.toggle('hidden', tab !== 'tips');
+  document.querySelector(`input[name=ltab][value=${tab}]`).checked = true;
+}
+function openLearn(tab = 'lessons') {
+  renderLessonList(); renderTips();
+  openPuzzles(); // wypełnia zakładkę zadań i otwiera okno
+  showLearnTab(tab);
+}
+$('#btnPuzzles').onclick = () => openLearn(G.mode === 'puzzle' ? 'puzzles' : 'lessons');
+$('#learnTabs').addEventListener('change', (e) => showLearnTab(e.target.value));
+$('#lessonList').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-li]');
+  if (!b) return;
+  $('#dlgPuzzles').close();
+  startLesson(+b.dataset.li, 0);
+});
 
 /* ---------------- start ---------------- */
 if (restore()) {

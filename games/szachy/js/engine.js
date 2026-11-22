@@ -52,20 +52,22 @@ CASTLE_MASK[112] = 7; CASTLE_MASK[116] = 3; CASTLE_MASK[119] = 11;
 
 /* ======================================================================= */
 class Position {
-  constructor(fen) {
+  // lenient = pozycja do lekcji: może nie mieć królów (np. sama wieża i gwiazdki)
+  constructor(fen, lenient) {
     this.board = new Int8Array(128);
     this.kingSq = new Int16Array(24);
     this.stack = [];
     this.hist = [];
-    this.load(fen || START_FEN);
+    this.load(fen || START_FEN, lenient);
   }
 
-  load(fen) {
+  load(fen, lenient) {
     const parts = String(fen).trim().split(/\s+/);
     if (parts.length < 2) throw new Error('Niepoprawny FEN');
     const b = this.board;
     b.fill(0);
     let r = 7, f = 0, kings = 0;
+    this.kingSq[WHITE] = -1; this.kingSq[BLACK] = -1;
     for (const ch of parts[0]) {
       if (ch === '/') { r--; f = 0; continue; }
       if (ch >= '1' && ch <= '8') { f += +ch; continue; }
@@ -78,7 +80,7 @@ class Position {
       if (t === KING) { this.kingSq[c] = sq; kings++; }
       f++;
     }
-    if (kings !== 2) throw new Error('Niepoprawny FEN: brak króla');
+    if (kings !== 2 && !lenient) throw new Error('Niepoprawny FEN: brak króla');
     this.turn = parts[1] === 'b' ? BLACK : WHITE;
     const cs = parts[2] || '-';
     let c = 0;
@@ -167,7 +169,7 @@ class Position {
     return false;
   }
 
-  inCheck() { return this.isAttacked(this.kingSq[this.turn], this.turn ^ 24); }
+  inCheck() { const k = this.kingSq[this.turn]; return k >= 0 && this.isAttacked(k, this.turn ^ 24); }
 
   /* Ruchy pseudo-legalne (bez sprawdzania, czy król zostaje pod szachem). */
   gen(list, capsOnly) {
@@ -329,7 +331,7 @@ class Position {
     const list = this.gen([], false), us = this.turn, them = us ^ 24, out = [];
     for (let i = 0; i < list.length; i++) {
       this.make(list[i]);
-      if (!this.isAttacked(this.kingSq[us], them)) out.push(list[i]);
+      if (this.kingSq[us] < 0 || !this.isAttacked(this.kingSq[us], them)) out.push(list[i]);
       this.unmake();
     }
     return out;
@@ -1008,6 +1010,26 @@ function toughestReply(pos, n) {
   return best;
 }
 
+/* Trener: ocena ostatniego ruchu — najlepszy ruch i wynik przed ruchem, wynik po ruchu
+   (oba z perspektywy strony, która się ruszyła), oraz czy ruch jest z książki debiutowej. */
+let coachSearcher = null;
+function coach(msg) {
+  const start = msg.startFen || START_FEN, moves = msg.moves || [];
+  if (!moves.length) return {};
+  const pos = new Position(start);
+  for (let i = 0; i < moves.length - 1; i++) if (!pos.play(moves[i])) return {};
+  const s = coachSearcher || (coachSearcher = new Searcher());
+  const r1 = s.search(pos, { timeMs: msg.time || 450 });
+  if (!r1) return {};
+  const inBook = start === START_FEN && BOOK.some((line) => line.length >= moves.length && startsWith(line, moves));
+  if (!pos.play(moves[moves.length - 1])) return {};
+  const st = pos.status();
+  let actual;
+  if (st) actual = st.reason === 'checkmate' ? MATE : 0;
+  else { const r2 = s.search(pos, { timeMs: msg.time || 450 }); actual = r2 ? -r2.score : 0; }
+  return { best: toUci(r1.move), bestScore: r1.score, actual, inBook, ply: moves.length };
+}
+
 /* Wspólne wejście dla Workera i trybu awaryjnego w głównym wątku. */
 function runRequest(msg) {
   const pos = new Position(msg.startFen || START_FEN);
@@ -1018,6 +1040,8 @@ function runRequest(msg) {
     return { score: r ? r.score : 0 };
   }
   if (msg.kind === 'hint') return think(pos, 7, played, { time: 900 }) || {};
+  if (msg.kind === 'lesson') return think(pos, 8, null, { time: 400 }) || {};
+  if (msg.kind === 'coach') return coach(msg);
   return think(pos, msg.level, played) || {};
 }
 
