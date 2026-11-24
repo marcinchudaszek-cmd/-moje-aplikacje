@@ -1060,6 +1060,10 @@
                             <label><i class="fab fa-facebook"></i> Facebook</label>
                             <input type="url" class="form-input" id="socialFacebook" placeholder="https://www.facebook.com/twojastrona">
                         </div>
+                        <div class="form-group">
+                            <label><i class="fab fa-youtube"></i> YouTube</label>
+                            <input type="url" class="form-input" id="socialYoutube" placeholder="https://www.youtube.com/@twojkanal">
+                        </div>
                     </div>
                 </div>
                 <div class="form-actions">
@@ -1441,6 +1445,7 @@ function loadContact() {
     document.getElementById('socialReddit').value = data.contact.reddit || '';
     document.getElementById('socialInstagram').value = data.contact.instagram || '';
     document.getElementById('socialFacebook').value = data.contact.facebook || '';
+    document.getElementById('socialYoutube').value = data.contact.youtube || '';
 }
 
 function saveContact() {
@@ -1455,6 +1460,7 @@ function saveContact() {
     data.contact.reddit = document.getElementById('socialReddit').value;
     data.contact.instagram = document.getElementById('socialInstagram').value;
     data.contact.facebook = document.getElementById('socialFacebook').value;
+    data.contact.youtube = document.getElementById('socialYoutube').value;
     saveData(data);
     showToast('Dane kontaktowe zapisane!', 'success');
 }
