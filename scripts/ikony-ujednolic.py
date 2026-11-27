@@ -36,7 +36,6 @@ KAFEL = {
     'discarchiver-icon.png': ('#0f172a', '#1e3a8a', 0.80, False),
     'voice-cloner-icon.png': ('#0b3d47', '#11998e', 0.74, False),
     'volleystats-icon.png': ('#1e3a8a', '#2563eb', 0.72, False),
-    'dart-score-pro-icon.png': ('#111827', '#374151', 0.88, True),
 }
 
 
